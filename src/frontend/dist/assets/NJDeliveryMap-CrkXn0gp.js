@@ -1,4 +1,4 @@
-import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-BKch1K-s.js";
+import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-DGTEFHqA.js";
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n) {
     for (var e = 1; e < arguments.length; e++) {
@@ -53227,7 +53227,7 @@ function Truck({
     t.current = (t.current + dt * speed) % 1;
     curve.getPointAt(t.current, tmp2);
     g2.position.copy(tmp2);
-    const ahead = curve.getPointAt(Math.min(0.9999, (t.current + 6e-3) % 1));
+    const ahead = curve.getPointAt(Math.min(0.9999, t.current + 6e-3));
     g2.lookAt(ahead.x, tmp2.y, ahead.z);
   });
   const wheelPositions = [

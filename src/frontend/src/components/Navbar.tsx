@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/#contact", label: "Contact" },
 ];
 
-function SocialTiles({ compact = false }: { compact?: boolean }) {
+function SocialTiles() {
   return (
     <div className="flex items-center gap-1.5 sm:gap-2">
       {SOCIALS.map((s) => (
@@ -21,11 +21,9 @@ function SocialTiles({ compact = false }: { compact?: boolean }) {
           rel="noreferrer"
           aria-label={s.label}
           data-ocid={`navbar.social.${s.label.toLowerCase()}`}
-          className={`social-tile ${
-            compact ? "!h-8 !w-8 rounded-lg" : "!h-9 !w-9 rounded-lg"
-          }`}
+          className="social-tile !h-10 !w-10 rounded-lg"
         >
-          <s.icon className={compact ? "size-3.5" : "size-4"} />
+          <s.icon className="size-4" />
         </a>
       ))}
     </div>
@@ -64,7 +62,7 @@ export default function Navbar() {
 
         {/* Large primary links, desktop */}
         <nav
-          className="hidden items-center gap-1 lg:flex xl:gap-2"
+          className="hidden items-center gap-1 xl:flex 2xl:gap-2"
           aria-label="Primary"
         >
           {NAV_LINKS.map((link) => (
@@ -72,7 +70,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               data-ocid={`navbar.link.${link.label.toLowerCase()}`}
-              className="rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy xl:px-5 xl:text-lg"
+              className="rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-5 2xl:text-lg"
             >
               {link.label}
             </a>
@@ -81,12 +79,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* Social icons live in the navbar on every breakpoint */}
-          <div className="hidden lg:block">
-            <SocialTiles />
-          </div>
-          <div className="lg:hidden">
-            <SocialTiles compact />
-          </div>
+          <SocialTiles />
 
           {/* Call CTA: icon-only on phones, full number from md up */}
           <Button
@@ -105,10 +98,10 @@ export default function Navbar() {
             size="icon"
             aria-label="Call Avalon Ice"
             data-ocid="navbar.call_icon"
-            className="size-8 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden"
+            className="size-10 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden"
           >
             <a href="tel:8563089986">
-              <Phone className="size-3.5" />
+              <Phone className="size-4" />
             </a>
           </Button>
 
@@ -131,7 +124,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex size-8 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist sm:size-10 lg:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist xl:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -139,7 +132,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t-2 border-navy bg-cream-bright px-4 py-4 lg:hidden">
+        <div className="border-t-2 border-navy bg-cream-bright px-4 py-4 xl:hidden">
           <nav className="flex flex-col gap-1" aria-label="Mobile">
             {NAV_LINKS.map((link) => (
               <a

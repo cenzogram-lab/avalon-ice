@@ -613,7 +613,9 @@ function Truck({
     t.current = (t.current + dt * speed) % 1;
     curve.getPointAt(t.current, tmp);
     g.position.copy(tmp);
-    const ahead = curve.getPointAt(Math.min(0.9999, (t.current + 0.006) % 1));
+    // Clamp the look-ahead instead of wrapping it, so the truck doesn't
+    // whip toward the route start for one frame at the end of a lap.
+    const ahead = curve.getPointAt(Math.min(0.9999, t.current + 0.006));
     g.lookAt(ahead.x, tmp.y, ahead.z);
   });
 

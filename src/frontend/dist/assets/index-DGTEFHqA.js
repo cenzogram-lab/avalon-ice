@@ -41660,7 +41660,7 @@ const NAV_LINKS = [
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" }
 ];
-function SocialTiles({ compact = false }) {
+function SocialTiles() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-1.5 sm:gap-2", children: SOCIALS.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsx(
     "a",
     {
@@ -41669,8 +41669,8 @@ function SocialTiles({ compact = false }) {
       rel: "noreferrer",
       "aria-label": s.label,
       "data-ocid": `navbar.social.${s.label.toLowerCase()}`,
-      className: `social-tile ${compact ? "!h-8 !w-8 rounded-lg" : "!h-9 !w-9 rounded-lg"}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(s.icon, { className: compact ? "size-3.5" : "size-4" })
+      className: "social-tile !h-10 !w-10 rounded-lg",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(s.icon, { className: "size-4" })
     },
     s.label
   )) });
@@ -41710,14 +41710,14 @@ function Navbar() {
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "nav",
             {
-              className: "hidden items-center gap-1 lg:flex xl:gap-2",
+              className: "hidden items-center gap-1 xl:flex 2xl:gap-2",
               "aria-label": "Primary",
               children: NAV_LINKS.map((link) => /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "a",
                 {
                   href: link.href,
                   "data-ocid": `navbar.link.${link.label.toLowerCase()}`,
-                  className: "rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy xl:px-5 xl:text-lg",
+                  className: "rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-5 2xl:text-lg",
                   children: link.label
                 },
                 link.href
@@ -41725,8 +41725,7 @@ function Navbar() {
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 sm:gap-2.5", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hidden lg:block", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SocialTiles, {}) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SocialTiles, { compact: true }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SocialTiles, {}),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
@@ -41747,8 +41746,8 @@ function Navbar() {
                 size: "icon",
                 "aria-label": "Call Avalon Ice",
                 "data-ocid": "navbar.call_icon",
-                className: "size-8 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden",
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "tel:8563089986", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-3.5" }) })
+                className: "size-10 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "tel:8563089986", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-4" }) })
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -41772,13 +41771,13 @@ function Navbar() {
                 "aria-label": "Toggle menu",
                 "aria-expanded": open,
                 onClick: () => setOpen((v2) => !v2),
-                className: "inline-flex size-8 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist sm:size-10 lg:hidden",
+                className: "inline-flex size-10 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist xl:hidden",
                 children: open ? /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "size-5" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Menu, { className: "size-5" })
               }
             )
           ] })
         ] }),
-        open && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t-2 border-navy bg-cream-bright px-4 py-4 lg:hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "flex flex-col gap-1", "aria-label": "Mobile", children: [
+        open && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t-2 border-navy bg-cream-bright px-4 py-4 xl:hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "flex flex-col gap-1", "aria-label": "Mobile", children: [
           NAV_LINKS.map((link) => /* @__PURE__ */ jsxRuntimeExports.jsx(
             "a",
             {
@@ -58977,7 +58976,7 @@ function useReducedMotion() {
   const [shouldReduceMotion] = reactExports.useState(prefersReducedMotion.current);
   return shouldReduceMotion;
 }
-const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-CQCKn1uj.js"), true ? [] : void 0));
+const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-CrkXn0gp.js"), true ? [] : void 0));
 const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
 const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
 function Hero() {
@@ -59031,7 +59030,7 @@ function Hero() {
                 asChild: true,
                 size: "lg",
                 "data-ocid": "hero.request_button",
-                className: "btn-brutal btn-brutal-ice h-13 bg-navy px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy",
+                className: "btn-brutal btn-brutal-ice bg-navy px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "#order-form", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Truck, { className: "size-5" }),
                   "Request Delivery / Quote"
@@ -59044,7 +59043,7 @@ function Hero() {
                 asChild: true,
                 size: "lg",
                 "data-ocid": "hero.call_button",
-                className: "btn-brutal h-13 bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost",
+                className: "btn-brutal bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "tel:8563089986", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-5" }),
                   "Call Now: (856) 308-9986"

@@ -144,7 +144,7 @@
     font-family: var(--font-display);
     color: #a3ccd1;
     -webkit-text-stroke: 0.04em #0c3552;
-    text-shadow: 0.05em 0.06em 0 #061f33, 0.05em 0.06em 0 #061f33;
+    text-shadow: 0.05em 0.06em 0 #061f33;
     letter-spacing: 0.02em;
   }
 

@@ -102,7 +102,7 @@ function Hero() {
             asChild
             size="lg"
             data-ocid="hero.request_button"
-            className="btn-brutal btn-brutal-ice h-13 bg-navy px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
+            className="btn-brutal btn-brutal-ice bg-navy px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
           >
             <a href="#order-form">
               <Truck className="size-5" />
@@ -113,7 +113,7 @@ function Hero() {
             asChild
             size="lg"
             data-ocid="hero.call_button"
-            className="btn-brutal h-13 bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
+            className="btn-brutal bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
           >
             <a href="tel:8563089986">
               <Phone className="size-5" />

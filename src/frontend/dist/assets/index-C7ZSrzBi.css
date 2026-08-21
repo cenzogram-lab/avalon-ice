@@ -976,11 +976,8 @@ video {
   width: 100%;
   height: 100%;
 }
-.\!h-8 {
-  height: 2rem !important;
-}
-.\!h-9 {
-  height: 2.25rem !important;
+.\!h-10 {
+  height: 2.5rem !important;
 }
 .h-1\.5 {
   height: 0.375rem;
@@ -1075,11 +1072,8 @@ video {
 .min-h-svh {
   min-height: 100svh;
 }
-.\!w-8 {
-  width: 2rem !important;
-}
-.\!w-9 {
-  width: 2.25rem !important;
+.\!w-10 {
+  width: 2.5rem !important;
 }
 .w-0 {
   width: 0px;
@@ -2353,7 +2347,7 @@ video {
     font-family: var(--font-display);
     color: #a3ccd1;
     -webkit-text-stroke: 0.04em #0c3552;
-    text-shadow: 0.05em 0.06em 0 #061f33, 0.05em 0.06em 0 #061f33;
+    text-shadow: 0.05em 0.06em 0 #061f33;
     letter-spacing: 0.02em;
   }
 /* Bevan block letters in solid navy */
@@ -3766,11 +3760,6 @@ video {
     display: flex;
   }
 
-  .sm\:size-10 {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
   .sm\:h-\[34rem\] {
     height: 34rem;
   }
@@ -4026,18 +4015,6 @@ video {
 }
 @media (min-width: 1024px) {
 
-  .lg\:block {
-    display: block;
-  }
-
-  .lg\:flex {
-    display: flex;
-  }
-
-  .lg\:hidden {
-    display: none;
-  }
-
   .lg\:size-11 {
     width: 2.75rem;
     height: 2.75rem;
@@ -4077,16 +4054,26 @@ video {
 }
 @media (min-width: 1280px) {
 
-  .xl\:gap-2 {
+  .xl\:flex {
+    display: flex;
+  }
+
+  .xl\:hidden {
+    display: none;
+  }
+}
+@media (min-width: 1536px) {
+
+  .\32xl\:gap-2 {
     gap: 0.5rem;
   }
 
-  .xl\:px-5 {
+  .\32xl\:px-5 {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
   }
 
-  .xl\:text-lg {
+  .\32xl\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
