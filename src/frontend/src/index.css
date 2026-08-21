@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Bevan";
+  src: url("https://fonts.googleapis.com/css2?family=Bevan&display=swap")
+    format("woff2");
+  font-display: swap;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Lobster";
+  src: url("https://fonts.googleapis.com/css2?family=Lobster&display=swap")
+    format("woff2");
+  font-display: swap;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Work Sans";
+  src: url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap")
+    format("woff2");
+  font-display: swap;
+  font-weight: 400 700;
+}
+
+@layer base {
+  :root {
+    --font-display: "Bevan", serif;
+    --font-script: "Lobster", cursive;
+    --font-body: "Work Sans", sans-serif;
+    --font-mono: monospace;
+    --radius: 0.5rem;
+
+    /* Avalon Ice — vintage coastal cream */
+    --background: 0.955 0.012 85;
+    --foreground: 0.26 0.06 245;
+    --card: 0.985 0.008 85;
+    --card-foreground: 0.26 0.06 245;
+    --popover: 0.985 0.008 85;
+    --popover-foreground: 0.26 0.06 245;
+
+    /* Deep navy — primary brand */
+    --primary: 0.26 0.06 245;
+    --primary-foreground: 0.96 0.01 85;
+
+    /* Seafoam / powder ice blue */
+    --secondary: 0.8 0.05 200;
+    --secondary-foreground: 0.26 0.06 245;
+    --muted: 0.88 0.035 195;
+    --muted-foreground: 0.4 0.06 240;
+
+    /* Golden-yellow heron-beak accent */
+    --accent: 0.78 0.16 85;
+    --accent-foreground: 0.24 0.06 245;
+
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.97 0.01 85;
+
+    --border: 0.84 0.04 195;
+    --input: 0.84 0.04 195;
+    --ring: 0.78 0.16 85;
+
+    --chart-1: 0.26 0.06 245;
+    --chart-2: 0.8 0.05 200;
+    --chart-3: 0.72 0.06 200;
+    --chart-4: 0.78 0.16 85;
+    --chart-5: 0.36 0.07 240;
+
+    --sidebar: 0.22 0.05 245;
+    --sidebar-foreground: 0.96 0.01 85;
+    --sidebar-primary: 0.8 0.05 200;
+    --sidebar-primary-foreground: 0.24 0.06 245;
+    --sidebar-accent: 0.3 0.06 240;
+    --sidebar-accent-foreground: 0.96 0.01 85;
+    --sidebar-border: 0.32 0.05 240;
+    --sidebar-ring: 0.78 0.16 85;
+  }
+
+  .dark {
+    --background: 0.21 0.05 245;
+    --foreground: 0.96 0.01 85;
+    --card: 0.27 0.05 245;
+    --card-foreground: 0.96 0.01 85;
+    --popover: 0.27 0.05 245;
+    --popover-foreground: 0.96 0.01 85;
+
+    --primary: 0.8 0.05 200;
+    --primary-foreground: 0.24 0.06 245;
+
+    --secondary: 0.3 0.06 240;
+    --secondary-foreground: 0.96 0.01 85;
+    --muted: 0.3 0.05 240;
+    --muted-foreground: 0.72 0.04 200;
+
+    --accent: 0.78 0.16 85;
+    --accent-foreground: 0.24 0.06 245;
+
+    --destructive: 0.62 0.2 22;
+    --destructive-foreground: 0.97 0.01 85;
+
+    --border: 0.34 0.05 240;
+    --input: 0.34 0.05 240;
+    --ring: 0.78 0.16 85;
+
+    --chart-1: 0.8 0.05 200;
+    --chart-2: 0.72 0.06 200;
+    --chart-3: 0.78 0.16 85;
+    --chart-4: 0.36 0.07 240;
+    --chart-5: 0.96 0.01 85;
+
+    --sidebar: 0.18 0.05 245;
+    --sidebar-foreground: 0.96 0.01 85;
+    --sidebar-primary: 0.8 0.05 200;
+    --sidebar-primary-foreground: 0.24 0.06 245;
+    --sidebar-accent: 0.3 0.06 240;
+    --sidebar-accent-foreground: 0.96 0.01 85;
+    --sidebar-border: 0.34 0.05 240;
+    --sidebar-ring: 0.78 0.16 85;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Neo-vintage coastal gradients */
+  .bg-gradient-primary {
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.26 0.06 245) 0%,
+      oklch(0.36 0.07 240) 100%
+    );
+  }
+  .bg-gradient-seafoam {
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.88 0.035 195) 0%,
+      oklch(0.8 0.05 200) 100%
+    );
+  }
+  .bg-gradient-sunset {
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.78 0.16 85) 0%,
+      oklch(0.8 0.05 200) 100%
+    );
+  }
+  .text-gradient-navy {
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.26 0.06 245) 0%,
+      oklch(0.36 0.07 240) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Vintage illustrated drop-shadow badges with bold borders */
+  .badge-vintage {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid oklch(0.26 0.06 245);
+    background: oklch(0.985 0.008 85);
+    color: oklch(0.26 0.06 245);
+    box-shadow: 6px 6px 0 oklch(0.26 0.06 245);
+    padding: 0.5rem 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .badge-vintage-accent {
+    border-color: oklch(0.26 0.06 245);
+    background: oklch(0.78 0.16 85);
+    color: oklch(0.24 0.06 245);
+    box-shadow: 6px 6px 0 oklch(0.26 0.06 245);
+  }
+
+  /* Neo-vintage multi-layered clip-path containers */
+  .clip-badge {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 0.9rem),
+      calc(100% - 0.9rem) 100%,
+      0 100%
+    );
+  }
+  .clip-ticket {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 1.25rem),
+      calc(100% - 1.25rem) 100%,
+      0 100%
+    );
+  }
+  .clip-flag {
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+  }
+  .clip-stamp {
+    clip-path: polygon(
+      0 0.6rem,
+      0.6rem 0,
+      calc(100% - 0.6rem) 0,
+      100% 0.6rem,
+      100% calc(100% - 0.6rem),
+      calc(100% - 0.6rem) 100%,
+      0.6rem 100%,
+      0 calc(100% - 0.6rem)
+    );
+  }
+  .clip-hero {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 2.5rem),
+      calc(100% - 2.5rem) 100%,
+      0 100%
+    );
+  }
+
+  /* Layered offset panel (hard shadow offset) */
+  .panel-offset {
+    position: relative;
+    border: 3px solid oklch(0.26 0.06 245);
+    background: oklch(0.985 0.008 85);
+  }
+  .panel-offset::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: translate(0.75rem, 0.75rem);
+    background: oklch(0.8 0.05 200);
+    border: 3px solid oklch(0.26 0.06 245);
+  }
+
+  /* Heron-beak golden underline for script accents */
+  .script-accent {
+    font-family: var(--font-script);
+    color: oklch(0.26 0.06 245);
+  }
+}

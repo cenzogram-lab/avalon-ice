@@ -1,0 +1,113 @@
+type Value = 
+ variant {
+   "bool": bool;
+   float: float64;
+   "int": int;
+   "nat": nat;
+   "null";
+   "text": text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type Result__1 = 
+ variant {
+   err: Error;
+   ok;
+ };
+type Result = 
+ record {
+   hasMore: bool;
+   rows: vec vec Cell;
+ };
+type OrderDetails = 
+ record {
+   businessName: opt text;
+   deliveryAddress: opt text;
+   deliveryFrequency: opt text;
+   deliveryTimeWindow: opt text;
+   desiredDeliveryDays: vec text;
+   estimatedWeeklyUsage: opt text;
+   eventDate: opt text;
+   iceType: opt text;
+   message: opt text;
+   onSiteFreezer: opt bool;
+   totalBags: opt text;
+   venueName: opt text;
+ };
+type InquiryType = 
+ variant {
+   Event;
+   General;
+   Wholesale;
+ };
+type InquiryStatus = 
+ variant {
+   Contacted;
+   Fulfilled;
+   InReview;
+   New;
+ };
+type Inquiry = 
+ record {
+   address: opt text;
+   businessName: opt text;
+   email: text;
+   id: nat;
+   inquiryType: InquiryType;
+   name: text;
+   notes: opt text;
+   orderDetails: OrderDetails;
+   phone: text;
+   status: InquiryStatus;
+   timestamp: int;
+ };
+type Error = 
+ variant {
+   AmbiguousAttribute: record {
+                         field: text;
+                         sources: vec text;
+                       };
+   FrontendOriginMismatch: record {
+                             expected: vec text;
+                             got: text;
+                           };
+   FrontendOriginsNotConfigured;
+   MalformedCandid;
+   MissingField: text;
+   MixedSsoSources: record {
+                      otherKeys: vec text;
+                      ssoKeys: vec text;
+                    };
+   NoAttributes;
+   Stale: record {ageNs: nat;};
+   UnknownNonce;
+   UntrustedSsoSource: record {domain: text;};
+ };
+type Cell = 
+ record {
+   name: text;
+   value: Value;
+ };
+service : {
+  _initialize_access_control: () -> ();
+  _internet_identity_sign_in_finish: () -> (Result__1);
+  _internet_identity_sign_in_start: () -> (blob);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  execute: (qJson: text) -> (Result) query;
+  exportInquiries: () -> (vec Inquiry) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getInquiry: (id: nat) -> (opt Inquiry) query;
+  isAuthenticated: (token: text) -> (bool) query;
+  isCallerAdmin: () -> (bool) query;
+  login: (email: text, password: text) -> (opt text);
+  logout: (token: text) -> ();
+  schema: () -> (text) query;
+  setupPassword: (password: text) -> (bool);
+  submitInquiry: (inquiry: Inquiry) -> (nat);
+  updateInquiryStatus: (id: nat, status: InquiryStatus, notes: opt text) ->
+   (opt Inquiry);
+}

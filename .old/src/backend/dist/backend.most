@@ -1,0 +1,124 @@
+// Version: 4.0.0
+type AccessControlState__35708078 =
+  {
+    var adminAssigned : Bool;
+    userRoles : Map__386906547<Principal, UserRole__573588286>
+  };
+type AuthState__308654382 =
+  {
+    var adminPrincipal : ?Principal;
+    var passwordHash : ?Text;
+    var sessions : Map__386906547<Text, Int>
+  };
+type Data__265875254<K, V> = {var count : Nat__58649523; kvs : [var ?(K, V)]};
+type InquiryStatus__486934595 = {#Contacted; #Fulfilled; #InReview; #New};
+type InquiryStatus__919973295 = {#Contacted; #Fulfilled; #InReview; #New};
+type InquiryType__249218239 = {#Event; #General; #Wholesale};
+type InquiryType__280665865 = {#Event; #General; #Wholesale};
+type Inquiry__1030155035 =
+  {
+    address : ?Text;
+    businessName : ?Text;
+    email : Text;
+    id : Nat;
+    inquiryType : InquiryType__280665865;
+    name : Text;
+    notes : ?Text;
+    orderDetails : OrderDetails__874874652;
+    phone : Text;
+    status : InquiryStatus__919973295;
+    timestamp : Int
+  };
+type Inquiry__159127206 =
+  {
+    address : ?Text;
+    businessName : ?Text;
+    email : Text;
+    id : Nat;
+    inquiryType : InquiryType__249218239;
+    name : Text;
+    notes : ?Text;
+    orderDetails : OrderDetails__852524430;
+    phone : Text;
+    status : InquiryStatus__486934595;
+    timestamp : Int
+  };
+type Internal__161573640<K, V> =
+  {children : [var ?Node__430031793<K, V>]; data : Data__265875254<K, V>};
+type Leaf__1045638083<K, V> = {data : Data__265875254<K, V>};
+type List__1004628775<T> =
+  {
+    var blockIndex : Nat__58649523;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__58649523
+  };
+type List__89170296<T> = List__1004628775<T>;
+type Map__13625999<K, V> =
+  {var root : Node__430031793<K, V>; var size : Nat__58649523};
+type Map__386906547<K, V> = Map__670138087<K, V>;
+type Map__670138087<K, V> = Map__13625999<K, V>;
+type Nat__58649523 = Nat__920180692;
+type Nat__920180692 = Nat;
+type NewActor__561282835 =
+  {
+    accessControlState : AccessControlState__35708078;
+    auth : AuthState__308654382;
+    inquiries : List__89170296<Inquiry__1030155035>
+  };
+type Node__430031793<K, V> =
+  {#internal : Internal__161573640<K, V>; #leaf : Leaf__1045638083<K, V>};
+type OldActor__965089647 = {};
+type OrderDetails__852524430 =
+  {
+    businessName : ?Text;
+    deliveryAddress : ?Text;
+    deliveryFrequency : ?Text;
+    deliveryTimeWindow : ?Text;
+    desiredDeliveryDays : [Text];
+    estimatedWeeklyUsage : ?Text;
+    eventDate : ?Text;
+    iceType : ?Text;
+    message : ?Text;
+    onSiteFreezer : ?Bool;
+    totalBags : ?Text;
+    venueName : ?Text
+  };
+type OrderDetails__874874652 =
+  {
+    businessName : ?Text;
+    deliveryAddress : ?Text;
+    deliveryFrequency : ?Text;
+    deliveryTimeWindow : ?Text;
+    desiredDeliveryDays : [Text];
+    estimatedWeeklyUsage : ?Text;
+    eventDate : ?Text;
+    iceType : ?Text;
+    message : ?Text;
+    onSiteFreezer : ?Bool;
+    totalBags : ?Text;
+    venueName : ?Text
+  };
+type UserRole__573588286 = {#admin; #guest; #user};
+type UserRole__91647283 = {#admin; #guest; #user};
+{
+  "20260820_180733" : (_old : OldActor__965089647) -> NewActor__561282835
+}
+actor  {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__386906547<Principal, UserRole__91647283>
+    };
+  stable auth :
+    {
+      var adminPrincipal : ?Principal;
+      var passwordHash : ?Text;
+      var sessions : Map__386906547<Text, Int>
+    };
+  stable inquiries :
+    {
+      var blockIndex : Nat__58649523;
+      var blocks : [var [var ?Inquiry__159127206]];
+      var elementIndex : Nat__58649523
+    }
+};

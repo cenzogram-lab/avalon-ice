@@ -1,0 +1,17 @@
+{
+  "overview": "Avalon Ice is a Jersey Shore ice delivery company storefront with an inquiry/order engine and an authenticated admin portal for managing incoming inquiries.",
+  "features": [
+    "Animated hero with dual CTAs and click-to-call",
+    "Interactive Jersey Shore delivery network map with HQ hub and delivery nodes",
+    "Three-mode inquiry engine (General, Wholesale, Event) with confirmation cards",
+    "Authenticated admin portal to manage, filter, search, and export inquiries"
+  ],
+  "category": "business",
+  "tags": [
+    "ice-delivery",
+    "jersey-shore",
+    "storefront",
+    "admin-portal"
+  ],
+  "last_updated": "2026-08-20T18:02:04.503Z"
+}
