@@ -2,30 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Bevan";
-  src: url("https://fonts.googleapis.com/css2?family=Bevan&display=swap")
-    format("woff2");
-  font-display: swap;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Lobster";
-  src: url("https://fonts.googleapis.com/css2?family=Lobster&display=swap")
-    format("woff2");
-  font-display: swap;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Work Sans";
-  src: url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap")
-    format("woff2");
-  font-display: swap;
-  font-weight: 400 700;
-}
-
 @layer base {
   :root {
     --font-display: "Bevan", serif;
@@ -34,91 +10,99 @@
     --font-mono: monospace;
     --radius: 0.5rem;
 
-    /* Avalon Ice — vintage coastal cream */
-    --background: 0.955 0.012 85;
-    --foreground: 0.26 0.06 245;
-    --card: 0.985 0.008 85;
-    --card-foreground: 0.26 0.06 245;
-    --popover: 0.985 0.008 85;
-    --popover-foreground: 0.26 0.06 245;
+    /*
+     * Avalon Ice brand palette (OKLCH triplets of the brand hexes):
+     * cream #F7F2EA / #FDFCF8 · navy #0C3552 (shadow #061F33)
+     * ice #A3CCD1 / #C9E4E4 / #8CBEC5 · slate #1B4F70 / #3A6E7B
+     */
+    --background: 0.963 0.012 80;
+    --foreground: 0.317 0.068 244;
+    --card: 0.991 0.005 95;
+    --card-foreground: 0.317 0.068 244;
+    --popover: 0.991 0.005 95;
+    --popover-foreground: 0.317 0.068 244;
 
     /* Deep navy — primary brand */
-    --primary: 0.26 0.06 245;
-    --primary-foreground: 0.96 0.01 85;
+    --primary: 0.317 0.068 244;
+    --primary-foreground: 0.991 0.005 95;
 
     /* Seafoam / powder ice blue */
-    --secondary: 0.8 0.05 200;
-    --secondary-foreground: 0.26 0.06 245;
-    --muted: 0.88 0.035 195;
-    --muted-foreground: 0.4 0.06 240;
+    --secondary: 0.817 0.044 205;
+    --secondary-foreground: 0.317 0.068 244;
+    --muted: 0.899 0.029 197;
+    --muted-foreground: 0.409 0.078 240;
 
-    /* Golden-yellow heron-beak accent */
+    /* Golden heron-beak accent */
     --accent: 0.78 0.16 85;
-    --accent-foreground: 0.24 0.06 245;
+    --accent-foreground: 0.232 0.049 246;
 
     --destructive: 0.55 0.22 25;
     --destructive-foreground: 0.97 0.01 85;
 
-    --border: 0.84 0.04 195;
-    --input: 0.84 0.04 195;
-    --ring: 0.78 0.16 85;
+    --border: 0.769 0.053 207;
+    --input: 0.769 0.053 207;
+    --ring: 0.409 0.078 240;
 
-    --chart-1: 0.26 0.06 245;
-    --chart-2: 0.8 0.05 200;
-    --chart-3: 0.72 0.06 200;
+    --chart-1: 0.317 0.068 244;
+    --chart-2: 0.817 0.044 205;
+    --chart-3: 0.769 0.053 207;
     --chart-4: 0.78 0.16 85;
-    --chart-5: 0.36 0.07 240;
+    --chart-5: 0.409 0.078 240;
 
-    --sidebar: 0.22 0.05 245;
-    --sidebar-foreground: 0.96 0.01 85;
-    --sidebar-primary: 0.8 0.05 200;
-    --sidebar-primary-foreground: 0.24 0.06 245;
-    --sidebar-accent: 0.3 0.06 240;
-    --sidebar-accent-foreground: 0.96 0.01 85;
-    --sidebar-border: 0.32 0.05 240;
+    --sidebar: 0.232 0.049 246;
+    --sidebar-foreground: 0.963 0.012 80;
+    --sidebar-primary: 0.817 0.044 205;
+    --sidebar-primary-foreground: 0.232 0.049 246;
+    --sidebar-accent: 0.317 0.068 244;
+    --sidebar-accent-foreground: 0.963 0.012 80;
+    --sidebar-border: 0.36 0.06 242;
     --sidebar-ring: 0.78 0.16 85;
   }
 
   .dark {
-    --background: 0.21 0.05 245;
-    --foreground: 0.96 0.01 85;
-    --card: 0.27 0.05 245;
-    --card-foreground: 0.96 0.01 85;
-    --popover: 0.27 0.05 245;
-    --popover-foreground: 0.96 0.01 85;
+    --background: 0.232 0.049 246;
+    --foreground: 0.963 0.012 80;
+    --card: 0.29 0.06 244;
+    --card-foreground: 0.963 0.012 80;
+    --popover: 0.29 0.06 244;
+    --popover-foreground: 0.963 0.012 80;
 
-    --primary: 0.8 0.05 200;
-    --primary-foreground: 0.24 0.06 245;
+    --primary: 0.817 0.044 205;
+    --primary-foreground: 0.232 0.049 246;
 
-    --secondary: 0.3 0.06 240;
-    --secondary-foreground: 0.96 0.01 85;
-    --muted: 0.3 0.05 240;
-    --muted-foreground: 0.72 0.04 200;
+    --secondary: 0.36 0.06 242;
+    --secondary-foreground: 0.963 0.012 80;
+    --muted: 0.34 0.055 242;
+    --muted-foreground: 0.769 0.053 207;
 
     --accent: 0.78 0.16 85;
-    --accent-foreground: 0.24 0.06 245;
+    --accent-foreground: 0.232 0.049 246;
 
     --destructive: 0.62 0.2 22;
     --destructive-foreground: 0.97 0.01 85;
 
-    --border: 0.34 0.05 240;
-    --input: 0.34 0.05 240;
+    --border: 0.38 0.055 240;
+    --input: 0.38 0.055 240;
     --ring: 0.78 0.16 85;
 
-    --chart-1: 0.8 0.05 200;
-    --chart-2: 0.72 0.06 200;
+    --chart-1: 0.817 0.044 205;
+    --chart-2: 0.769 0.053 207;
     --chart-3: 0.78 0.16 85;
-    --chart-4: 0.36 0.07 240;
-    --chart-5: 0.96 0.01 85;
+    --chart-4: 0.409 0.078 240;
+    --chart-5: 0.963 0.012 80;
 
-    --sidebar: 0.18 0.05 245;
-    --sidebar-foreground: 0.96 0.01 85;
-    --sidebar-primary: 0.8 0.05 200;
-    --sidebar-primary-foreground: 0.24 0.06 245;
-    --sidebar-accent: 0.3 0.06 240;
-    --sidebar-accent-foreground: 0.96 0.01 85;
-    --sidebar-border: 0.34 0.05 240;
+    --sidebar: 0.2 0.045 246;
+    --sidebar-foreground: 0.963 0.012 80;
+    --sidebar-primary: 0.817 0.044 205;
+    --sidebar-primary-foreground: 0.232 0.049 246;
+    --sidebar-accent: 0.317 0.068 244;
+    --sidebar-accent-foreground: 0.963 0.012 80;
+    --sidebar-border: 0.36 0.06 242;
     --sidebar-ring: 0.78 0.16 85;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   * {
@@ -127,6 +111,16 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
+
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer utilities {
@@ -134,124 +128,334 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Neo-vintage coastal gradients */
-  .bg-gradient-primary {
-    background-image: linear-gradient(
-      135deg,
-      oklch(0.26 0.06 245) 0%,
-      oklch(0.36 0.07 240) 100%
-    );
-  }
-  .bg-gradient-seafoam {
-    background-image: linear-gradient(
-      135deg,
-      oklch(0.88 0.035 195) 0%,
-      oklch(0.8 0.05 200) 100%
-    );
-  }
-  .bg-gradient-sunset {
-    background-image: linear-gradient(
-      135deg,
-      oklch(0.78 0.16 85) 0%,
-      oklch(0.8 0.05 200) 100%
-    );
-  }
-  .text-gradient-navy {
-    background-image: linear-gradient(
-      135deg,
-      oklch(0.26 0.06 245) 0%,
-      oklch(0.36 0.07 240) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* ------------------------------------------------------------------ */
+  /* Typography                                                          */
+  /* ------------------------------------------------------------------ */
+
+  /* Lobster script headline in deep navy */
+  .script-heading {
+    font-family: var(--font-script);
+    color: #0c3552;
+    line-height: 1.1;
   }
 
-  /* Vintage illustrated drop-shadow badges with bold borders */
+  /* Bevan retro block letters: ice-blue fill, navy stroke, deep-navy slab shadow */
+  .text-block-ice {
+    font-family: var(--font-display);
+    color: #a3ccd1;
+    -webkit-text-stroke: 0.04em #0c3552;
+    text-shadow: 0.05em 0.06em 0 #061f33;
+    letter-spacing: 0.02em;
+  }
+
+  /* Bevan block letters in solid navy */
+  .text-block-navy {
+    font-family: var(--font-display);
+    color: #0c3552;
+  }
+
+  /* Small-caps Work Sans eyebrow label */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #1b4f70;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Vintage paper texture                                               */
+  /* ------------------------------------------------------------------ */
+
+  .texture-paper {
+    position: relative;
+  }
+  .texture-paper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.2 0 0 0 0 0.32 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .texture-paper > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Neo-brutalist hand-drawn ice frames                                 */
+  /* ------------------------------------------------------------------ */
+
+  /* Solid ice-blue slab drop shadows (follow the clip-path silhouette) */
+  .ice-shadow {
+    filter: drop-shadow(0 8px 0 #a3ccd1);
+  }
+  .ice-shadow-deep {
+    filter: drop-shadow(0 8px 0 #8cbec5)
+      drop-shadow(0 2px 0 rgba(6, 31, 51, 0.18));
+  }
+  .ice-shadow-navy {
+    filter: drop-shadow(0 6px 0 #061f33);
+  }
+
+  /* Hand-drawn polygonal ice-block silhouettes (jittered edges) */
+  .clip-ice-a {
+    clip-path: polygon(
+      1.4% 7%,
+      7% 1.2%,
+      27% 3.2%,
+      50% 0.9%,
+      73% 3.5%,
+      93% 1.4%,
+      98.8% 6.5%,
+      97.5% 28%,
+      99.2% 52%,
+      97.6% 76%,
+      99% 92.5%,
+      93% 98.6%,
+      71% 96.9%,
+      47% 99.2%,
+      25% 97.3%,
+      7.5% 99%,
+      1.2% 93%,
+      2.8% 71%,
+      0.8% 46%,
+      2.5% 22%
+    );
+  }
+  .clip-ice-b {
+    clip-path: polygon(
+      1% 5.5%,
+      8.5% 0.8%,
+      31% 3.6%,
+      55% 1%,
+      78% 3%,
+      94% 1.2%,
+      99.2% 8%,
+      97.2% 32%,
+      99% 58%,
+      97.5% 80%,
+      98.8% 94%,
+      91% 99%,
+      68% 97.2%,
+      44% 99%,
+      21% 97%,
+      6% 98.8%,
+      1% 91%,
+      2.5% 66%,
+      1% 40%,
+      2.8% 18%
+    );
+  }
+  .clip-ice-c {
+    clip-path: polygon(
+      2% 9%,
+      9% 2%,
+      24% 4%,
+      49% 1.4%,
+      76% 4%,
+      92% 1.8%,
+      98.6% 8%,
+      99.2% 34%,
+      97.4% 55%,
+      99% 79%,
+      97.8% 93%,
+      90% 98.9%,
+      73% 96.8%,
+      49% 99%,
+      27% 97.5%,
+      8% 99.2%,
+      1.4% 92%,
+      1% 68%,
+      2.9% 43%,
+      1.2% 19%
+    );
+  }
+  .clip-ice-d {
+    clip-path: polygon(
+      1.6% 6%,
+      6.5% 1.6%,
+      29% 2.8%,
+      53% 0.8%,
+      71% 3.8%,
+      95% 1%,
+      98.8% 9%,
+      97% 26%,
+      99.4% 50%,
+      97.2% 74%,
+      99.1% 91%,
+      94% 99%,
+      69% 97.4%,
+      45% 99.3%,
+      23% 97%,
+      6.5% 99.4%,
+      1.6% 94%,
+      1% 72%,
+      2.6% 48%,
+      1% 24%
+    );
+  }
+  /* Ribbon banner (footer "Proudly born" badge) */
+  .clip-ribbon {
+    clip-path: polygon(
+      0.5% 12%,
+      97.2% 0%,
+      100% 46%,
+      97.6% 100%,
+      1% 90%,
+      3.4% 50%
+    );
+  }
+
+  /* Dual-stroke frame layers: navy edge > pale keyline > ice-gradient fill.
+     Every layer uses the same clip-path class so the strokes track the
+     hand-drawn silhouette. */
+  .ice-frame-border {
+    background: #0c3552;
+    padding: 3px;
+  }
+  .ice-frame-keyline {
+    background: #f4faf9;
+    padding: 2px;
+    height: 100%;
+  }
+  .ice-frame-fill {
+    position: relative;
+    height: 100%;
+    background: linear-gradient(176deg, #f4faf9 0%, #e4f1f0 38%, #c9e4e4 100%);
+  }
+  .ice-frame-fill--cream {
+    background: linear-gradient(178deg, #fdfcf8 0%, #f7f2ea 100%);
+  }
+  .ice-frame-fill--navy {
+    background: linear-gradient(176deg, #0c3552 0%, #061f33 100%);
+  }
+
+  /* Faint internal cracks + sparkles overlay for ice fills */
+  .ice-cracks::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' fill='none'%3E%3Cg stroke='%230C3552' stroke-opacity='0.09' stroke-width='1'%3E%3Cpath d='M226 8 210 78l14 62-10 74 12 60-8 34'/%3E%3Cpath d='M60 300l22-52-6-40'/%3E%3C/g%3E%3Cg stroke='%230C3552' stroke-opacity='0.16' stroke-width='1.4'%3E%3Cpath d='M248 62h10M253 57v10M96 214h9M100 210v9M282 260h8M286 256v8'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 320px 320px;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Chips, badges, buttons                                              */
+  /* ------------------------------------------------------------------ */
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 2px solid #0c3552;
+    border-radius: 999px;
+    background: #fdfcf8;
+    color: #0c3552;
+    padding: 0.32rem 0.85rem;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 3px 0 #a3ccd1;
+  }
+  .chip-solid {
+    background: #0c3552;
+    color: #fdfcf8;
+    box-shadow: 0 3px 0 #a3ccd1;
+  }
+
   .badge-vintage {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid oklch(0.26 0.06 245);
-    background: oklch(0.985 0.008 85);
-    color: oklch(0.26 0.06 245);
-    box-shadow: 6px 6px 0 oklch(0.26 0.06 245);
+    border: 3px solid #0c3552;
+    background: #fdfcf8;
+    color: #0c3552;
+    box-shadow: 5px 5px 0 #a3ccd1;
     padding: 0.5rem 1.25rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 700;
   }
   .badge-vintage-accent {
-    border-color: oklch(0.26 0.06 245);
-    background: oklch(0.78 0.16 85);
-    color: oklch(0.24 0.06 245);
-    box-shadow: 6px 6px 0 oklch(0.26 0.06 245);
+    border-color: #0c3552;
+    background: #a3ccd1;
+    color: #0c3552;
+    box-shadow: 5px 5px 0 #061f33;
   }
 
-  /* Neo-vintage multi-layered clip-path containers */
-  .clip-badge {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - 0.9rem),
-      calc(100% - 0.9rem) 100%,
-      0 100%
-    );
+  /* Neo-brutalist buttons: hard slab shadow that compresses on press */
+  .btn-brutal {
+    border: 3px solid #0c3552;
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 0 #061f33;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .clip-ticket {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - 1.25rem),
-      calc(100% - 1.25rem) 100%,
-      0 100%
-    );
+  .btn-brutal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #061f33;
   }
-  .clip-flag {
-    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+  .btn-brutal:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #061f33;
   }
-  .clip-stamp {
-    clip-path: polygon(
-      0 0.6rem,
-      0.6rem 0,
-      calc(100% - 0.6rem) 0,
-      100% 0.6rem,
-      100% calc(100% - 0.6rem),
-      calc(100% - 0.6rem) 100%,
-      0.6rem 100%,
-      0 calc(100% - 0.6rem)
-    );
+  .btn-brutal-ice {
+    box-shadow: 0 5px 0 #a3ccd1;
   }
-  .clip-hero {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - 2.5rem),
-      calc(100% - 2.5rem) 100%,
-      0 100%
+  .btn-brutal-ice:hover {
+    box-shadow: 0 7px 0 #a3ccd1;
+  }
+  .btn-brutal-ice:active {
+    box-shadow: 0 2px 0 #a3ccd1;
+  }
+
+  /* Rounded-square social buttons (footer) */
+  .social-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 2.5px solid #0c3552;
+    border-radius: 0.9rem;
+    background: #fdfcf8;
+    color: #0c3552;
+    box-shadow: 0 4px 0 #a3ccd1;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .social-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #a3ccd1;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Gradients                                                           */
+  /* ------------------------------------------------------------------ */
+
+  .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #0c3552 0%, #1b4f70 100%);
+  }
+  .bg-gradient-seafoam {
+    background-image: linear-gradient(135deg, #c9e4e4 0%, #a3ccd1 100%);
+  }
+  .bg-gradient-ice-card {
+    background-image: linear-gradient(
+      176deg,
+      #f4faf9 0%,
+      #e4f1f0 38%,
+      #c9e4e4 100%
     );
   }
 
-  /* Layered offset panel (hard shadow offset) */
-  .panel-offset {
-    position: relative;
-    border: 3px solid oklch(0.26 0.06 245);
-    background: oklch(0.985 0.008 85);
-  }
-  .panel-offset::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    transform: translate(0.75rem, 0.75rem);
-    background: oklch(0.8 0.05 200);
-    border: 3px solid oklch(0.26 0.06 245);
-  }
-
-  /* Heron-beak golden underline for script accents */
   .script-accent {
     font-family: var(--font-script);
-    color: oklch(0.26 0.06 245);
+    color: #0c3552;
   }
 }

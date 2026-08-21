@@ -66,9 +66,30 @@ export default {
           border: "oklch(var(--sidebar-border))",
           ring: "oklch(var(--sidebar-ring))",
         },
+        /* Avalon Ice brand hexes for direct use */
+        navy: {
+          DEFAULT: "#0C3552",
+          deep: "#061F33",
+        },
+        cream: {
+          DEFAULT: "#F7F2EA",
+          bright: "#FDFCF8",
+        },
+        ice: {
+          DEFAULT: "#A3CCD1",
+          light: "#C9E4E4",
+          deep: "#8CBEC5",
+          mist: "#E4F1F0",
+          frost: "#F4FAF9",
+        },
+        lagoon: {
+          DEFAULT: "#1B4F70",
+          soft: "#3A6E7B",
+        },
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],
+        script: ["var(--font-script)", "cursive"],
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
@@ -106,6 +127,15 @@ export default {
           "0%, 100%": { transform: "rotate(-2deg)" },
           "50%": { transform: "rotate(2deg)" },
         },
+        "pulse-ring": {
+          "0%": { transform: "scale(0.6)", opacity: "0.9" },
+          "80%": { transform: "scale(1.8)", opacity: "0" },
+          "100%": { transform: "scale(1.8)", opacity: "0" },
+        },
+        "bob-cube": {
+          "0%, 100%": { transform: "translateY(0) rotate(-2deg)" },
+          "50%": { transform: "translateY(-8px) rotate(2deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -113,6 +143,8 @@ export default {
         "float-heron": "float-heron 6s ease-in-out infinite",
         drift: "drift 4s ease-in-out infinite",
         "wobble-badge": "wobble-badge 5s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 2.2s ease-out infinite",
+        "bob-cube": "bob-cube 5s ease-in-out infinite",
       },
     },
   },

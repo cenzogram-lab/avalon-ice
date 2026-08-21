@@ -35,10 +35,37 @@ mixin (inquiries : List.List<Types.Inquiry>, auth : Types.AuthState) {
     toHex(digest.toArray())
   };
 
-  // Whether the given caller is the authenticated admin.
+  // Whether any unexpired admin session exists.
+  private func hasActiveSession() : Bool {
+    let now = Time.now();
+    for ((_, expiry) in auth.sessions.entries()) {
+      if (now < expiry) {
+        return true;
+      };
+    };
+    false
+  };
+
+  // Drop expired session tokens so the session map cannot grow unboundedly.
+  private func purgeExpiredSessions() {
+    let now = Time.now();
+    let expired = List.empty<Text>();
+    for ((token, expiry) in auth.sessions.entries()) {
+      if (expiry <= now) {
+        expired.add(token);
+      };
+    };
+    for (token in expired.values()) {
+      auth.sessions.remove(token);
+    };
+  };
+
+  // Whether the given caller is the authenticated admin. Requires both the
+  // recorded admin principal and a live (unexpired) session, so admin access
+  // lapses together with the 24h token expiry instead of persisting forever.
   private func isAdmin(caller : Principal) : Bool {
     switch (auth.adminPrincipal) {
-      case (?admin) { admin.equal(caller) };
+      case (?admin) { admin.equal(caller) and hasActiveSession() };
       case null { false };
     }
   };
@@ -97,6 +124,7 @@ mixin (inquiries : List.List<Types.Inquiry>, auth : Types.AuthState) {
         if (stored != hashPassword(password)) {
           return null;
         };
+        purgeExpiredSessions();
         let token = generateToken(caller);
         auth.sessions.add(token, Time.now() + 24 * 3600 * 1000000000);
         auth.adminPrincipal := ?caller;
