@@ -1,17 +1,6 @@
+import { SOCIALS } from "@/lib/socials";
+import { Link } from "@tanstack/react-router";
 import { Mail, MapPin } from "lucide-react";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaTiktok,
-} from "react-icons/fa6";
-
-const SOCIALS = [
-  { label: "Instagram", icon: FaInstagram, href: "https://instagram.com" },
-  { label: "Facebook", icon: FaFacebookF, href: "https://facebook.com" },
-  { label: "TikTok", icon: FaTiktok, href: "https://tiktok.com" },
-  { label: "LinkedIn", icon: FaLinkedinIn, href: "https://linkedin.com" },
-];
 
 export default function Footer() {
   return (
@@ -24,9 +13,9 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-3">
             <img
-              src="/assets/images/avalon-ice-logo.webp"
-              alt="Avalon Ice — Cape May County, N.J."
-              className="h-16 w-16 rounded-md object-cover"
+              src="/assets/images/avalon-heron.webp"
+              alt="Avalon Ice heron mascot"
+              className="size-12 rounded-full border-2 border-navy bg-cream-bright"
             />
             <span className="flex items-baseline gap-2 leading-none">
               <span className="font-script text-3xl text-navy">Avalon</span>
@@ -34,7 +23,7 @@ export default function Footer() {
             </span>
           </div>
 
-          <div className="clip-ribbon mt-6 inline-block bg-navy p-[3px] ice-shadow">
+          <div className="clip-ribbon ice-shadow mt-6 inline-block bg-navy p-[3px]">
             <div className="clip-ribbon bg-ice-light px-6 py-2.5">
               <span
                 data-ocid="footer.ribbon"
@@ -100,7 +89,8 @@ export default function Footer() {
           <span>© 2026 Avalon Ice · Cape May County, N.J.</span>
           <span>Coming · Labor Day Weekend 2026</span>
         </div>
-        <div className="pb-4 text-center">
+        {/* Extra bottom padding on mobile keeps the fixed contact CTA clear */}
+        <div className="flex items-center justify-center gap-3 pb-24 text-center md:pb-4">
           <a
             href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
               typeof window !== "undefined" ? window.location.hostname : "",
@@ -111,6 +101,14 @@ export default function Footer() {
           >
             Built with love using caffeine.ai
           </a>
+          <span className="text-[0.65rem] text-lagoon-soft">·</span>
+          <Link
+            to="/admin"
+            data-ocid="footer.admin_link"
+            className="font-body text-[0.65rem] text-lagoon-soft hover:text-navy"
+          >
+            Admin
+          </Link>
         </div>
       </div>
     </footer>

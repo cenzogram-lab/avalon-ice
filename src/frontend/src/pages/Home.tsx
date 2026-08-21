@@ -389,10 +389,11 @@ function Network() {
           From Avalon to the whole shore.
         </h2>
         <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon">
-          Every route starts at our Woodbine / Avalon HQ and runs up the Garden
-          State Parkway — supplying marinas, bars, festivals, and venues from
-          Cape May County to North Jersey. Orbit the state, pick a town from the
-          list, or tap any pin to zero in on it.
+          Every route starts at our Woodbine HQ and runs up the Garden State
+          Parkway — supplying marinas, bars, festivals, and venues from Cape May
+          County to North Jersey. Orbit the state, watch the Avalon Ice trucks
+          make their runs, and pick a town from the list (or tap its dot) to
+          drop a pin on it.
         </p>
 
         <div className="mt-10">

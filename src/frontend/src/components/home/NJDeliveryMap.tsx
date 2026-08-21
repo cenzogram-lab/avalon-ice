@@ -48,7 +48,7 @@ const TOWNS: Town[] = [
   { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
   { n: "Wildwood", ll: [38.9918, -74.8146], hub: true },
   { n: "Stone Harbor", ll: [39.0479, -74.7649] },
-  { n: "Avalon", ll: [39.1007, -74.7177], hub: true, origin: true },
+  { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
   { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
   { n: "Strathmere", ll: [39.2007, -74.656] },
   { n: "Ocean City", ll: [39.2776, -74.5746] },
@@ -79,7 +79,11 @@ const TOWNS: Town[] = [
   { n: "Jersey City", ll: [40.7178, -74.0431], hub: true, inland: true },
 ];
 
+/** Woodbine HQ — every route starts here. */
+const HQ_LL: [number, number] = [39.2418, -74.8149];
+
 const ROUTE_LL: [number, number][] = [
+  HQ_LL,
   [39.1007, -74.7177],
   [39.1537, -74.6927],
   [39.24, -74.63],
@@ -102,6 +106,15 @@ const SPUR_LL: [number, number][] = [
   [40.05, -74.38],
   [40.12, -74.58],
   [40.2206, -74.7597],
+];
+
+/** Southern run: HQ → Court House → Rio Grande → Wildwood → Cape May. */
+const SOUTH_LL: [number, number][] = [
+  HQ_LL,
+  [39.0827, -74.8237],
+  [39.0117, -74.8807],
+  [38.9918, -74.8146],
+  [38.9351, -74.906],
 ];
 
 const WATER: { n: string; ll: [number, number] }[] = [
@@ -677,53 +690,52 @@ function Truck({
   );
 }
 
+/**
+ * Towns render as small navy dots on the ice (like the county map art).
+ * The red map-pin tag only appears on the town the user selects — the
+ * Woodbine HQ beacon stays the one prominent marker otherwise.
+ */
 function TownPin({
   town,
   space,
   selected,
-  anySelected,
   onSelect,
 }: {
   town: Town;
   space: MapSpace;
   selected: boolean;
-  anySelected: boolean;
   onSelect: (t: Town) => void;
 }) {
-  const headRef = useRef<THREE.Mesh>(null);
+  const dotRef = useRef<THREE.Mesh>(null);
+  const pinRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const isOrigin = !!town.origin;
-  const headR = isOrigin ? 2.7 : town.hub ? 2.2 : 1.7;
+  const headR = town.hub ? 2.3 : 1.9;
   const stemH = headR * 2.7;
+  const dotR = town.hub ? 1.15 : 0.95;
   const pos = toWorld(space, town.ll[1], town.ll[0], TOP_Y);
 
   useFrame(() => {
-    const head = headRef.current;
-    if (!head) return;
-    const target = hovered || selected ? 1.4 : 1;
-    head.scale.setScalar(THREE.MathUtils.lerp(head.scale.x, target, 0.2));
+    const dot = dotRef.current;
+    if (dot) {
+      const target = hovered && !selected ? 1.7 : 1;
+      dot.scale.setScalar(THREE.MathUtils.lerp(dot.scale.x, target, 0.2));
+    }
+    // The red tag pops in with a quick grow when its town is chosen.
+    const pin = pinRef.current;
+    if (pin) {
+      const target = selected ? 1 : 0.001;
+      pin.scale.setScalar(THREE.MathUtils.lerp(pin.scale.x, target, 0.18));
+    }
   });
 
-  // With a town chosen, only its pin stays on the map (reference behavior).
-  const visible = !anySelected || selected;
-
   return (
-    <group position={pos} visible={visible}>
-      <mesh position={[0, stemH / 2, 0]} rotation={[Math.PI, 0, 0]} castShadow>
-        <coneGeometry args={[headR * 0.7, stemH, 22]} />
-        <meshStandardMaterial
-          color={PIN_STEM}
-          roughness={0.4}
-          metalness={0.06}
-        />
-      </mesh>
+    <group position={pos}>
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: R3F mesh, not a DOM node — keyboard selection is available via the town dropdown */}
       <mesh
-        ref={headRef}
-        position={[0, stemH + headR * 0.5, 0]}
+        ref={dotRef}
+        position={[0, 0.5, 0]}
         castShadow
         onPointerOver={(e) => {
-          if (!visible) return;
           e.stopPropagation();
           setHovered(true);
           document.body.style.cursor = "pointer";
@@ -733,43 +745,45 @@ function TownPin({
           document.body.style.cursor = "auto";
         }}
         onClick={(e) => {
-          if (!visible) return;
           e.stopPropagation();
           onSelect(town);
         }}
       >
-        <sphereGeometry args={[headR, 26, 20]} />
-        <meshStandardMaterial
-          color={PIN_RED}
-          roughness={0.32}
-          metalness={0.06}
-        />
+        <sphereGeometry args={[dotR, 18, 14]} />
+        <meshStandardMaterial color={NAVY} roughness={0.35} metalness={0.05} />
       </mesh>
-      {/* Origin pin: cream centre dot so Avalon reads as the source */}
-      {isOrigin && (
-        <mesh position={[0, stemH + headR * 0.5, headR * 0.78]}>
-          <sphereGeometry args={[headR * 0.4, 18, 14]} />
+
+      {/* Red map-pin tag, shown only for the selected town */}
+      <group ref={pinRef} scale={0.001} visible={selected}>
+        <mesh
+          position={[0, stemH / 2, 0]}
+          rotation={[Math.PI, 0, 0]}
+          castShadow
+        >
+          <coneGeometry args={[headR * 0.7, stemH, 22]} />
           <meshStandardMaterial
-            color={SHELL}
-            roughness={0.3}
-            metalness={0.04}
+            color={PIN_STEM}
+            roughness={0.4}
+            metalness={0.06}
           />
         </mesh>
-      )}
+        <mesh position={[0, stemH + headR * 0.5, 0]} castShadow>
+          <sphereGeometry args={[headR, 26, 20]} />
+          <meshStandardMaterial
+            color={PIN_RED}
+            roughness={0.32}
+            metalness={0.06}
+          />
+        </mesh>
+      </group>
       {selected && (
         <Html
           center
           position={[0, stemH + headR * 2 + 2.5, 0]}
           zIndexRange={[30, 0]}
         >
-          <div
-            className={`pointer-events-none whitespace-nowrap rounded-full border-2 px-3 py-1 font-body text-xs font-bold uppercase tracking-wider shadow-[0_3px_0_rgba(12,53,82,0.35)] ${
-              isOrigin
-                ? "border-navy bg-navy text-cream-bright"
-                : "border-navy bg-cream-bright text-navy"
-            }`}
-          >
-            {isOrigin ? "Avalon · Origin" : town.n}
+          <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-cream-bright px-3 py-1 font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_3px_0_rgba(12,53,82,0.35)]">
+            {town.n}
           </div>
         </Html>
       )}
@@ -777,7 +791,11 @@ function TownPin({
   );
 }
 
-/** Great Blue Heron beacon over the Woodbine/Avalon origin hub. */
+/**
+ * The one prominent marker on the map: a Great Blue Heron teardrop pin
+ * hovering over the Woodbine HQ warehouse, with pulsing dispatch rings —
+ * mirroring the brand county-map artwork.
+ */
 function HeronBeacon({ space }: { space: MapSpace }) {
   const texture = useLoader(
     THREE.TextureLoader,
@@ -785,8 +803,8 @@ function HeronBeacon({ space }: { space: MapSpace }) {
   );
   const ringA = useRef<THREE.Mesh>(null);
   const ringB = useRef<THREE.Mesh>(null);
-  const origin = TOWNS.find((t) => t.origin) ?? TOWNS[0];
-  const pos = toWorld(space, origin.ll[1], origin.ll[0], TOP_Y);
+  const bobRef = useRef<THREE.Group>(null);
+  const pos = toWorld(space, HQ_LL[1], HQ_LL[0], TOP_Y);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -798,10 +816,13 @@ function HeronBeacon({ space }: { space: MapSpace }) {
     };
     pulse(0, ringA.current);
     pulse(1.1, ringB.current);
+    const bob = bobRef.current;
+    if (bob) bob.position.y = Math.sin(t * 1.4) * 0.7;
   });
 
   return (
     <group position={pos}>
+      {/* Pulsing dispatch rings on the ice */}
       {[ringA, ringB].map((ref, i) => (
         <mesh
           key={`pulse-${i.toString()}`}
@@ -813,19 +834,45 @@ function HeronBeacon({ space }: { space: MapSpace }) {
           <meshBasicMaterial color="#1B4F70" transparent opacity={0.5} />
         </mesh>
       ))}
-      <Billboard position={[0, 16.5, 0]}>
-        <mesh>
-          <circleGeometry args={[4.6, 44]} />
-          <meshBasicMaterial color={NAVY} />
+
+      {/* HQ warehouse: cream shell with a navy roof, like the map art */}
+      <group position={[0, 0, 0]}>
+        <mesh position={[0, 1.5, 0]} castShadow>
+          <boxGeometry args={[6.4, 3, 5]} />
+          <meshStandardMaterial color={SHELL} roughness={0.4} />
         </mesh>
-        <mesh position={[0, 0, 0.02]}>
-          <circleGeometry args={[4.1, 44]} />
-          <meshBasicMaterial map={texture} toneMapped={false} />
+        <mesh position={[0, 3.35, 0]} castShadow>
+          <boxGeometry args={[6.9, 0.8, 5.5]} />
+          <meshStandardMaterial color={NAVY} roughness={0.42} metalness={0.1} />
         </mesh>
-      </Billboard>
-      <Html center position={[0, 24, 0]} zIndexRange={[28, 0]}>
-        <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-3 py-1 font-body text-[0.65rem] font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
-          Woodbine / Avalon HQ
+        <mesh position={[0, 1.35, 2.55]}>
+          <boxGeometry args={[2.4, 2.1, 0.15]} />
+          <meshStandardMaterial color={FROST_L} roughness={0.4} />
+        </mesh>
+      </group>
+
+      {/* Teardrop heron pin floating above the warehouse */}
+      <group ref={bobRef}>
+        <Billboard position={[0, 15.5, 0]}>
+          {/* tail */}
+          <mesh position={[0, -5.4, -0.05]} rotation={[Math.PI, 0, 0]}>
+            <coneGeometry args={[2.1, 5.2, 4]} />
+            <meshBasicMaterial color={NAVY} />
+          </mesh>
+          <mesh>
+            <circleGeometry args={[4.8, 44]} />
+            <meshBasicMaterial color={NAVY} />
+          </mesh>
+          <mesh position={[0, 0, 0.02]}>
+            <circleGeometry args={[4.2, 44]} />
+            <meshBasicMaterial map={texture} toneMapped={false} />
+          </mesh>
+        </Billboard>
+      </group>
+
+      <Html center position={[0, 25, 0]} zIndexRange={[28, 0]}>
+        <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-3.5 py-1.5 font-body text-xs font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
+          Woodbine HQ
         </div>
       </Html>
     </group>
@@ -907,10 +954,11 @@ function CameraRig({
 /* ------------------------------------------------------------------ */
 
 const TRUCK_RUNS = [
-  { route: "A", offset: 0.0 },
-  { route: "A", offset: 0.38 },
-  { route: "A", offset: 0.72 },
-  { route: "B", offset: 0.2 },
+  { route: "A", offset: 0.0, speed: 0.03 },
+  { route: "A", offset: 0.38, speed: 0.03 },
+  { route: "A", offset: 0.72, speed: 0.03 },
+  { route: "B", offset: 0.2, speed: 0.02 },
+  { route: "C", offset: 0.5, speed: 0.025 },
 ] as const;
 
 function MapScene({
@@ -932,6 +980,12 @@ function MapScene({
 }) {
   const routeA = useRoute(space, ROUTE_LL, 1.15, 95, 0.055);
   const routeB = useRoute(space, SPUR_LL, 0.75, 45, 0.03);
+  const routeC = useRoute(space, SOUTH_LL, 0.85, 40, 0.04);
+  const curves = {
+    A: routeA.handle.curve,
+    B: routeB.handle.curve,
+    C: routeC.handle.curve,
+  };
 
   return (
     <>
@@ -967,12 +1021,13 @@ function MapScene({
 
       <RouteMesh handle={routeA.handle} geometry={routeA.geometry} />
       <RouteMesh handle={routeB.handle} geometry={routeB.geometry} />
+      <RouteMesh handle={routeC.handle} geometry={routeC.geometry} />
       {TRUCK_RUNS.map((run, i) => (
         <Truck
           key={`truck-${i.toString()}`}
-          curve={run.route === "A" ? routeA.handle.curve : routeB.handle.curve}
+          curve={curves[run.route]}
           offset={run.offset}
-          speed={run.route === "A" ? 0.03 : 0.02}
+          speed={run.speed}
         />
       ))}
 
@@ -982,7 +1037,6 @@ function MapScene({
           town={town}
           space={space}
           selected={selected?.n === town.n}
-          anySelected={selected !== null}
           onSelect={onSelect}
         />
       ))}
@@ -1058,7 +1112,7 @@ export default function NJDeliveryMap() {
     setSelected(town);
     flyTo(
       toWorld(space, town.ll[1], town.ll[0], TOP_Y),
-      town.origin ? 2.4 : town.hub ? 2.3 : 2.8,
+      town.origin ? 1.8 : town.hub ? 1.9 : 2.2,
     );
   };
 
@@ -1173,7 +1227,7 @@ export default function NJDeliveryMap() {
       >
         <dl className="font-body text-navy">
           {[
-            { value: "1", label: "origin · Avalon" },
+            { value: "1", label: "origin · Woodbine HQ" },
             { value: "11", label: "delivery hubs" },
             { value: "33", label: "towns served" },
           ].map((row, i) => (
@@ -1192,7 +1246,7 @@ export default function NJDeliveryMap() {
 
       {/* Hint */}
       <div className="pointer-events-none absolute bottom-3 right-3 hidden rounded-full border-2 border-navy bg-gradient-ice-card px-4 py-2 font-body text-[0.7rem] font-semibold text-lagoon shadow-[0_4px_0_#A3CCD1] sm:block">
-        Pick a town above, or click a red pin · drag to orbit
+        Pick a town above, or tap a town dot · drag to orbit
       </div>
 
       {/* Detail card */}
