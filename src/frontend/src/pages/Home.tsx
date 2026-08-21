@@ -1,6 +1,7 @@
-import { Badge } from "@/components/ui/badge";
+import BrandVideo from "@/components/home/BrandVideo";
+import FrostOverlay from "@/components/home/FrostOverlay";
+import IceFrame from "@/components/home/IceFrame";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,83 +22,89 @@ import type {
   WholesaleFormValues,
 } from "@/lib/types";
 import {
-  CalendarDays,
   Check,
+  Loader2,
   Mail,
   MapPin,
   Phone,
   Snowflake,
   Truck,
-  Warehouse,
-  Zap,
 } from "lucide-react";
-import { useState } from "react";
+import type { MotionValue } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "motion/react";
+import { Suspense, lazy, useRef, useState } from "react";
+
+const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
+
+const HERO_VIDEO =
+  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
+const LOOP_VIDEO =
+  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                               */
 /* ------------------------------------------------------------------ */
-
-const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
-  id: `particle-${i}`,
-  size: 6 + (i % 4) * 4,
-  left: (i * 53) % 100,
-  top: (i * 37) % 100,
-  duration: 8 + (i % 6),
-  delay: i * 0.4,
-}));
 
 function Hero() {
   return (
     <section
       id="top"
       data-ocid="hero"
-      className="relative overflow-hidden bg-gradient-primary text-primary-foreground"
+      className="relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light"
     >
-      {/* Ambient ice particle drift */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        {PARTICLES.map((p) => (
-          <span
-            key={p.id}
-            className="absolute block rounded-full bg-primary-foreground/30"
-            style={{
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              left: `${p.left}%`,
-              top: `${p.top}%`,
-              animation: `drift ${p.duration}s ease-in-out infinite`,
-              animationDelay: `${p.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Looping brand animation, painted only once it can play */}
+      <BrandVideo
+        src={HERO_VIDEO}
+        label="Avalon Ice brand animation"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
 
-      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-        <Badge
-          variant="secondary"
-          className="badge-vintage-accent mb-6"
-          data-ocid="hero.badge"
-        >
-          Cape May County &amp; Beyond
-        </Badge>
+      {/* Legibility scrim + fade into the next cream section */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream"
+        aria-hidden="true"
+      />
 
-        <h1 className="max-w-3xl font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
-          The Shore's <span className="font-script text-accent">Coldest</span>{" "}
+      {/* Ambient frost / ice-particle drift */}
+      <FrostOverlay />
+
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 md:py-32">
+        <span className="chip chip-solid mb-6" data-ocid="hero.badge">
+          <MapPin className="size-3.5" />
+          Avalon, N.J. · Cape May County
+        </span>
+
+        <h1 className="script-heading max-w-3xl text-5xl sm:text-6xl md:text-7xl">
+          The Shore's{" "}
+          <span className="text-block-ice text-4xl sm:text-5xl md:text-6xl">
+            Coldest
+          </span>{" "}
           Delivery.
         </h1>
 
-        <p className="mt-4 max-w-xl text-lg text-primary-foreground/85">
-          Jersey Shore Ice Distribution · Same-Day Garden State Parkway Corridor
-          Coverage
+        <p className="mt-6 max-w-xl font-body text-lg font-medium text-lagoon">
+          Jersey Shore ice distribution — commercial wholesale, events &amp;
+          festivals, and same-day shore runs from Cape May County up the Garden
+          State Parkway.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="mt-9 flex flex-wrap items-center gap-4">
           <Button
             asChild
             size="lg"
-            variant="secondary"
             data-ocid="hero.request_button"
+            className="btn-brutal btn-brutal-ice h-13 bg-navy px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
           >
-            <a href="#order">
+            <a href="#order-form">
               <Truck className="size-5" />
               Request Delivery / Quote
             </a>
@@ -105,9 +112,8 @@ function Hero() {
           <Button
             asChild
             size="lg"
-            variant="outline"
-            className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
             data-ocid="hero.call_button"
+            className="btn-brutal h-13 bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
           >
             <a href="tel:8563089986">
               <Phone className="size-5" />
@@ -116,16 +122,16 @@ function Hero() {
           </Button>
         </div>
 
-        <div className="mt-8 inline-flex flex-wrap items-center gap-2 rounded-lg border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-3 text-sm">
-          <Mail className="size-4" />
+        <div className="mt-9 inline-flex flex-wrap items-center gap-2.5 rounded-xl border-[3px] border-navy bg-cream-bright/95 px-5 py-3 font-body text-sm font-semibold text-navy shadow-[0_5px_0_#A3CCD1]">
+          <Mail className="size-4 text-lagoon" />
           <a
             href="mailto:Sales@AvalonIce.com?subject=Ice%20Delivery%20Request"
             data-ocid="hero.email"
-            className="font-medium hover:underline"
+            className="font-script text-lg text-lagoon hover:underline"
           >
             Sales@AvalonIce.com
           </a>
-          <span className="text-primary-foreground/60">|</span>
+          <span className="text-ice-deep">|</span>
           <span>Cell: 856-308-9986</span>
         </div>
       </div>
@@ -134,68 +140,228 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Services                                                           */
+/* Secondary showcase video — delivery & route                         */
 /* ------------------------------------------------------------------ */
 
-const SERVICES = [
-  {
-    icon: Warehouse,
-    title: "Commercial",
-    description:
-      "Restaurants, bars, markets and hospitality — reliable bagged and block ice delivered on your schedule.",
-  },
-  {
-    icon: CalendarDays,
-    title: "Event & Festival",
-    description:
-      "Concerts, festivals, weddings and shore gatherings with bulk ice, carving blocks and on-site planning.",
-  },
-  {
-    icon: Zap,
-    title: "Emergency",
-    description:
-      "Storm prep, power outages and urgent restock — fast same-day response along the GSP corridor.",
-  },
-  {
-    icon: Snowflake,
-    title: "Premium Bagged & Block",
-    description:
-      "Cubed 10lb/20lb, crushed, and 300lb carving/cocktail blocks for every need.",
-  },
-];
-
-function Services() {
+function ShowcaseVideo() {
   return (
     <section
-      id="services"
-      data-ocid="services"
-      className="bg-background py-16 md:py-24"
+      id="route"
+      data-ocid="showcase"
+      className="texture-paper bg-cream py-16 md:py-20"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="text-center">
-          <span className="script-accent text-2xl">What we deliver</span>
-          <h2 className="mt-2 font-display text-3xl text-foreground sm:text-4xl">
-            Ice for Every Shore Occasion
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mb-10 text-center">
+          <span className="eyebrow inline-flex items-center gap-2">
+            <Truck className="size-4" />
+            On the Road
+          </span>
+          <h2 className="script-heading mt-3 text-4xl sm:text-5xl">
+            Cold from our door to yours.
           </h2>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map((s, i) => (
-            <Card
-              key={s.title}
-              data-ocid={`services.card.${i + 1}`}
-              className="panel-offset clip-badge border-0"
+        <IceFrame clip="c" shadow="ice" innerClassName="p-2 sm:p-3">
+          <div className="overflow-hidden rounded-xl border-2 border-navy/70">
+            <div className="aspect-video w-full bg-gradient-ice-card">
+              <BrandVideo
+                src={LOOP_VIDEO}
+                label="Avalon Ice delivery route loop"
+                className="h-full w-full rounded-xl object-cover"
+              />
+            </div>
+          </div>
+        </IceFrame>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Products — ice-block cards with scroll-driven cube slide            */
+/* ------------------------------------------------------------------ */
+
+interface Product {
+  title: string;
+  description: string;
+  chips: { label: string; solid?: boolean }[];
+  clip: "a" | "b" | "c" | "d";
+}
+
+const PRODUCTS: Product[] = [
+  {
+    title: "Commercial Ice Delivery",
+    description:
+      "Standing orders and on-demand drops kept cold on arrival, every route, every run.",
+    chips: [{ label: "Restaurants" }, { label: "Bars" }, { label: "Marinas" }],
+    clip: "a",
+  },
+  {
+    title: "Event & Festival Bulk Supply",
+    description:
+      "Pallet-scale bagged and block ice, scheduled to your run-of-show and restocked on cue.",
+    chips: [{ label: "Festivals" }, { label: "Weddings" }, { label: "Venues" }],
+    clip: "b",
+  },
+  {
+    title: "Emergency & Same-Day Shore Run",
+    description:
+      "Freezer down? Crowd surge? Same-day shore runs across Cape May County and up the coast.",
+    chips: [{ label: "Same-Day", solid: true }, { label: "7 Days a Week" }],
+    clip: "c",
+  },
+  {
+    title: "Premium Bagged & Block Ice",
+    description:
+      "Crystal-clear cubes, crushed, and block ice — cleanly bagged and consistently sized.",
+    chips: [{ label: "Cubed" }, { label: "Crushed" }, { label: "Block" }],
+    clip: "d",
+  },
+];
+
+function IceCubeSVG({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      className={className}
+      aria-hidden="true"
+      role="presentation"
+    >
+      <g stroke="#0C3552" strokeWidth="3.5" strokeLinejoin="round">
+        <polygon points="50,5 93,27 50,49 7,27" fill="#F4FAF9" />
+        <polygon points="7,27 50,49 50,95 7,73" fill="#C9E4E4" />
+        <polygon points="93,27 50,49 50,95 93,73" fill="#A3CCD1" />
+      </g>
+      <path
+        d="M24 30l14-7M62 62v14"
+        stroke="#0C3552"
+        strokeOpacity="0.28"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M70 16h8M74 12v8"
+        stroke="#FDFCF8"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+const CUBE_SIZES = [
+  "w-20 md:w-24",
+  "w-16 md:w-20",
+  "w-24 md:w-28",
+  "w-16 md:w-20",
+];
+
+function ProductCard({
+  product,
+  index,
+  progress,
+}: {
+  product: Product;
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  const reduceMotion = useReducedMotion();
+
+  // Staggered scroll window per card; cubes travel left → right with
+  // rotation and per-cube parallax speed, settling behind their card.
+  const start = 0.02 + index * 0.09;
+  const end = 0.52 + index * 0.1;
+  const cubeX = useTransform(progress, [start, end], [-(340 + index * 130), 0]);
+  const cubeRotate = useTransform(
+    progress,
+    [start, end],
+    [-200 - index * 40, index % 2 === 0 ? -6 : 5],
+  );
+  const cubeOpacity = useTransform(progress, [start, start + 0.12], [0, 1]);
+  const cardY = useTransform(progress, [start, end], [46, 0]);
+  const cardOpacity = useTransform(progress, [start, start + 0.2], [0, 1]);
+
+  return (
+    <motion.div
+      data-ocid={`products.card.${index + 1}`}
+      style={reduceMotion ? undefined : { y: cardY, opacity: cardOpacity }}
+      className="relative"
+    >
+      {/* Illustrated ice cube sliding in behind the card */}
+      <motion.div
+        style={
+          reduceMotion
+            ? undefined
+            : { x: cubeX, rotate: cubeRotate, opacity: cubeOpacity }
+        }
+        className={`absolute -top-9 z-0 ${index % 2 === 0 ? "-right-3" : "-left-3"} ${CUBE_SIZES[index]}`}
+        aria-hidden="true"
+      >
+        <div className="animate-bob-cube">
+          <IceCubeSVG className="h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" />
+        </div>
+      </motion.div>
+
+      <IceFrame
+        clip={product.clip}
+        cracks
+        className="relative z-10 h-full"
+        innerClassName="flex h-full flex-col gap-3 p-6 pb-7"
+      >
+        <h3 className="text-block-navy text-lg leading-snug sm:text-xl">
+          {product.title}
+        </h3>
+        <p className="font-body text-sm leading-relaxed text-lagoon">
+          {product.description}
+        </p>
+        <div className="mt-auto flex flex-wrap gap-2 pt-2">
+          {product.chips.map((chip) => (
+            <span
+              key={chip.label}
+              className={chip.solid ? "chip chip-solid" : "chip"}
             >
-              <CardContent className="flex flex-col items-start gap-3 px-6 py-6">
-                <span className="flex size-12 items-center justify-center rounded-md bg-secondary text-primary">
-                  <s.icon className="size-6" />
-                </span>
-                <h3 className="font-display text-lg text-foreground">
-                  {s.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">{s.description}</p>
-              </CardContent>
-            </Card>
+              {chip.label}
+            </span>
+          ))}
+        </div>
+      </IceFrame>
+    </motion.div>
+  );
+}
+
+function Products() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 88%", "end 78%"],
+  });
+
+  return (
+    <section
+      ref={sectionRef}
+      id="services"
+      data-ocid="products"
+      className="texture-paper overflow-x-clip bg-cream py-16 md:py-24"
+    >
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <span className="eyebrow inline-flex items-center gap-2">
+          <Snowflake className="size-4" />
+          What We'll Be Running
+        </span>
+        <h2 className="script-heading mt-3 max-w-2xl text-4xl sm:text-5xl md:text-6xl">
+          Cold for every cooler on the coast.
+        </h2>
+
+        <div className="mt-14 grid gap-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+          {PRODUCTS.map((product, i) => (
+            <ProductCard
+              key={product.title}
+              product={product}
+              index={i}
+              progress={scrollYProgress}
+            />
           ))}
         </div>
       </div>
@@ -204,184 +370,51 @@ function Services() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Network map                                                        */
+/* Network — interactive 3D NJ delivery map                            */
 /* ------------------------------------------------------------------ */
 
-const DELIVERY_POINTS = [
-  { name: "Cape May", x: 62, y: 88 },
-  { name: "Wildwood", x: 70, y: 78 },
-  { name: "Stone Harbor", x: 76, y: 68 },
-  { name: "Avalon", x: 80, y: 60 },
-  { name: "Sea Isle City", x: 84, y: 52 },
-  { name: "Ocean City", x: 88, y: 44 },
-  { name: "Strathmere", x: 82, y: 56 },
-  { name: "Marmora", x: 74, y: 58 },
-  { name: "Dennisville", x: 66, y: 62 },
-  { name: "North Jersey", x: 52, y: 12 },
-];
-
-const STATS = [
-  { value: "1", label: "Origin HQ Hub (Woodbine/Avalon)" },
-  { value: "11", label: "Delivery Hubs" },
-  { value: "33+", label: "Towns Served" },
-  { value: "Same-Day", label: "GSP Corridor Coverage" },
-];
-
-function NetworkMap() {
-  const [active, setActive] = useState<string | null>("Avalon");
-
+function Network() {
   return (
     <section
       id="network"
       data-ocid="network"
-      className="bg-gradient-seafoam py-16 md:py-24"
+      className="texture-paper bg-cream pb-16 pt-4 md:pb-24 md:pt-8"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="text-center">
-          <span className="script-accent text-2xl">Our delivery network</span>
-          <h2 className="mt-2 font-display text-3xl text-foreground sm:text-4xl">
-            The Shore, Covered
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-            One origin hub in Woodbine/Avalon feeding 11 hubs and 33+ towns
-            along the Garden State Parkway corridor.
-          </p>
-        </div>
+        <span className="eyebrow inline-flex items-center gap-2">
+          <MapPin className="size-4" />
+          The Network
+        </span>
+        <h2 className="script-heading mt-3 text-4xl sm:text-5xl md:text-6xl">
+          From Avalon to the whole shore.
+        </h2>
+        <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon">
+          Every route starts at our Woodbine / Avalon HQ and runs up the Garden
+          State Parkway — supplying marinas, bars, festivals, and venues from
+          Cape May County to North Jersey. Orbit the state, pick a town from the
+          list, or tap any pin to zero in on it.
+        </p>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
-          {/* Stylized map */}
-          <div className="panel-offset clip-ticket border-0 p-4">
-            <div className="relative">
-              <svg
-                viewBox="0 0 100 100"
-                className="h-auto w-full"
-                role="img"
-                aria-label="Stylized map of the New Jersey shore delivery corridor"
-              >
-                {/* Landmass */}
-                <path
-                  d="M30 0 L95 0 L95 40 L90 55 L86 70 L80 82 L70 92 L60 100 L40 100 L35 88 L30 70 L28 50 L30 30 Z"
-                  fill="oklch(0.985 0.008 85)"
-                  stroke="oklch(0.26 0.06 245)"
-                  strokeWidth="1.5"
-                />
-                {/* GSP corridor */}
-                <path
-                  d="M52 12 L66 62 L74 58 L80 60 L84 52 L88 44 L86 70 L80 82 L70 92"
-                  fill="none"
-                  stroke="oklch(0.8 0.05 200)"
-                  strokeWidth="2.5"
-                  strokeDasharray="3 2"
-                />
-                {/* HQ hub marker (visual only) */}
-                <g>
-                  <circle cx="74" cy="58" r="6" fill="oklch(0.78 0.16 85)" />
-                  <circle
-                    cx="74"
-                    cy="58"
-                    r="6"
-                    fill="none"
-                    stroke="oklch(0.78 0.16 85)"
-                    strokeWidth="1.5"
-                    className="animate-ping"
-                  />
-                  <text
-                    x="74"
-                    y="50"
-                    textAnchor="middle"
-                    fontSize="4"
-                    fill="oklch(0.26 0.06 245)"
-                    fontWeight="700"
-                  >
-                    HQ
-                  </text>
-                </g>
-                {/* Delivery point markers (visual only) */}
-                {DELIVERY_POINTS.map((p) => (
-                  <g key={p.name}>
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r="2.4"
-                      fill={
-                        active === p.name
-                          ? "oklch(0.78 0.16 85)"
-                          : "oklch(0.26 0.06 245)"
-                      }
-                      stroke="oklch(0.985 0.008 85)"
-                      strokeWidth="0.8"
-                    />
-                    <text
-                      x={p.x}
-                      y={p.y - 3}
-                      textAnchor="middle"
-                      fontSize="2.6"
-                      fill="oklch(0.26 0.06 245)"
-                    >
-                      {p.name}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-
-              {/* Interactive overlay buttons */}
-              <button
-                type="button"
-                onClick={() => setActive("HQ Hub")}
-                aria-label="HQ Hub at Woodbine/Avalon"
-                aria-pressed={active === "HQ Hub"}
-                data-ocid="network.hq"
-                className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                style={{ left: "74%", top: "58%" }}
-              />
-              {DELIVERY_POINTS.map((p) => (
-                <button
-                  key={p.name}
-                  type="button"
-                  onClick={() => setActive(p.name)}
-                  aria-label={`${p.name} delivery point`}
-                  aria-pressed={active === p.name}
-                  data-ocid={`network.point.${p.name.toLowerCase().replace(/\s+/g, "_")}`}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  style={{ left: `${p.x}%`, top: `${p.y}%` }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Active node callout + stats */}
-          <div className="flex flex-col gap-6">
-            <div className="panel-offset clip-badge border-0 p-6">
-              <div className="flex items-center gap-3">
-                <MapPin className="size-6 text-primary" />
-                <h3 className="font-display text-xl text-foreground">
-                  {active === "HQ Hub" ? "HQ Hub — Woodbine/Avalon" : active}
-                </h3>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {active === "HQ Hub"
-                  ? "Our origin hub in Cape May County. Direct dispatch, same-day GSP corridor coverage."
-                  : `${active} is served by our delivery network with same-day GSP corridor coverage.`}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {STATS.map((s, i) => (
-                <div
-                  key={s.label}
-                  data-ocid={`network.stat.${i + 1}`}
-                  className="rounded-lg border-2 border-primary bg-card p-4 text-center"
-                >
-                  <div className="font-display text-3xl text-primary">
-                    {s.value}
-                  </div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {s.label}
-                  </div>
+        <div className="mt-10">
+          <IceFrame
+            clip="b"
+            fill="cream"
+            shadow="ice"
+            innerClassName="p-1.5 sm:p-2"
+          >
+            <Suspense
+              fallback={
+                <div className="flex h-[30rem] w-full flex-col items-center justify-center gap-3 sm:h-[34rem]">
+                  <Loader2 className="size-8 animate-spin text-lagoon" />
+                  <p className="font-body text-sm font-medium text-lagoon">
+                    Charting the shore…
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
+              }
+            >
+              <NJDeliveryMap />
+            </Suspense>
+          </IceFrame>
         </div>
       </div>
     </section>
@@ -389,7 +422,7 @@ function NetworkMap() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Order / inquiry form                                               */
+/* Order / inquiry engine — 3 modes                                    */
 /* ------------------------------------------------------------------ */
 
 type ActiveTab = "general" | "wholesale" | "event";
@@ -607,7 +640,7 @@ function WholesaleForm({
             <label
               key={day}
               htmlFor={`wholesale-day-${day.toLowerCase()}`}
-              className="flex cursor-pointer items-center gap-2 rounded-md border border-input px-3 py-2 text-sm"
+              className="flex cursor-pointer items-center gap-2 rounded-full border-2 border-navy/60 bg-cream-bright px-3 py-2 font-body text-sm font-medium text-navy"
             >
               <Checkbox
                 id={`wholesale-day-${day.toLowerCase()}`}
@@ -788,7 +821,7 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
       </div>
       <label
         htmlFor="order-event-freezer"
-        className="flex items-center gap-2 text-sm"
+        className="flex items-center gap-2 font-body text-sm text-navy"
       >
         <Checkbox
           id="order-event-freezer"
@@ -816,7 +849,7 @@ function Field({
 }) {
   return (
     <div className="grid gap-1.5">
-      <Label>{label}</Label>
+      <Label className="font-body font-semibold text-navy">{label}</Label>
       {children}
       {error && (
         <p data-ocid="order.error" className="text-sm text-destructive">
@@ -834,7 +867,7 @@ function SubmitButton({ submitting }: { submitting: boolean }) {
       size="lg"
       disabled={submitting}
       data-ocid="order.submit_button"
-      className="w-full sm:w-auto"
+      className="btn-brutal btn-brutal-ice mt-2 w-full bg-navy py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy sm:w-auto"
     >
       {submitting ? "Submitting…" : "Submit Inquiry"}
     </Button>
@@ -846,100 +879,115 @@ function OrderSection() {
   const [result, setResult] = useState<{ referenceId: string } | null>(null);
   const submit = useSubmitInquiry();
 
-  // Watch the shared mutation to surface the confirmation card.
   const handleResult = (ref: string) => setResult({ referenceId: ref });
 
   return (
     <section
-      id="order"
+      id="order-form"
       data-ocid="order"
-      className="bg-background py-16 md:py-24"
+      className="texture-paper bg-cream py-16 md:py-24"
     >
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="text-center">
-          <span className="script-accent text-2xl">Request delivery</span>
-          <h2 className="mt-2 font-display text-3xl text-foreground sm:text-4xl">
-            Get a Quote or Schedule Delivery
+          <span className="eyebrow inline-flex items-center gap-2">
+            <Truck className="size-4" />
+            Request Delivery
+          </span>
+          <h2 className="script-heading mt-3 text-4xl sm:text-5xl">
+            Get a quote or schedule a drop.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-xl font-body text-base text-lagoon">
             Choose the inquiry type that fits. We'll confirm dispatch receipt
             with a reference ID right away.
           </p>
         </div>
 
-        <div className="mt-8 panel-offset clip-ticket border-0 p-6 sm:p-8">
-          {result ? (
-            <div
-              data-ocid="order.success_state"
-              className="flex flex-col items-center gap-3 py-8 text-center"
-            >
-              <span className="flex size-14 items-center justify-center rounded-full bg-secondary text-primary">
-                <Check className="size-7" />
-              </span>
-              <h3 className="font-display text-2xl text-foreground">
-                Inquiry Received!
-              </h3>
-              <p className="text-muted-foreground">
-                Your dispatch receipt reference ID is:
-              </p>
-              <div className="badge-vintage text-lg">{result.referenceId}</div>
-              <p className="max-w-sm text-sm text-muted-foreground">
-                Our team will reach out shortly. For urgent needs, call{" "}
-                <a href="tel:8563089986" className="text-primary underline">
-                  (856) 308-9986
-                </a>
-                .
-              </p>
-              <Button
-                variant="outline"
-                data-ocid="order.new_button"
-                onClick={() => {
-                  setResult(null);
-                  submit.reset();
-                }}
+        <div className="mt-10">
+          <IceFrame
+            clip="b"
+            fill="cream"
+            shadow="ice"
+            innerClassName="p-6 sm:p-9"
+          >
+            {result ? (
+              <div
+                data-ocid="order.success_state"
+                className="flex flex-col items-center gap-4 py-8 text-center"
               >
-                Submit another inquiry
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Tabs
-                value={tab}
-                onValueChange={(v) => setTab(v as ActiveTab)}
-                className="mb-6"
-              >
-                <TabsList className="w-full">
-                  <TabsTrigger
-                    value="general"
-                    data-ocid="order.tab.general"
-                    className="flex-1"
+                <span className="flex size-14 items-center justify-center rounded-full border-[3px] border-navy bg-ice-light text-navy shadow-[0_4px_0_#A3CCD1]">
+                  <Check className="size-7" />
+                </span>
+                <h3 className="script-heading text-3xl">Inquiry received!</h3>
+                <p className="font-body text-lagoon">
+                  Your dispatch receipt reference ID is:
+                </p>
+                <div className="badge-vintage font-body text-lg">
+                  {result.referenceId}
+                </div>
+                <p className="max-w-sm font-body text-sm text-lagoon">
+                  Our team will reach out shortly. For urgent needs, call{" "}
+                  <a
+                    href="tel:8563089986"
+                    className="font-bold text-navy underline"
                   >
-                    General
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="wholesale"
-                    data-ocid="order.tab.wholesale"
-                    className="flex-1"
-                  >
-                    Wholesale
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="event"
-                    data-ocid="order.tab.event"
-                    className="flex-1"
-                  >
-                    Event
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+                    (856) 308-9986
+                  </a>
+                  .
+                </p>
+                <Button
+                  variant="outline"
+                  data-ocid="order.new_button"
+                  className="btn-brutal bg-cream-bright font-body font-bold uppercase tracking-wide text-navy"
+                  onClick={() => {
+                    setResult(null);
+                    submit.reset();
+                  }}
+                >
+                  Submit another inquiry
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Tabs
+                  value={tab}
+                  onValueChange={(v) => setTab(v as ActiveTab)}
+                  className="mb-6"
+                >
+                  <TabsList className="w-full border-2 border-navy bg-ice-mist">
+                    <TabsTrigger
+                      value="general"
+                      data-ocid="order.tab.general"
+                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                    >
+                      General
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="wholesale"
+                      data-ocid="order.tab.wholesale"
+                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                    >
+                      Wholesale
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="event"
+                      data-ocid="order.tab.event"
+                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                    >
+                      Event
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
 
-              {tab === "general" && <GeneralForm onSubmitted={handleResult} />}
-              {tab === "wholesale" && (
-                <WholesaleForm onSubmitted={handleResult} />
-              )}
-              {tab === "event" && <EventForm onSubmitted={handleResult} />}
-            </>
-          )}
+                {tab === "general" && (
+                  <GeneralForm onSubmitted={handleResult} />
+                )}
+                {tab === "wholesale" && (
+                  <WholesaleForm onSubmitted={handleResult} />
+                )}
+                {tab === "event" && <EventForm onSubmitted={handleResult} />}
+              </>
+            )}
+          </IceFrame>
         </div>
       </div>
     </section>
@@ -955,24 +1003,22 @@ function Contact() {
     <section
       id="contact"
       data-ocid="contact"
-      className="bg-gradient-primary py-16 text-primary-foreground md:py-24"
+      className="bg-gradient-primary py-16 text-cream-bright md:py-24"
     >
       <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-        <span className="script-accent text-2xl text-accent">
-          Let's talk ice
-        </span>
-        <h2 className="mt-2 font-display text-3xl sm:text-4xl">
+        <span className="font-script text-3xl text-ice">Let's talk ice</span>
+        <h2 className="text-block-ice mt-3 text-3xl sm:text-4xl md:text-5xl">
           Reach Avalon Ice
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-primary-foreground/85">
+        <p className="mx-auto mt-5 max-w-xl font-body text-cream/85">
           Questions, quotes, or same-day delivery — we're ready when you are.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <Button
             asChild
             size="lg"
-            variant="secondary"
             data-ocid="contact.call_button"
+            className="btn-brutal btn-brutal-ice bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
           >
             <a href="tel:8563089986">
               <Phone className="size-5" /> (856) 308-9986
@@ -981,9 +1027,8 @@ function Contact() {
           <Button
             asChild
             size="lg"
-            variant="outline"
-            className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
             data-ocid="contact.email_button"
+            className="btn-brutal btn-brutal-ice bg-transparent px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy-deep"
           >
             <a href="mailto:Sales@AvalonIce.com?subject=Ice%20Delivery%20Inquiry">
               <Mail className="size-5" /> Sales@AvalonIce.com
@@ -1003,8 +1048,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Services />
-      <NetworkMap />
+      <ShowcaseVideo />
+      <Products />
+      <Network />
       <OrderSection />
       <Contact />
     </>
