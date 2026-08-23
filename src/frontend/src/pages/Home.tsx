@@ -1,6 +1,7 @@
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
+import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -14,19 +15,23 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useSubmitInquiry } from "@/lib/api";
+import { HERO_VIDEO, LOOP_VIDEO, MERCH_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
 import type {
   EventFormValues,
   GeneralFormValues,
   WholesaleFormValues,
 } from "@/lib/types";
+import { Link } from "@tanstack/react-router";
 import {
   Check,
   Loader2,
   Mail,
   MapPin,
   Phone,
+  ShoppingBag,
   Snowflake,
   Truck,
 } from "lucide-react";
@@ -35,49 +40,43 @@ import {
   motion,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from "motion/react";
-import { Suspense, lazy, useRef, useState } from "react";
+import { Suspense, lazy, useId, useRef, useState } from "react";
 
 const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
-
-const HERO_VIDEO =
-  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
-const LOOP_VIDEO =
-  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                               */
 /* ------------------------------------------------------------------ */
 
 function Hero() {
+  const isMobile = useIsMobile();
+
   return (
     <section
       id="top"
       data-ocid="hero"
-      className="relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light"
+      className="relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light md:flex md:min-h-[85vh] md:items-center"
     >
-      {/* Looping brand animation, painted only once it can play */}
-      <BrandVideo
-        src={HERO_VIDEO}
-        label="Avalon Ice brand animation"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-
-      {/* Legibility scrim + fade into the next cream section */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream"
-        aria-hidden="true"
-      />
+      {/* md+: full-bleed cover video behind the content. On phones the video
+          instead renders inline below the CTAs at its native aspect ratio,
+          so it scales with the viewport with no cropping or letterboxing.
+          Only the element for the current breakpoint is mounted, so phones
+          never download or decode the backdrop copy. */}
+      {!isMobile && (
+        <VideoBackdrop
+          src={HERO_VIDEO}
+          label="Avalon Ice brand animation"
+          scrim="side"
+        />
+      )}
 
       {/* Ambient frost / ice-particle drift */}
       <FrostOverlay />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 md:py-32">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32">
         <span className="chip chip-solid mb-6" data-ocid="hero.badge">
           <MapPin className="size-3.5" />
           Avalon, N.J. · Cape May County
@@ -90,12 +89,6 @@ function Hero() {
           </span>{" "}
           Delivery.
         </h1>
-
-        <p className="mt-6 max-w-xl font-body text-lg font-medium text-lagoon">
-          Jersey Shore ice distribution — commercial wholesale, events &amp;
-          festivals, and same-day shore runs from Cape May County up the Garden
-          State Parkway.
-        </p>
 
         <div className="mt-9 flex flex-wrap items-center gap-4">
           <Button
@@ -134,6 +127,21 @@ function Hero() {
           <span className="text-ice-deep">|</span>
           <span>Cell: 856-308-9986</span>
         </div>
+
+        {/* Mobile: inline hero video at native aspect ratio */}
+        {isMobile && (
+          <div className="mt-9">
+            <div className="overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
+              <div className="aspect-video w-full bg-gradient-ice-card">
+                <BrandVideo
+                  src={HERO_VIDEO}
+                  label="Avalon Ice brand animation"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -142,6 +150,106 @@ function Hero() {
 /* ------------------------------------------------------------------ */
 /* Secondary showcase video — delivery & route                         */
 /* ------------------------------------------------------------------ */
+
+function TruckSVG({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 180 92"
+      className={className}
+      aria-hidden="true"
+      role="presentation"
+    >
+      {/* Box body with livery */}
+      <rect
+        x="4"
+        y="8"
+        width="112"
+        height="58"
+        rx="6"
+        fill="#FDFCF8"
+        stroke="#0C3552"
+        strokeWidth="4"
+      />
+      <text
+        x="60"
+        y="34"
+        textAnchor="middle"
+        fontFamily="var(--font-display), Georgia, serif"
+        fontSize="17"
+        fill="#0C3552"
+      >
+        AVALON
+      </text>
+      <rect x="30" y="41" width="60" height="4" rx="2" fill="#8CBEC5" />
+      <text
+        x="60"
+        y="60"
+        textAnchor="middle"
+        fontFamily="var(--font-display), Georgia, serif"
+        fontSize="14"
+        fill="#0C3552"
+      >
+        ICE
+      </text>
+      {/* Cab */}
+      <path
+        d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z"
+        fill="#0C3552"
+      />
+      <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
+      {/* Wheels */}
+      {[34, 86, 146].map((cx) => (
+        <g key={cx}>
+          <circle cx={cx} cy="72" r="13" fill="#061F33" />
+          <circle cx={cx} cy="72" r="5.5" fill="#F7F2EA" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/** Waving egret mascot behind a looping parade of delivery trucks. */
+function MascotParade() {
+  return (
+    <div
+      className="relative mt-12 h-52 overflow-hidden sm:h-64"
+      aria-hidden="true"
+    >
+      {/* Mascot in the background, gently waving */}
+      <div className="absolute bottom-9 left-1/2 z-0 -translate-x-1/2 sm:bottom-10">
+        <img
+          src="/assets/images/avalon-egret.webp"
+          alt=""
+          className="animate-mascot-wave h-36 w-auto mix-blend-multiply sm:h-48"
+        />
+      </div>
+
+      {/* Roadway */}
+      <div className="absolute inset-x-0 bottom-0 z-10 h-10 border-t-[3px] border-navy bg-navy sm:h-11">
+        <div className="road-stripes absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 opacity-70" />
+      </div>
+
+      {/* Trucks drive in front of the mascot */}
+      <div
+        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-36 sm:w-44"
+        style={{ "--truck-duration": "17s" } as React.CSSProperties}
+      >
+        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
+      </div>
+      <div
+        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-28 sm:w-32"
+        style={
+          {
+            "--truck-duration": "26s",
+            "--truck-delay": "-14s",
+          } as React.CSSProperties
+        }
+      >
+        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
+      </div>
+    </div>
+  );
+}
 
 function ShowcaseVideo() {
   return (
@@ -172,6 +280,8 @@ function ShowcaseVideo() {
             </div>
           </div>
         </IceFrame>
+
+        <MascotParade />
       </div>
     </section>
   );
@@ -213,13 +323,18 @@ const PRODUCTS: Product[] = [
   {
     title: "Premium Bagged & Block Ice",
     description:
-      "Crystal-clear cubes, crushed, and block ice — cleanly bagged and consistently sized.",
+      "Crystal-clear cubed, crushed, and block ice — cleanly bagged and consistently sized.",
     chips: [{ label: "Cubed" }, { label: "Crushed" }, { label: "Block" }],
     clip: "d",
   },
 ];
 
 function IceCubeSVG({ className }: { className?: string }) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const topId = `cube-top-${uid}`;
+  const leftId = `cube-left-${uid}`;
+  const rightId = `cube-right-${uid}`;
+
   return (
     <svg
       viewBox="0 0 100 100"
@@ -227,19 +342,98 @@ function IceCubeSVG({ className }: { className?: string }) {
       aria-hidden="true"
       role="presentation"
     >
+      <defs>
+        {/* Wet-ice face gradients: bright frosted top, darker saturated
+            faces toward the melting base */}
+        <linearGradient id={topId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FDFCF8" />
+          <stop offset="1" stopColor="#E4F1F0" />
+        </linearGradient>
+        <linearGradient id={leftId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#D9ECEB" />
+          <stop offset="0.7" stopColor="#C9E4E4" />
+          <stop offset="1" stopColor="#9ECBD0" />
+        </linearGradient>
+        <linearGradient id={rightId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#B7D9DC" />
+          <stop offset="0.65" stopColor="#A3CCD1" />
+          <stop offset="1" stopColor="#82B4BC" />
+        </linearGradient>
+      </defs>
+
       <g stroke="#0C3552" strokeWidth="3.5" strokeLinejoin="round">
-        <polygon points="50,5 93,27 50,49 7,27" fill="#F4FAF9" />
-        <polygon points="7,27 50,49 50,95 7,73" fill="#C9E4E4" />
-        <polygon points="93,27 50,49 50,95 93,73" fill="#A3CCD1" />
+        <polygon points="50,5 93,27 50,49 7,27" fill={`url(#${topId})`} />
+        <polygon points="7,27 50,49 50,95 7,73" fill={`url(#${leftId})`} />
+        <polygon points="93,27 50,49 50,95 93,73" fill={`url(#${rightId})`} />
       </g>
+
+      {/* Wet base edge pooling toward the bottom */}
       <path
-        d="M24 30l14-7M62 62v14"
+        d="M10 71 L50 91.5 L90 71"
+        fill="none"
+        stroke="#5E8A93"
+        strokeOpacity="0.5"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      {/* Specular gloss streaks on the sunlit face */}
+      <polygon
+        points="60,47 69,42.5 69,79 60,84.5"
+        fill="#FDFCF8"
+        opacity="0.32"
+      />
+      <polygon
+        points="74,40 78,38 78,74.5 74,77"
+        fill="#FDFCF8"
+        opacity="0.5"
+      />
+      {/* Sheen pooling on the top face */}
+      <polygon
+        points="50,10 77,23.5 62,31 35,17.5"
+        fill="#FFFFFF"
+        opacity="0.5"
+      />
+
+      {/* Clinging meltwater droplets */}
+      <circle
+        cx="24"
+        cy="60"
+        r="2.3"
+        fill="#E9F4F3"
+        stroke="#5E8A93"
+        strokeOpacity="0.4"
+        strokeWidth="1"
+      />
+      <circle
+        cx="39"
+        cy="79"
+        r="1.7"
+        fill="#E9F4F3"
+        stroke="#5E8A93"
+        strokeOpacity="0.4"
+        strokeWidth="1"
+      />
+      <circle
+        cx="81"
+        cy="61"
+        r="2"
+        fill="#F4FAF9"
+        stroke="#5E8A93"
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
+
+      {/* Internal cracks */}
+      <path
+        d="M24 32l12-6M62 60v13M31 66l7 4"
         stroke="#0C3552"
-        strokeOpacity="0.28"
+        strokeOpacity="0.25"
         strokeWidth="2"
         strokeLinecap="round"
         fill="none"
       />
+      {/* Sparkle glint */}
       <path
         d="M70 16h8M74 12v8"
         stroke="#FDFCF8"
@@ -273,15 +467,44 @@ function ProductCard({
   // rotation and per-cube parallax speed, settling behind their card.
   const start = 0.02 + index * 0.09;
   const end = 0.52 + index * 0.1;
+  const slideMid = (start + end) / 2;
   const cubeX = useTransform(progress, [start, end], [-(340 + index * 130), 0]);
   const cubeRotate = useTransform(
     progress,
     [start, end],
     [-200 - index * 40, index % 2 === 0 ? -6 : 5],
   );
+  // Springs trail the scroll targets, so the cube glides with inertia and
+  // overshoots slightly before settling — like ice skidding to a stop.
+  const cubeXSpring = useSpring(cubeX, {
+    stiffness: 65,
+    damping: 14,
+    mass: 1.15,
+  });
+  const cubeRotateSpring = useSpring(cubeRotate, {
+    stiffness: 58,
+    damping: 13,
+  });
   const cubeOpacity = useTransform(progress, [start, start + 0.12], [0, 1]);
   const cardY = useTransform(progress, [start, end], [46, 0]);
   const cardOpacity = useTransform(progress, [start, start + 0.2], [0, 1]);
+  // Wet slick trail behind the cube: strongest mid-slide, gone at rest.
+  const trailOpacity = useTransform(
+    progress,
+    [start + 0.03, slideMid, end - 0.02],
+    [0, 0.75, 0],
+  );
+  const trailScale = useTransform(
+    progress,
+    [start + 0.03, slideMid, end - 0.02],
+    [0.25, 1, 0.2],
+  );
+  // Meltwater appears once the cube has settled into place.
+  const settle = useTransform(
+    progress,
+    [end - 0.03, Math.min(end + 0.14, 1)],
+    [0, 1],
+  );
 
   return (
     <motion.div
@@ -294,13 +517,61 @@ function ProductCard({
         style={
           reduceMotion
             ? undefined
-            : { x: cubeX, rotate: cubeRotate, opacity: cubeOpacity }
+            : {
+                x: cubeXSpring,
+                rotate: cubeRotateSpring,
+                opacity: cubeOpacity,
+              }
         }
         className={`absolute -top-9 z-0 ${index % 2 === 0 ? "-right-3" : "-left-3"} ${CUBE_SIZES[index]}`}
         aria-hidden="true"
       >
-        <div className="animate-bob-cube">
+        {/* Wet slick streak dragged behind the sliding cube */}
+        {!reduceMotion && (
+          <div className="absolute right-2/3 top-1/2 w-40 -translate-y-1/2">
+            <motion.div
+              style={{ opacity: trailOpacity, scaleX: trailScale }}
+              className="h-[7px] origin-right rounded-full bg-gradient-to-l from-ice-deep/60 via-ice/40 to-transparent blur-[1.5px]"
+            />
+          </div>
+        )}
+
+        <div className="animate-bob-cube relative">
           <IceCubeSVG className="h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" />
+          {/* Meltwater drips once the cube comes to rest */}
+          <motion.div
+            style={reduceMotion ? undefined : { opacity: settle }}
+            className="pointer-events-none"
+          >
+            <span
+              className="ice-drip -bottom-1 left-[30%]"
+              style={
+                {
+                  "--drip-delay": `${index * 0.7}s`,
+                } as React.CSSProperties
+              }
+            />
+            <span
+              className="ice-drip -bottom-2 left-[64%]"
+              style={
+                {
+                  "--drip-delay": `${1.6 + index * 0.5}s`,
+                  "--drip-duration": "3.9s",
+                } as React.CSSProperties
+              }
+            />
+          </motion.div>
+        </div>
+
+        {/* Melt puddle spreading beneath the settled cube */}
+        <div className="absolute -bottom-2 left-1/2 w-[92%] -translate-x-1/2">
+          <motion.div
+            style={
+              reduceMotion ? undefined : { opacity: settle, scaleX: settle }
+            }
+          >
+            <div className="ice-puddle w-full" />
+          </motion.div>
         </div>
       </motion.div>
 
@@ -310,6 +581,12 @@ function ProductCard({
         className="relative z-10 h-full"
         innerClassName="flex h-full flex-col gap-3 p-6 pb-7"
       >
+        {/* Slow light sweep across the wet card face */}
+        <span
+          className="ice-sheen"
+          style={{ "--sheen-delay": `${index * 1.4}s` } as React.CSSProperties}
+          aria-hidden="true"
+        />
         <h3 className="text-block-navy text-lg leading-snug sm:text-xl">
           {product.title}
         </h3>
@@ -333,10 +610,18 @@ function ProductCard({
 
 function Products() {
   const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 88%", "end 78%"],
   });
+
+  // Loose background cubes drifting at different parallax rates.
+  const bgY1 = useTransform(scrollYProgress, [0, 1], [80, -100]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], [30, -160]);
+  const bgY3 = useTransform(scrollYProgress, [0, 1], [120, -50]);
+  const bgRot1 = useTransform(scrollYProgress, [0, 1], [-18, 12]);
+  const bgRot2 = useTransform(scrollYProgress, [0, 1], [10, -22]);
 
   return (
     <section
@@ -345,6 +630,31 @@ function Products() {
       data-ocid="products"
       className="texture-paper overflow-x-clip bg-cream py-16 md:py-24"
     >
+      {/* Drifting background ice, behind the cards */}
+      <div
+        className="pointer-events-none absolute inset-0 hidden md:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY1, rotate: bgRot1 }}
+          className="absolute left-[3%] top-28 w-12 opacity-50"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY2, rotate: bgRot2 }}
+          className="absolute right-[3%] top-1/2 w-10 opacity-40"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY3, rotate: bgRot1 }}
+          className="absolute bottom-8 left-[9%] w-14 opacity-45"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+      </div>
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <span className="eyebrow inline-flex items-center gap-2">
           <Snowflake className="size-4" />
@@ -364,6 +674,80 @@ function Products() {
             />
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Shop teaser — merch promo hero band                                 */
+/* ------------------------------------------------------------------ */
+
+function ShopTeaser() {
+  const isMobile = useIsMobile();
+
+  return (
+    <section
+      id="shop-preview"
+      data-ocid="shop_teaser"
+      className="relative overflow-hidden bg-gradient-primary py-16 md:min-h-[30rem] md:py-24"
+    >
+      {/* Merch promo backdrop on md+; phones get the inline player below */}
+      {!isMobile && (
+        <VideoBackdrop
+          src={MERCH_VIDEO}
+          label="Avalon Ice merch promo"
+          scrim="band"
+          fadeToCream={false}
+        />
+      )}
+
+      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-start gap-8 px-4 sm:px-6 md:min-h-[22rem] md:flex-row md:items-center md:justify-between">
+        <div className="max-w-xl">
+          <span className="chip chip-solid" data-ocid="shop_teaser.badge">
+            <ShoppingBag className="size-3.5" />
+            The Avalon Ice Shop
+          </span>
+
+          {/* font-script rather than .script-heading: that utility pins the
+              colour to navy, which would vanish against this navy band. */}
+          <h2 className="mt-5 font-script text-4xl leading-tight text-cream-bright sm:text-5xl md:text-6xl">
+            Merch is on the way.
+          </h2>
+
+          <p className="mt-5 font-body text-base leading-relaxed text-cream/85 sm:text-lg">
+            Tees, hats, coolers, and bagged ice — straight from the shore. The
+            direct Avalon Ice storefront opens Labor Day Weekend 2026.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Button
+              asChild
+              size="lg"
+              data-ocid="shop_teaser.visit_button"
+              className="btn-brutal btn-brutal-ice bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
+            >
+              <Link to="/shop">
+                <ShoppingBag className="size-5" />
+                Visit the Shop
+              </Link>
+            </Button>
+            <span className="chip">Coming · Labor Day Weekend 2026</span>
+          </div>
+        </div>
+
+        {/* Phones: promo plays inline, uncropped, at its native ratio */}
+        {isMobile && (
+          <div className="w-full overflow-hidden rounded-2xl border-[3px] border-cream-bright shadow-[0_6px_0_#A3CCD1]">
+            <div className="aspect-video w-full bg-gradient-ice-card">
+              <BrandVideo
+                src={MERCH_VIDEO}
+                label="Avalon Ice merch promo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -391,9 +775,8 @@ function Network() {
         <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon">
           Every route starts at our Woodbine HQ and runs up the Garden State
           Parkway — supplying marinas, bars, festivals, and venues from Cape May
-          County to North Jersey. Orbit the state, watch the Avalon Ice trucks
-          make their runs, and pick a town from the list (or tap its dot) to
-          drop a pin on it.
+          County to North Jersey. Orbit the state and watch the Avalon Ice
+          trucks make their runs.
         </p>
 
         <div className="mt-10">
@@ -898,8 +1281,8 @@ function OrderSection() {
             Get a quote or schedule a drop.
           </h2>
           <p className="mx-auto mt-4 max-w-xl font-body text-base text-lagoon">
-            Choose the inquiry type that fits. We'll confirm dispatch receipt
-            with a reference ID right away.
+            Choose the inquiry type that fits and we'll confirm receipt with a
+            reference ID right away.
           </p>
         </div>
 
@@ -920,7 +1303,7 @@ function OrderSection() {
                 </span>
                 <h3 className="script-heading text-3xl">Inquiry received!</h3>
                 <p className="font-body text-lagoon">
-                  Your dispatch receipt reference ID is:
+                  Your dispatch reference ID is:
                 </p>
                 <div className="badge-vintage font-body text-lg">
                   {result.referenceId}
@@ -1051,6 +1434,7 @@ export default function Home() {
       <Hero />
       <ShowcaseVideo />
       <Products />
+      <ShopTeaser />
       <Network />
       <OrderSection />
       <Contact />

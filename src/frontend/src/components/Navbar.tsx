@@ -1,30 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { SOCIALS } from "@/lib/socials";
+import { Link } from "@tanstack/react-router";
 import { Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 
 const NAV_LINKS = [
   { href: "/#services", label: "Services" },
   { href: "/#network", label: "Network" },
+  { href: "/shop", label: "Shop" },
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" },
 ];
 
+/**
+ * Social placeholders — the brand accounts aren't live yet, so these are
+ * labelled but inert (no destination, not focusable as links).
+ */
 function SocialTiles() {
   return (
     <div className="flex items-center gap-1.5 sm:gap-2">
       {SOCIALS.map((s) => (
-        <a
+        <span
           key={s.label}
-          href={s.href}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={s.label}
+          role="img"
+          aria-label={`${s.label} — coming soon`}
+          title={`${s.label} — coming soon`}
           data-ocid={`navbar.social.${s.label.toLowerCase()}`}
-          className="social-tile !h-10 !w-10 rounded-lg"
+          className="social-tile !h-10 !w-10 cursor-default rounded-lg"
         >
           <s.icon className="size-4" />
-        </a>
+        </span>
       ))}
     </div>
   );
@@ -86,7 +91,7 @@ export default function Navbar() {
             asChild
             size="sm"
             data-ocid="navbar.call_button"
-            className="hidden rounded-full border-2 border-navy bg-cream-bright font-body text-sm font-bold uppercase tracking-wide text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:inline-flex lg:h-10 lg:px-4"
+            className="btn-brutal btn-brutal-ice hidden bg-cream-bright font-body text-xs font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-mist md:inline-flex lg:h-11 lg:px-5 lg:text-sm"
           >
             <a href="tel:8563089986">
               <Phone className="size-4" />
@@ -98,7 +103,7 @@ export default function Navbar() {
             size="icon"
             aria-label="Call Avalon Ice"
             data-ocid="navbar.call_icon"
-            className="size-10 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden"
+            className="btn-brutal btn-brutal-ice size-10 bg-cream-bright text-navy hover:bg-ice-mist md:hidden"
           >
             <a href="tel:8563089986">
               <Phone className="size-4" />
@@ -110,7 +115,7 @@ export default function Navbar() {
             asChild
             size="sm"
             data-ocid="navbar.contact_button"
-            className="hidden rounded-full border-2 border-navy bg-navy font-body text-sm font-bold uppercase tracking-wide text-cream-bright shadow-[0_3px_0_#A3CCD1] hover:bg-lagoon md:inline-flex lg:h-10 lg:px-5"
+            className="btn-brutal btn-brutal-ice hidden bg-navy font-body text-xs font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-lagoon md:inline-flex lg:h-11 lg:px-6 lg:text-sm"
           >
             <a href="/#order-form">
               <Mail className="size-4" />
@@ -124,7 +129,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex size-10 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist xl:hidden"
+            className="btn-brutal btn-brutal-ice inline-flex size-10 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -145,11 +150,11 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <div className="mt-3 flex flex-col gap-2.5">
+            <div className="mt-3 flex flex-col gap-3">
               <Button
                 asChild
                 data-ocid="navbar.mobile_contact"
-                className="btn-brutal btn-brutal-ice rounded-xl bg-navy py-5 font-body font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
+                className="btn-brutal btn-brutal-ice bg-navy py-5 font-body font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy"
               >
                 {/* biome-ignore lint/a11y/useValidAnchor: real navigation to the order form; onClick only closes the menu */}
                 <a href="/#order-form" onClick={() => setOpen(false)}>
@@ -160,12 +165,21 @@ export default function Navbar() {
               <Button
                 asChild
                 data-ocid="navbar.mobile_call"
-                className="btn-brutal rounded-xl bg-cream-bright py-5 font-body font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
+                className="btn-brutal btn-brutal-ice bg-cream-bright py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-frost"
               >
                 <a href="tel:8563089986">
                   <Phone className="size-4" />
                   Call (856) 308-9986
                 </a>
+              </Button>
+              <Button
+                asChild
+                data-ocid="navbar.mobile_shop"
+                className="btn-brutal btn-brutal-ice bg-ice-light py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice"
+              >
+                <Link to="/shop" onClick={() => setOpen(false)}>
+                  Visit the Shop
+                </Link>
               </Button>
             </div>
           </nav>

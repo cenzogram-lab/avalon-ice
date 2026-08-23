@@ -1,4 +1,4 @@
-import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-DGTEFHqA.js";
+import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-Bv4jGKST.js";
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n) {
     for (var e = 1; e < arguments.length; e++) {
@@ -52784,9 +52784,17 @@ const CREAM = "#F7F2EA";
 const SHELL = "#FDFCF8";
 const TOWNS = [
   { n: "Cape May", ll: [38.9351, -74.906], hub: true },
+  { n: "West Cape May", ll: [38.9387, -74.9418] },
   { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
   { n: "Wildwood", ll: [38.9918, -74.8146], hub: true },
+  { n: "North Wildwood", ll: [39.0007, -74.7994] },
+  { n: "Rio Grande", ll: [39.0117, -74.8807] },
   { n: "Stone Harbor", ll: [39.0479, -74.7649] },
+  { n: "Cape May Court House", ll: [39.0827, -74.8237] },
+  { n: "Marmora", ll: [39.2662, -74.6499] },
+  { n: "Tuckahoe", ll: [39.2882, -74.7532] },
+  { n: "Millville", ll: [39.4021, -75.0393], hub: true, inland: true },
+  { n: "Vineland", ll: [39.4864, -75.0257], hub: true, inland: true },
   { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
   { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
   { n: "Strathmere", ll: [39.2007, -74.656] },
@@ -52860,7 +52868,7 @@ function blurb(t) {
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
   if (t.inland) return "Served daily up the Parkway from the shore.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
-  return "On the shore run — bars, marinas, venues and events.";
+  return "On the shore run — bars, marinas, venues, and events.";
 }
 const FALLBACK_OUTLINE = [
   [38.93, -74.96],
@@ -53070,6 +53078,23 @@ function makeDashTexture(repeat2) {
   t.wrapS = RepeatWrapping;
   t.wrapT = RepeatWrapping;
   t.repeat.set(repeat2, 1);
+  t.colorSpace = SRGBColorSpace;
+  return t;
+}
+function makeGlowTexture() {
+  const c2 = document.createElement("canvas");
+  c2.width = 256;
+  c2.height = 256;
+  const x2 = c2.getContext("2d");
+  if (x2) {
+    const g2 = x2.createRadialGradient(128, 128, 10, 128, 128, 128);
+    g2.addColorStop(0, "rgba(163,204,209,0.9)");
+    g2.addColorStop(0.4, "rgba(163,204,209,0.35)");
+    g2.addColorStop(1, "rgba(163,204,209,0)");
+    x2.fillStyle = g2;
+    x2.fillRect(0, 0, 256, 256);
+  }
+  const t = new CanvasTexture(c2);
   t.colorSpace = SRGBColorSpace;
   return t;
 }
@@ -53368,7 +53393,14 @@ function TownPin({
         },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("sphereGeometry", { args: [dotR, 18, 14] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("meshStandardMaterial", { color: NAVY, roughness: 0.35, metalness: 0.05 })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "meshStandardMaterial",
+            {
+              color: PIN_RED,
+              roughness: 0.32,
+              metalness: 0.06
+            }
+          )
         ]
       }
     ),
@@ -53422,31 +53454,41 @@ function HeronBeacon({ space }) {
   );
   const ringA = reactExports.useRef(null);
   const ringB = reactExports.useRef(null);
+  const ringC = reactExports.useRef(null);
   const bobRef = reactExports.useRef(null);
+  const glowRef = reactExports.useRef(null);
+  const glow = reactExports.useMemo(() => makeGlowTexture(), []);
   const pos = toWorld(space, HQ_LL[1], HQ_LL[0], TOP_Y);
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     const pulse = (offset, mesh) => {
       if (!mesh) return;
-      const p2 = (t + offset) % 2.2 / 2.2;
-      mesh.scale.setScalar(0.5 + p2 * 1.7);
-      mesh.material.opacity = 0.5 * (1 - p2);
+      const p2 = (t + offset) % 2.4 / 2.4;
+      mesh.scale.setScalar(0.5 + p2 * 2.1);
+      mesh.material.opacity = 0.55 * (1 - p2);
     };
     pulse(0, ringA.current);
-    pulse(1.1, ringB.current);
+    pulse(0.8, ringB.current);
+    pulse(1.6, ringC.current);
     const bob = bobRef.current;
-    if (bob) bob.position.y = Math.sin(t * 1.4) * 0.7;
+    if (bob) bob.position.y = Math.sin(t * 1.4) * 0.8;
+    const g2 = glowRef.current;
+    if (g2) {
+      const s = 1 + Math.sin(t * 2.2) * 0.12;
+      g2.scale.setScalar(s);
+      g2.material.opacity = 0.75 + Math.sin(t * 2.2) * 0.2;
+    }
   });
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("group", { position: pos, children: [
-    [ringA, ringB].map((ref, i2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    [ringA, ringB, ringC].map((ref, i2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "mesh",
       {
         ref,
         rotation: [-Math.PI / 2, 0, 0],
         position: [0, 0.2, 0],
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("ringGeometry", { args: [5.2, 6.2, 48] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { color: "#1B4F70", transparent: true, opacity: 0.5 })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("ringGeometry", { args: [6.6, 7.8, 56] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { color: "#1B4F70", transparent: true, opacity: 0.55 })
         ]
       },
       `pulse-${i2.toString()}`
@@ -53465,21 +53507,33 @@ function HeronBeacon({ space }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx("meshStandardMaterial", { color: FROST_L, roughness: 0.4 })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("group", { ref: bobRef, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Billboard, { position: [0, 15.5, 0], children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("mesh", { position: [0, -5.4, -0.05], rotation: [Math.PI, 0, 0], children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("coneGeometry", { args: [2.1, 5.2, 4] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("group", { ref: bobRef, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Billboard, { position: [0, 18, 0], children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("mesh", { ref: glowRef, position: [0, -1, -0.2], children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("planeGeometry", { args: [26, 26] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "meshBasicMaterial",
+          {
+            map: glow,
+            transparent: true,
+            opacity: 0.85,
+            depthWrite: false
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("mesh", { position: [0, -7, -0.05], rotation: [Math.PI, 0, 0], children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("coneGeometry", { args: [2.7, 6.6, 4] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { color: NAVY })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("mesh", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circleGeometry", { args: [4.8, 44] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("circleGeometry", { args: [6.2, 48] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { color: NAVY })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("mesh", { position: [0, 0, 0.02], children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circleGeometry", { args: [4.2, 44] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("circleGeometry", { args: [5.5, 48] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("meshBasicMaterial", { map: texture, toneMapped: false })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Html, { center: true, position: [0, 25, 0], zIndexRange: [28, 0], children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-3.5 py-1.5 font-body text-xs font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]", children: "Woodbine HQ" }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Html, { center: true, position: [0, 29.5, 0], zIndexRange: [28, 0], children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-4 py-1.5 font-body text-sm font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]", children: "Woodbine HQ" }) })
   ] });
 }
 function WaterLabels({ space }) {
@@ -53539,9 +53593,9 @@ function MapScene({
   controlsRef,
   flightRef
 }) {
-  const routeA = useRoute(space, ROUTE_LL, 1.15, 95, 0.055);
-  const routeB = useRoute(space, SPUR_LL, 0.75, 45, 0.03);
-  const routeC = useRoute(space, SOUTH_LL, 0.85, 40, 0.04);
+  const routeA = useRoute(space, ROUTE_LL, 0.55, 120, 0.055);
+  const routeB = useRoute(space, SPUR_LL, 0.38, 60, 0.03);
+  const routeC = useRoute(space, SOUTH_LL, 0.42, 52, 0.04);
   const curves = {
     A: routeA.handle.curve,
     B: routeB.handle.curve,
@@ -53763,8 +53817,11 @@ function NJDeliveryMap() {
         className: "absolute right-3 top-3 hidden rounded-xl border-2 border-navy bg-gradient-ice-card px-4 py-3 shadow-[0_6px_0_#A3CCD1] sm:right-4 sm:top-4 sm:block",
         children: /* @__PURE__ */ jsxRuntimeExports.jsx("dl", { className: "font-body text-navy", children: [
           { value: "1", label: "origin · Woodbine HQ" },
-          { value: "11", label: "delivery hubs" },
-          { value: "33", label: "towns served" }
+          {
+            value: String(TOWNS.filter((t) => t.hub).length),
+            label: "delivery hubs"
+          },
+          { value: String(TOWNS.length), label: "towns served" }
         ].map((row, i2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "div",
           {

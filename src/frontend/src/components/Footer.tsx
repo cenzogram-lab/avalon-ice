@@ -68,17 +68,16 @@ export default function Footer() {
 
           <div className="mt-6 flex items-center gap-3">
             {SOCIALS.map((s) => (
-              <a
+              <span
                 key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.label}
+                role="img"
+                aria-label={`${s.label} — coming soon`}
+                title={`${s.label} — coming soon`}
                 data-ocid={`footer.social.${s.label.toLowerCase()}`}
-                className="social-tile"
+                className="social-tile cursor-default"
               >
                 <s.icon className="size-5" />
-              </a>
+              </span>
             ))}
           </div>
         </div>
@@ -90,18 +89,7 @@ export default function Footer() {
           <span>Coming · Labor Day Weekend 2026</span>
         </div>
         {/* Extra bottom padding on mobile keeps the fixed contact CTA clear */}
-        <div className="flex items-center justify-center gap-3 pb-24 text-center md:pb-4">
-          <a
-            href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-              typeof window !== "undefined" ? window.location.hostname : "",
-            )}`}
-            target="_blank"
-            rel="noreferrer"
-            className="font-body text-[0.65rem] text-lagoon-soft hover:text-navy"
-          >
-            Built with love using caffeine.ai
-          </a>
-          <span className="text-[0.65rem] text-lagoon-soft">·</span>
+        <div className="flex items-center justify-center pb-24 text-center md:pb-4">
           <Link
             to="/admin"
             data-ocid="footer.admin_link"
