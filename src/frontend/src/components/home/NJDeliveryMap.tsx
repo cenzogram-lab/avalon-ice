@@ -136,7 +136,7 @@ function blurb(t: Town): string {
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
   if (t.inland) return "Served daily up the Parkway from the shore.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
-  return "On the shore run — bars, marinas, venues and events.";
+  return "On the shore run — bars, marinas, venues, and events.";
 }
 
 /* ------------------------------------------------------------------ */

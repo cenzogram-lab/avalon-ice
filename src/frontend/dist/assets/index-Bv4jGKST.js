@@ -33313,10 +33313,10 @@ function FaFacebookF(props) {
   return GenIcon({ "attr": { "viewBox": "0 0 320 512" }, "child": [{ "tag": "path", "attr": { "d": "M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z" }, "child": [] }] })(props);
 }
 const SOCIALS = [
-  { label: "Instagram", icon: FaInstagram, href: "https://instagram.com" },
-  { label: "Facebook", icon: FaFacebookF, href: "https://facebook.com" },
-  { label: "TikTok", icon: FaTiktok, href: "https://tiktok.com" },
-  { label: "LinkedIn", icon: FaLinkedinIn, href: "https://linkedin.com" }
+  { label: "Instagram", icon: FaInstagram },
+  { label: "Facebook", icon: FaFacebookF },
+  { label: "TikTok", icon: FaTiktok },
+  { label: "LinkedIn", icon: FaLinkedinIn }
 ];
 var prefix = "Invariant failed";
 function invariant$1(condition, message) {
@@ -38929,14 +38929,13 @@ function Footer() {
               }
             ) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 flex items-center gap-3", children: SOCIALS.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "a",
+              "span",
               {
-                href: s.href,
-                target: "_blank",
-                rel: "noreferrer",
-                "aria-label": s.label,
+                role: "img",
+                "aria-label": `${s.label} — coming soon`,
+                title: `${s.label} — coming soon`,
                 "data-ocid": `footer.social.${s.label.toLowerCase()}`,
-                className: "social-tile",
+                className: "social-tile cursor-default",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(s.icon, { className: "size-5" })
               },
               s.label
@@ -41660,14 +41659,13 @@ const NAV_LINKS = [
 ];
 function SocialTiles() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-1.5 sm:gap-2", children: SOCIALS.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "a",
+    "span",
     {
-      href: s.href,
-      target: "_blank",
-      rel: "noreferrer",
-      "aria-label": s.label,
+      role: "img",
+      "aria-label": `${s.label} — coming soon`,
+      title: `${s.label} — coming soon`,
       "data-ocid": `navbar.social.${s.label.toLowerCase()}`,
-      className: "social-tile !h-10 !w-10 rounded-lg",
+      className: "social-tile !h-10 !w-10 cursor-default rounded-lg",
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(s.icon, { className: "size-4" })
     },
     s.label
@@ -41730,7 +41728,7 @@ function Navbar() {
                 asChild: true,
                 size: "sm",
                 "data-ocid": "navbar.call_button",
-                className: "hidden rounded-full border-2 border-navy bg-cream-bright font-body text-sm font-bold uppercase tracking-wide text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:inline-flex lg:h-10 lg:px-4",
+                className: "btn-brutal btn-brutal-ice hidden bg-cream-bright font-body text-xs font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-mist md:inline-flex lg:h-11 lg:px-5 lg:text-sm",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "tel:8563089986", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-4" }),
                   "(856) 308-9986"
@@ -41744,7 +41742,7 @@ function Navbar() {
                 size: "icon",
                 "aria-label": "Call Avalon Ice",
                 "data-ocid": "navbar.call_icon",
-                className: "size-10 rounded-lg border-2 border-navy bg-cream-bright text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist md:hidden",
+                className: "btn-brutal btn-brutal-ice size-10 bg-cream-bright text-navy hover:bg-ice-mist md:hidden",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "tel:8563089986", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-4" }) })
               }
             ),
@@ -41754,7 +41752,7 @@ function Navbar() {
                 asChild: true,
                 size: "sm",
                 "data-ocid": "navbar.contact_button",
-                className: "hidden rounded-full border-2 border-navy bg-navy font-body text-sm font-bold uppercase tracking-wide text-cream-bright shadow-[0_3px_0_#A3CCD1] hover:bg-lagoon md:inline-flex lg:h-10 lg:px-5",
+                className: "btn-brutal btn-brutal-ice hidden bg-navy font-body text-xs font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-lagoon md:inline-flex lg:h-11 lg:px-6 lg:text-sm",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/#order-form", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Mail, { className: "size-4" }),
                   "Contact Us"
@@ -41769,7 +41767,7 @@ function Navbar() {
                 "aria-label": "Toggle menu",
                 "aria-expanded": open,
                 onClick: () => setOpen((v2) => !v2),
-                className: "inline-flex size-10 items-center justify-center rounded-lg border-2 border-navy text-navy shadow-[0_3px_0_#A3CCD1] hover:bg-ice-mist xl:hidden",
+                className: "btn-brutal btn-brutal-ice inline-flex size-10 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden",
                 children: open ? /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "size-5" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Menu, { className: "size-5" })
               }
             )
@@ -41787,13 +41785,13 @@ function Navbar() {
             },
             link.href
           )),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 flex flex-col gap-2.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 flex flex-col gap-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
                 asChild: true,
                 "data-ocid": "navbar.mobile_contact",
-                className: "btn-brutal btn-brutal-ice rounded-xl bg-navy py-5 font-body font-bold uppercase tracking-wide text-cream-bright hover:bg-navy",
+                className: "btn-brutal btn-brutal-ice bg-navy py-5 font-body font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/#order-form", onClick: () => setOpen(false), children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Mail, { className: "size-4" }),
                   "Contact Us / Get a Quote"
@@ -41805,11 +41803,20 @@ function Navbar() {
               {
                 asChild: true,
                 "data-ocid": "navbar.mobile_call",
-                className: "btn-brutal rounded-xl bg-cream-bright py-5 font-body font-bold uppercase tracking-wide text-navy hover:bg-ice-frost",
+                className: "btn-brutal btn-brutal-ice bg-cream-bright py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-frost",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "tel:8563089986", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "size-4" }),
                   "Call (856) 308-9986"
                 ] })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                asChild: true,
+                "data-ocid": "navbar.mobile_shop",
+                className: "btn-brutal btn-brutal-ice bg-ice-light py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: "/shop", onClick: () => setOpen(false), children: "Visit the Shop" })
               }
             )
           ] })
@@ -50232,6 +50239,49 @@ function IceFrame({
     }
   ) }) }) });
 }
+const SCRIM_CLASS = {
+  side: "bg-gradient-to-b from-cream/85 via-cream/70 to-cream/85 md:bg-gradient-to-r md:from-cream/90 md:via-cream/55 md:to-transparent",
+  even: "bg-cream/78 md:bg-gradient-to-b md:from-cream/82 md:via-cream/58 md:to-cream/82",
+  band: "bg-navy/70 md:bg-gradient-to-r md:from-navy/85 md:via-navy/65 md:to-navy/45"
+};
+function VideoBackdrop({
+  src,
+  label,
+  scrim = "even",
+  fadeToCream = true,
+  className
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: cn(
+        "absolute inset-0 overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light",
+        className
+      ),
+      "aria-hidden": "true",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          BrandVideo,
+          {
+            src,
+            label,
+            className: "absolute inset-0 h-full w-full object-cover"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: cn(
+              "pointer-events-none absolute inset-0",
+              SCRIM_CLASS[scrim]
+            )
+          }
+        ),
+        fadeToCream && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream md:h-24" })
+      ]
+    }
+  );
+}
 var CHECKBOX_NAME = "Checkbox";
 var [createCheckboxContext] = createContextScope(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
@@ -50513,8 +50563,23 @@ function Checkbox({
     }
   );
 }
+function useIsMobile(breakpoint = 768) {
+  const query = `(max-width: ${breakpoint - 1}px)`;
+  const [isMobile, setIsMobile] = reactExports.useState(
+    () => typeof window === "undefined" ? false : window.matchMedia(query).matches
+  );
+  reactExports.useEffect(() => {
+    const mql = window.matchMedia(query);
+    const update = (e) => setIsMobile(e.matches);
+    update(mql);
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [query]);
+  return isMobile;
+}
 const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
 const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
+const MERCH_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_merch_promo_final.mp4";
 const LayoutGroupContext = reactExports.createContext({});
 function useConstant(init) {
   const ref = reactExports.useRef(null);
@@ -59064,8 +59129,9 @@ function useReducedMotion() {
   const [shouldReduceMotion] = reactExports.useState(prefersReducedMotion.current);
   return shouldReduceMotion;
 }
-const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-ResRJEqo.js"), true ? [] : void 0));
+const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-DX2lH1yp.js"), true ? [] : void 0));
 function Hero() {
+  const isMobile = useIsMobile();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "section",
     {
@@ -59073,18 +59139,14 @@ function Hero() {
       "data-ocid": "hero",
       className: "relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light md:flex md:min-h-[85vh] md:items-center",
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 hidden md:block", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            BrandVideo,
-            {
-              src: HERO_VIDEO,
-              label: "Avalon Ice brand animation",
-              className: "absolute inset-0 h-full w-full object-cover"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream" })
-        ] }),
+        !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          VideoBackdrop,
+          {
+            src: HERO_VIDEO,
+            label: "Avalon Ice brand animation",
+            scrim: "side"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(FrostOverlay, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "chip chip-solid mb-6", "data-ocid": "hero.badge", children: [
@@ -59140,7 +59202,7 @@ function Hero() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-ice-deep", children: "|" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Cell: 856-308-9986" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-9 md:hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-9", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             BrandVideo,
             {
               src: HERO_VIDEO,
@@ -59304,7 +59366,7 @@ const PRODUCTS = [
   },
   {
     title: "Premium Bagged & Block Ice",
-    description: "Crystal-clear cubes, crushed, and block ice — cleanly bagged and consistently sized.",
+    description: "Crystal-clear cubed, crushed, and block ice — cleanly bagged and consistently sized.",
     chips: [{ label: "Cubed" }, { label: "Crushed" }, { label: "Block" }],
     clip: "d"
   }
@@ -59659,6 +59721,62 @@ function Products() {
     }
   );
 }
+function ShopTeaser() {
+  const isMobile = useIsMobile();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "section",
+    {
+      id: "shop-preview",
+      "data-ocid": "shop_teaser",
+      className: "relative overflow-hidden bg-gradient-primary py-16 md:min-h-[30rem] md:py-24",
+      children: [
+        !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          VideoBackdrop,
+          {
+            src: MERCH_VIDEO,
+            label: "Avalon Ice merch promo",
+            scrim: "band",
+            fadeToCream: false
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto flex h-full max-w-6xl flex-col items-start gap-8 px-4 sm:px-6 md:min-h-[22rem] md:flex-row md:items-center md:justify-between", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-xl", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "chip chip-solid", "data-ocid": "shop_teaser.badge", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(ShoppingBag, { className: "size-3.5" }),
+              "The Avalon Ice Shop"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "mt-5 font-script text-4xl leading-tight text-cream-bright sm:text-5xl md:text-6xl", children: "Merch is on the way." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-5 font-body text-base leading-relaxed text-cream/85 sm:text-lg", children: "Tees, hats, coolers, and bagged ice — straight from the shore. The direct Avalon Ice storefront opens Labor Day Weekend 2026." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-8 flex flex-wrap items-center gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  asChild: true,
+                  size: "lg",
+                  "data-ocid": "shop_teaser.visit_button",
+                  className: "btn-brutal btn-brutal-ice bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/shop", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(ShoppingBag, { className: "size-5" }),
+                    "Visit the Shop"
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "chip", children: "Coming · Labor Day Weekend 2026" })
+            ] })
+          ] }),
+          isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full overflow-hidden rounded-2xl border-[3px] border-cream-bright shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BrandVideo,
+            {
+              src: MERCH_VIDEO,
+              label: "Avalon Ice merch promo",
+              className: "h-full w-full object-cover"
+            }
+          ) }) })
+        ] })
+      ]
+    }
+  );
+}
 function Network() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "section",
@@ -59672,7 +59790,7 @@ function Network() {
           "The Network"
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "script-heading mt-3 text-4xl sm:text-5xl md:text-6xl", children: "From Avalon to the whole shore." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon", children: "Every route starts at our Woodbine HQ and runs up the Garden State Parkway — supplying marinas, bars, festivals, and venues from Cape May County to North Jersey. Orbit the state, watch the Avalon Ice trucks make their runs, and pick a town from the list (or tap its dot) to drop a pin on it." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon", children: "Every route starts at our Woodbine HQ and runs up the Garden State Parkway — supplying marinas, bars, festivals, and venues from Cape May County to North Jersey. Orbit the state and watch the Avalon Ice trucks make their runs." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           IceFrame,
           {
@@ -60153,7 +60271,7 @@ function OrderSection() {
             "Request Delivery"
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "script-heading mt-3 text-4xl sm:text-5xl", children: "Get a quote or schedule a drop." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mx-auto mt-4 max-w-xl font-body text-base text-lagoon", children: "Choose the inquiry type that fits. We'll confirm dispatch receipt with a reference ID right away." })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mx-auto mt-4 max-w-xl font-body text-base text-lagoon", children: "Choose the inquiry type that fits and we'll confirm receipt with a reference ID right away." })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           IceFrame,
@@ -60170,7 +60288,7 @@ function OrderSection() {
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex size-14 items-center justify-center rounded-full border-[3px] border-navy bg-ice-light text-navy shadow-[0_4px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "size-7" }) }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "script-heading text-3xl", children: "Inquiry received!" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-body text-lagoon", children: "Your dispatch receipt reference ID is:" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-body text-lagoon", children: "Your dispatch reference ID is:" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge-vintage font-body text-lg", children: result.referenceId }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "max-w-sm font-body text-sm text-lagoon", children: [
                     "Our team will reach out shortly. For urgent needs, call",
@@ -60296,30 +60414,29 @@ function Home() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Hero, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(ShowcaseVideo, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Products, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ShopTeaser, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Network, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(OrderSection, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Contact, {})
   ] });
 }
 function Shop() {
+  const isMobile = useIsMobile();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "section",
     {
       id: "shop",
       "data-ocid": "shop",
-      className: "relative flex min-h-[82vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-16 md:py-24",
+      className: "relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24",
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            BrandVideo,
-            {
-              src: HERO_VIDEO,
-              label: "Avalon Ice brand animation",
-              className: "absolute inset-0 h-full w-full object-cover"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-0 bg-cream/70 md:bg-gradient-to-b md:from-cream/80 md:via-cream/55 md:to-cream/80" })
-        ] }),
+        !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          VideoBackdrop,
+          {
+            src: MERCH_VIDEO,
+            label: "Avalon Ice merch promo",
+            scrim: "even"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(FrostOverlay, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-2xl px-4 text-center sm:px-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
@@ -60332,21 +60449,21 @@ function Shop() {
               clip: "a",
               shadow: "ice",
               cracks: true,
-              innerClassName: "flex flex-col items-center gap-5 px-6 py-12 sm:px-14 sm:py-14",
+              innerClassName: "flex flex-col items-center gap-5 px-5 py-10 sm:px-14 sm:py-14",
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "img",
                   {
                     src: "/assets/images/avalon-ice-logo.webp",
                     alt: "Avalon Ice — Cape May County, N.J.",
-                    className: "w-36 rounded-md mix-blend-multiply sm:w-44"
+                    className: "w-32 rounded-md mix-blend-multiply sm:w-44"
                   }
                 ),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "h1",
                   {
                     "data-ocid": "shop.coming_soon",
-                    className: "text-block-ice text-5xl leading-tight sm:text-6xl",
+                    className: "text-block-ice text-4xl leading-tight sm:text-6xl",
                     children: "Coming Soon"
                   }
                 ),
@@ -60357,10 +60474,10 @@ function Shop() {
                     "aria-hidden": "true"
                   }
                 ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-script text-2xl text-lagoon", children: "Merch, gear & bagged ice — straight from the shore." }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-script text-xl text-lagoon sm:text-2xl", children: "Merch, gear & bagged ice — straight from the shore." }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "chip chip-solid", children: "Labor Day Weekend 2026" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "max-w-sm font-body text-sm leading-relaxed text-lagoon", children: "The direct Avalon Ice storefront is on its way. Until the doors open, wholesale, event, and delivery inquiries are already rolling." }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 flex flex-wrap items-center justify-center gap-3.5", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "max-w-sm font-body text-sm leading-relaxed text-lagoon", children: "The direct Avalon Ice storefront is on its way. In the meantime, wholesale, event, and delivery inquiries are open." }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 flex w-full flex-col items-stretch gap-3.5 sm:w-auto sm:flex-row sm:items-center sm:justify-center", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(
                     Button,
                     {
@@ -60390,7 +60507,15 @@ function Shop() {
                 ] })
               ]
             }
-          ) })
+          ) }),
+          isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-8 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BrandVideo,
+            {
+              src: MERCH_VIDEO,
+              label: "Avalon Ice merch promo",
+              className: "h-full w-full object-cover"
+            }
+          ) }) })
         ] })
       ]
     }

@@ -1,6 +1,7 @@
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
+import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -14,20 +15,23 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useSubmitInquiry } from "@/lib/api";
-import { HERO_VIDEO, LOOP_VIDEO } from "@/lib/media";
+import { HERO_VIDEO, LOOP_VIDEO, MERCH_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
 import type {
   EventFormValues,
   GeneralFormValues,
   WholesaleFormValues,
 } from "@/lib/types";
+import { Link } from "@tanstack/react-router";
 import {
   Check,
   Loader2,
   Mail,
   MapPin,
   Phone,
+  ShoppingBag,
   Snowflake,
   Truck,
 } from "lucide-react";
@@ -48,6 +52,8 @@ const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
 /* ------------------------------------------------------------------ */
 
 function Hero() {
+  const isMobile = useIsMobile();
+
   return (
     <section
       id="top"
@@ -56,17 +62,16 @@ function Hero() {
     >
       {/* md+: full-bleed cover video behind the content. On phones the video
           instead renders inline below the CTAs at its native aspect ratio,
-          so it scales with the viewport with no cropping or letterboxing. */}
-      <div className="absolute inset-0 hidden md:block" aria-hidden="true">
-        <BrandVideo
+          so it scales with the viewport with no cropping or letterboxing.
+          Only the element for the current breakpoint is mounted, so phones
+          never download or decode the backdrop copy. */}
+      {!isMobile && (
+        <VideoBackdrop
           src={HERO_VIDEO}
           label="Avalon Ice brand animation"
-          className="absolute inset-0 h-full w-full object-cover"
+          scrim="side"
         />
-        {/* Legibility scrim + fade into the next cream section */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream" />
-      </div>
+      )}
 
       {/* Ambient frost / ice-particle drift */}
       <FrostOverlay />
@@ -124,17 +129,19 @@ function Hero() {
         </div>
 
         {/* Mobile: inline hero video at native aspect ratio */}
-        <div className="mt-9 md:hidden">
-          <div className="overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
-            <div className="aspect-video w-full bg-gradient-ice-card">
-              <BrandVideo
-                src={HERO_VIDEO}
-                label="Avalon Ice brand animation"
-                className="h-full w-full object-cover"
-              />
+        {isMobile && (
+          <div className="mt-9">
+            <div className="overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
+              <div className="aspect-video w-full bg-gradient-ice-card">
+                <BrandVideo
+                  src={HERO_VIDEO}
+                  label="Avalon Ice brand animation"
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
@@ -316,7 +323,7 @@ const PRODUCTS: Product[] = [
   {
     title: "Premium Bagged & Block Ice",
     description:
-      "Crystal-clear cubes, crushed, and block ice — cleanly bagged and consistently sized.",
+      "Crystal-clear cubed, crushed, and block ice — cleanly bagged and consistently sized.",
     chips: [{ label: "Cubed" }, { label: "Crushed" }, { label: "Block" }],
     clip: "d",
   },
@@ -673,6 +680,80 @@ function Products() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Shop teaser — merch promo hero band                                 */
+/* ------------------------------------------------------------------ */
+
+function ShopTeaser() {
+  const isMobile = useIsMobile();
+
+  return (
+    <section
+      id="shop-preview"
+      data-ocid="shop_teaser"
+      className="relative overflow-hidden bg-gradient-primary py-16 md:min-h-[30rem] md:py-24"
+    >
+      {/* Merch promo backdrop on md+; phones get the inline player below */}
+      {!isMobile && (
+        <VideoBackdrop
+          src={MERCH_VIDEO}
+          label="Avalon Ice merch promo"
+          scrim="band"
+          fadeToCream={false}
+        />
+      )}
+
+      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-start gap-8 px-4 sm:px-6 md:min-h-[22rem] md:flex-row md:items-center md:justify-between">
+        <div className="max-w-xl">
+          <span className="chip chip-solid" data-ocid="shop_teaser.badge">
+            <ShoppingBag className="size-3.5" />
+            The Avalon Ice Shop
+          </span>
+
+          {/* font-script rather than .script-heading: that utility pins the
+              colour to navy, which would vanish against this navy band. */}
+          <h2 className="mt-5 font-script text-4xl leading-tight text-cream-bright sm:text-5xl md:text-6xl">
+            Merch is on the way.
+          </h2>
+
+          <p className="mt-5 font-body text-base leading-relaxed text-cream/85 sm:text-lg">
+            Tees, hats, coolers, and bagged ice — straight from the shore. The
+            direct Avalon Ice storefront opens Labor Day Weekend 2026.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Button
+              asChild
+              size="lg"
+              data-ocid="shop_teaser.visit_button"
+              className="btn-brutal btn-brutal-ice bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
+            >
+              <Link to="/shop">
+                <ShoppingBag className="size-5" />
+                Visit the Shop
+              </Link>
+            </Button>
+            <span className="chip">Coming · Labor Day Weekend 2026</span>
+          </div>
+        </div>
+
+        {/* Phones: promo plays inline, uncropped, at its native ratio */}
+        {isMobile && (
+          <div className="w-full overflow-hidden rounded-2xl border-[3px] border-cream-bright shadow-[0_6px_0_#A3CCD1]">
+            <div className="aspect-video w-full bg-gradient-ice-card">
+              <BrandVideo
+                src={MERCH_VIDEO}
+                label="Avalon Ice merch promo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Network — interactive 3D NJ delivery map                            */
 /* ------------------------------------------------------------------ */
 
@@ -694,9 +775,8 @@ function Network() {
         <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon">
           Every route starts at our Woodbine HQ and runs up the Garden State
           Parkway — supplying marinas, bars, festivals, and venues from Cape May
-          County to North Jersey. Orbit the state, watch the Avalon Ice trucks
-          make their runs, and pick a town from the list (or tap its dot) to
-          drop a pin on it.
+          County to North Jersey. Orbit the state and watch the Avalon Ice
+          trucks make their runs.
         </p>
 
         <div className="mt-10">
@@ -1201,8 +1281,8 @@ function OrderSection() {
             Get a quote or schedule a drop.
           </h2>
           <p className="mx-auto mt-4 max-w-xl font-body text-base text-lagoon">
-            Choose the inquiry type that fits. We'll confirm dispatch receipt
-            with a reference ID right away.
+            Choose the inquiry type that fits and we'll confirm receipt with a
+            reference ID right away.
           </p>
         </div>
 
@@ -1223,7 +1303,7 @@ function OrderSection() {
                 </span>
                 <h3 className="script-heading text-3xl">Inquiry received!</h3>
                 <p className="font-body text-lagoon">
-                  Your dispatch receipt reference ID is:
+                  Your dispatch reference ID is:
                 </p>
                 <div className="badge-vintage font-body text-lg">
                   {result.referenceId}
@@ -1354,6 +1434,7 @@ export default function Home() {
       <Hero />
       <ShowcaseVideo />
       <Products />
+      <ShopTeaser />
       <Network />
       <OrderSection />
       <Contact />

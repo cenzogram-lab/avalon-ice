@@ -1,4 +1,4 @@
-import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-BLr4lVcg.js";
+import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-Bv4jGKST.js";
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n) {
     for (var e = 1; e < arguments.length; e++) {
@@ -52868,7 +52868,7 @@ function blurb(t) {
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
   if (t.inland) return "Served daily up the Parkway from the shore.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
-  return "On the shore run — bars, marinas, venues and events.";
+  return "On the shore run — bars, marinas, venues, and events.";
 }
 const FALLBACK_OUTLINE = [
   [38.93, -74.96],

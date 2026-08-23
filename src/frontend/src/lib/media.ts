@@ -3,3 +3,6 @@ export const HERO_VIDEO =
   "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
 export const LOOP_VIDEO =
   "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
+/** Merch promo — backdrop for the shop hero on the homepage and /shop. */
+export const MERCH_VIDEO =
+  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_merch_promo_final.mp4";

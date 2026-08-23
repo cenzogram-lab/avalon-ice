@@ -1,31 +1,39 @@
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
+import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
-import { HERO_VIDEO } from "@/lib/media";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MERCH_VIDEO } from "@/lib/media";
 import { Mail, ShoppingBag, Truck } from "lucide-react";
 
 /**
  * /shop — branded storefront placeholder. No products are listed yet:
  * a hand-drawn ice banner announces the upcoming Avalon Ice merch and
- * direct storefront over the looping brand video.
+ * direct storefront over the looping merch promo.
+ *
+ * The section height is content-driven on phones (and only adopts a
+ * viewport minimum from md up), so the hero grows with its content
+ * instead of blowing out or clipping on short screens.
  */
 export default function Shop() {
+  // One video element per breakpoint: a full-bleed backdrop on larger
+  // screens, an inline uncropped player on phones.
+  const isMobile = useIsMobile();
+
   return (
     <section
       id="shop"
       data-ocid="shop"
-      className="relative flex min-h-[82vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-16 md:py-24"
+      className="relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24"
     >
-      {/* Branded background video beneath the header */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <BrandVideo
-          src={HERO_VIDEO}
-          label="Avalon Ice brand animation"
-          className="absolute inset-0 h-full w-full object-cover"
+      {!isMobile && (
+        <VideoBackdrop
+          src={MERCH_VIDEO}
+          label="Avalon Ice merch promo"
+          scrim="even"
         />
-        <div className="pointer-events-none absolute inset-0 bg-cream/70 md:bg-gradient-to-b md:from-cream/80 md:via-cream/55 md:to-cream/80" />
-      </div>
+      )}
 
       <FrostOverlay />
 
@@ -40,17 +48,17 @@ export default function Shop() {
             clip="a"
             shadow="ice"
             cracks
-            innerClassName="flex flex-col items-center gap-5 px-6 py-12 sm:px-14 sm:py-14"
+            innerClassName="flex flex-col items-center gap-5 px-5 py-10 sm:px-14 sm:py-14"
           >
             <img
               src="/assets/images/avalon-ice-logo.webp"
               alt="Avalon Ice — Cape May County, N.J."
-              className="w-36 rounded-md mix-blend-multiply sm:w-44"
+              className="w-32 rounded-md mix-blend-multiply sm:w-44"
             />
 
             <h1
               data-ocid="shop.coming_soon"
-              className="text-block-ice text-5xl leading-tight sm:text-6xl"
+              className="text-block-ice text-4xl leading-tight sm:text-6xl"
             >
               Coming Soon
             </h1>
@@ -60,19 +68,18 @@ export default function Shop() {
               aria-hidden="true"
             />
 
-            <p className="font-script text-2xl text-lagoon">
+            <p className="font-script text-xl text-lagoon sm:text-2xl">
               Merch, gear &amp; bagged ice — straight from the shore.
             </p>
 
             <span className="chip chip-solid">Labor Day Weekend 2026</span>
 
             <p className="max-w-sm font-body text-sm leading-relaxed text-lagoon">
-              The direct Avalon Ice storefront is on its way. Until the doors
-              open, wholesale, event, and delivery inquiries are already
-              rolling.
+              The direct Avalon Ice storefront is on its way. In the meantime,
+              wholesale, event, and delivery inquiries are open.
             </p>
 
-            <div className="mt-2 flex flex-wrap items-center justify-center gap-3.5">
+            <div className="mt-2 flex w-full flex-col items-stretch gap-3.5 sm:w-auto sm:flex-row sm:items-center sm:justify-center">
               <Button
                 asChild
                 size="lg"
@@ -98,6 +105,20 @@ export default function Shop() {
             </div>
           </IceFrame>
         </div>
+
+        {/* Phones: the promo plays inline at its native aspect ratio rather
+            than as a cropped backdrop, so nothing is cut off. */}
+        {isMobile && (
+          <div className="mt-8 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
+            <div className="aspect-video w-full bg-gradient-ice-card">
+              <BrandVideo
+                src={MERCH_VIDEO}
+                label="Avalon Ice merch promo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

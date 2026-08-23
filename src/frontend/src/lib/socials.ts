@@ -9,13 +9,16 @@ import {
 export interface SocialLink {
   label: string;
   icon: IconType;
-  href: string;
 }
 
-/** Placeholder social destinations until the brand accounts go live. */
+/**
+ * Social placeholders. The brand accounts are not live yet, so these
+ * carry no destination — they render as inert, labelled tiles until real
+ * profile URLs exist.
+ */
 export const SOCIALS: SocialLink[] = [
-  { label: "Instagram", icon: FaInstagram, href: "https://instagram.com" },
-  { label: "Facebook", icon: FaFacebookF, href: "https://facebook.com" },
-  { label: "TikTok", icon: FaTiktok, href: "https://tiktok.com" },
-  { label: "LinkedIn", icon: FaLinkedinIn, href: "https://linkedin.com" },
+  { label: "Instagram", icon: FaInstagram },
+  { label: "Facebook", icon: FaFacebookF },
+  { label: "TikTok", icon: FaTiktok },
+  { label: "LinkedIn", icon: FaLinkedinIn },
 ];

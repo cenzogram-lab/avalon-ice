@@ -68,17 +68,16 @@ export default function Footer() {
 
           <div className="mt-6 flex items-center gap-3">
             {SOCIALS.map((s) => (
-              <a
+              <span
                 key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.label}
+                role="img"
+                aria-label={`${s.label} — coming soon`}
+                title={`${s.label} — coming soon`}
                 data-ocid={`footer.social.${s.label.toLowerCase()}`}
-                className="social-tile"
+                className="social-tile cursor-default"
               >
                 <s.icon className="size-5" />
-              </a>
+              </span>
             ))}
           </div>
         </div>
