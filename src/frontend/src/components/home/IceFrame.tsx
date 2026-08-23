@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
-type ClipVariant = "a" | "b" | "c" | "d";
+type ClipVariant = "a" | "b" | "c" | "d" | "banner";
 type FillVariant = "ice" | "cream" | "navy";
 type ShadowVariant = "ice" | "deep" | "navy" | "none";
 

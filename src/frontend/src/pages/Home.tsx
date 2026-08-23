@@ -1,6 +1,7 @@
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
+import RoadParade from "@/components/home/RoadParade";
 import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,7 +18,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSubmitInquiry } from "@/lib/api";
-import { HERO_VIDEO, LOOP_VIDEO, MERCH_VIDEO } from "@/lib/media";
+import { HERO_VIDEO, LOOP_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
 import type {
   EventFormValues,
@@ -151,106 +152,6 @@ function Hero() {
 /* Secondary showcase video — delivery & route                         */
 /* ------------------------------------------------------------------ */
 
-function TruckSVG({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 180 92"
-      className={className}
-      aria-hidden="true"
-      role="presentation"
-    >
-      {/* Box body with livery */}
-      <rect
-        x="4"
-        y="8"
-        width="112"
-        height="58"
-        rx="6"
-        fill="#FDFCF8"
-        stroke="#0C3552"
-        strokeWidth="4"
-      />
-      <text
-        x="60"
-        y="34"
-        textAnchor="middle"
-        fontFamily="var(--font-display), Georgia, serif"
-        fontSize="17"
-        fill="#0C3552"
-      >
-        AVALON
-      </text>
-      <rect x="30" y="41" width="60" height="4" rx="2" fill="#8CBEC5" />
-      <text
-        x="60"
-        y="60"
-        textAnchor="middle"
-        fontFamily="var(--font-display), Georgia, serif"
-        fontSize="14"
-        fill="#0C3552"
-      >
-        ICE
-      </text>
-      {/* Cab */}
-      <path
-        d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z"
-        fill="#0C3552"
-      />
-      <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
-      {/* Wheels */}
-      {[34, 86, 146].map((cx) => (
-        <g key={cx}>
-          <circle cx={cx} cy="72" r="13" fill="#061F33" />
-          <circle cx={cx} cy="72" r="5.5" fill="#F7F2EA" />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-/** Waving egret mascot behind a looping parade of delivery trucks. */
-function MascotParade() {
-  return (
-    <div
-      className="relative mt-12 h-52 overflow-hidden sm:h-64"
-      aria-hidden="true"
-    >
-      {/* Mascot in the background, gently waving */}
-      <div className="absolute bottom-9 left-1/2 z-0 -translate-x-1/2 sm:bottom-10">
-        <img
-          src="/assets/images/avalon-egret.webp"
-          alt=""
-          className="animate-mascot-wave h-36 w-auto mix-blend-multiply sm:h-48"
-        />
-      </div>
-
-      {/* Roadway */}
-      <div className="absolute inset-x-0 bottom-0 z-10 h-10 border-t-[3px] border-navy bg-navy sm:h-11">
-        <div className="road-stripes absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 opacity-70" />
-      </div>
-
-      {/* Trucks drive in front of the mascot */}
-      <div
-        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-36 sm:w-44"
-        style={{ "--truck-duration": "17s" } as React.CSSProperties}
-      >
-        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
-      </div>
-      <div
-        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-28 sm:w-32"
-        style={
-          {
-            "--truck-duration": "26s",
-            "--truck-delay": "-14s",
-          } as React.CSSProperties
-        }
-      >
-        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
-      </div>
-    </div>
-  );
-}
-
 function ShowcaseVideo() {
   return (
     <section
@@ -281,7 +182,7 @@ function ShowcaseVideo() {
           </div>
         </IceFrame>
 
-        <MascotParade />
+        <RoadParade className="mt-12" />
       </div>
     </section>
   );
@@ -684,70 +585,66 @@ function Products() {
 /* ------------------------------------------------------------------ */
 
 function ShopTeaser() {
-  const isMobile = useIsMobile();
-
   return (
     <section
       id="shop-preview"
       data-ocid="shop_teaser"
-      className="relative overflow-hidden bg-gradient-primary py-16 md:min-h-[30rem] md:py-24"
+      className="texture-paper bg-cream py-12 md:py-16"
     >
-      {/* Merch promo backdrop on md+; phones get the inline player below */}
-      {!isMobile && (
-        <VideoBackdrop
-          src={MERCH_VIDEO}
-          label="Avalon Ice merch promo"
-          scrim="band"
-          fadeToCream={false}
-        />
-      )}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        {/* Wide retro banner: offset outline stroke behind a dual-stroke
+            hand-drawn ice frame, in the hero's cream/navy/ice palette. */}
+        <div className="relative">
+          <div
+            className="clip-ice-banner absolute inset-0 translate-x-[10px] translate-y-[13px] bg-navy/25"
+            aria-hidden="true"
+          />
+          <IceFrame
+            clip="banner"
+            shadow="ice"
+            cracks
+            className="relative"
+            innerClassName="flex flex-col items-center gap-6 px-6 py-9 text-center md:flex-row md:justify-between md:gap-10 md:px-12 md:py-9 md:text-left"
+          >
+            <img
+              src="/assets/images/avalon-heron.webp"
+              alt=""
+              aria-hidden="true"
+              className="size-20 shrink-0 rounded-full border-[3px] border-navy bg-cream-bright sm:size-24"
+            />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-start gap-8 px-4 sm:px-6 md:min-h-[22rem] md:flex-row md:items-center md:justify-between">
-        <div className="max-w-xl">
-          <span className="chip chip-solid" data-ocid="shop_teaser.badge">
-            <ShoppingBag className="size-3.5" />
-            The Avalon Ice Shop
-          </span>
-
-          {/* font-script rather than .script-heading: that utility pins the
-              colour to navy, which would vanish against this navy band. */}
-          <h2 className="mt-5 font-script text-4xl leading-tight text-cream-bright sm:text-5xl md:text-6xl">
-            Merch is on the way.
-          </h2>
-
-          <p className="mt-5 font-body text-base leading-relaxed text-cream/85 sm:text-lg">
-            Tees, hats, coolers, and bagged ice — straight from the shore. The
-            direct Avalon Ice storefront opens Labor Day Weekend 2026.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button
-              asChild
-              size="lg"
-              data-ocid="shop_teaser.visit_button"
-              className="btn-brutal btn-brutal-ice bg-cream-bright px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
-            >
-              <Link to="/shop">
-                <ShoppingBag className="size-5" />
-                Visit the Shop
-              </Link>
-            </Button>
-            <span className="chip">Coming · Labor Day Weekend 2026</span>
-          </div>
-        </div>
-
-        {/* Phones: promo plays inline, uncropped, at its native ratio */}
-        {isMobile && (
-          <div className="w-full overflow-hidden rounded-2xl border-[3px] border-cream-bright shadow-[0_6px_0_#A3CCD1]">
-            <div className="aspect-video w-full bg-gradient-ice-card">
-              <BrandVideo
-                src={MERCH_VIDEO}
-                label="Avalon Ice merch promo"
-                className="h-full w-full object-cover"
-              />
+            <div className="md:flex-1">
+              <span className="eyebrow inline-flex items-center gap-2">
+                <ShoppingBag className="size-4" />
+                The Avalon Ice Shop
+              </span>
+              <h2
+                data-ocid="shop_teaser.heading"
+                className="text-block-ice mt-2 text-4xl leading-none sm:text-5xl"
+              >
+                Coming Soon
+              </h2>
+              <p className="mt-3 font-script text-xl text-lagoon sm:text-2xl">
+                Packaged &amp; bulk ice · merch, gear &amp; more.
+              </p>
             </div>
-          </div>
-        )}
+
+            <div className="flex shrink-0 flex-col items-center gap-3 md:items-end">
+              <Button
+                asChild
+                size="lg"
+                data-ocid="shop_teaser.visit_button"
+                className="btn-brutal btn-brutal-ice bg-navy px-7 py-6 font-body text-sm font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy"
+              >
+                <Link to="/shop">
+                  <ShoppingBag className="size-5" />
+                  Visit the Shop
+                </Link>
+              </Button>
+              <span className="chip">Labor Day Weekend 2026</span>
+            </div>
+          </IceFrame>
+        </div>
       </div>
     </section>
   );
@@ -1432,10 +1329,10 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <ShowcaseVideo />
-      <Products />
       <ShopTeaser />
+      <Products />
       <Network />
+      <ShowcaseVideo />
       <OrderSection />
       <Contact />
     </>
