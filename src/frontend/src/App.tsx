@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import Admin from "@/pages/Admin";
 import Home from "@/pages/Home";
+import Shop from "@/pages/Shop";
 import {
   Outlet,
   RouterProvider,
@@ -23,13 +24,19 @@ const indexRoute = createRoute({
   component: Home,
 });
 
+const shopRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/shop",
+  component: Shop,
+});
+
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/admin",
   component: Admin,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, adminRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, shopRoute, adminRoute]);
 
 const router = createRouter({ routeTree });
 

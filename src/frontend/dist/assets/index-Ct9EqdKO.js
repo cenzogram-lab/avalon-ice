@@ -38637,31 +38637,31 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$g = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$g);
+const __iconNode$h = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$h);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$f);
+const __iconNode$g = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$g);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$e = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$e);
+const __iconNode$f = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$d = [
+const __iconNode$e = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   [
@@ -38673,14 +38673,14 @@ const __iconNode$d = [
     { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
   ]
 ];
-const FileJson = createLucideIcon("file-json", __iconNode$d);
+const FileJson = createLucideIcon("file-json", __iconNode$e);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [
+const __iconNode$d = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   ["path", { d: "M8 13h2", key: "yr2amv" }],
@@ -38688,15 +38688,26 @@ const __iconNode$c = [
   ["path", { d: "M8 17h2", key: "2yhykz" }],
   ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$c);
+const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$d);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$b = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$b);
+const __iconNode$c = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$c);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$b = [
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+];
+const Lock = createLucideIcon("lock", __iconNode$b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38704,10 +38715,11 @@ const LoaderCircle = createLucideIcon("loader-circle", __iconNode$b);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$a = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
 ];
-const Lock = createLucideIcon("lock", __iconNode$a);
+const LogOut = createLucideIcon("log-out", __iconNode$a);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38715,11 +38727,10 @@ const Lock = createLucideIcon("lock", __iconNode$a);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$9 = [
-  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
-  ["path", { d: "M21 12H9", key: "dn1m92" }],
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
+  ["path", { d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7", key: "132q7q" }],
+  ["rect", { x: "2", y: "4", width: "20", height: "16", rx: "2", key: "izxlao" }]
 ];
-const LogOut = createLucideIcon("log-out", __iconNode$9);
+const Mail = createLucideIcon("mail", __iconNode$9);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38727,17 +38738,6 @@ const LogOut = createLucideIcon("log-out", __iconNode$9);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$8 = [
-  ["path", { d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7", key: "132q7q" }],
-  ["rect", { x: "2", y: "4", width: "20", height: "16", rx: "2", key: "izxlao" }]
-];
-const Mail = createLucideIcon("mail", __iconNode$8);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$7 = [
   [
     "path",
     {
@@ -38747,7 +38747,19 @@ const __iconNode$7 = [
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
 ];
-const MapPin = createLucideIcon("map-pin", __iconNode$7);
+const MapPin = createLucideIcon("map-pin", __iconNode$8);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  ["path", { d: "M4 12h16", key: "1lakjw" }],
+  ["path", { d: "M4 18h16", key: "19g7jn" }],
+  ["path", { d: "M4 6h16", key: "1o0s65" }]
+];
+const Menu = createLucideIcon("menu", __iconNode$7);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38755,18 +38767,6 @@ const MapPin = createLucideIcon("map-pin", __iconNode$7);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$6 = [
-  ["path", { d: "M4 12h16", key: "1lakjw" }],
-  ["path", { d: "M4 18h16", key: "19g7jn" }],
-  ["path", { d: "M4 6h16", key: "1o0s65" }]
-];
-const Menu = createLucideIcon("menu", __iconNode$6);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$5 = [
   [
     "path",
     {
@@ -38775,7 +38775,18 @@ const __iconNode$5 = [
     }
   ]
 ];
-const Phone = createLucideIcon("phone", __iconNode$5);
+const Phone = createLucideIcon("phone", __iconNode$6);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+];
+const Search = createLucideIcon("search", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38783,17 +38794,6 @@ const Phone = createLucideIcon("phone", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
-];
-const Search = createLucideIcon("search", __iconNode$4);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$3 = [
   [
     "path",
     {
@@ -38803,7 +38803,19 @@ const __iconNode$3 = [
   ],
   ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const ShieldCheck = createLucideIcon("shield-check", __iconNode$3);
+const ShieldCheck = createLucideIcon("shield-check", __iconNode$4);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z", key: "hou9p0" }],
+  ["path", { d: "M3 6h18", key: "d0wm0j" }],
+  ["path", { d: "M16 10a4 4 0 0 1-8 0", key: "1ltviw" }]
+];
+const ShoppingBag = createLucideIcon("shopping-bag", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -38936,30 +38948,15 @@ function Footer() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "© 2026 Avalon Ice · Cape May County, N.J." }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Coming · Labor Day Weekend 2026" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center gap-3 pb-24 text-center md:pb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "a",
-              {
-                href: `https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-                  typeof window !== "undefined" ? window.location.hostname : ""
-                )}`,
-                target: "_blank",
-                rel: "noreferrer",
-                className: "font-body text-[0.65rem] text-lagoon-soft hover:text-navy",
-                children: "Built with love using caffeine.ai"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[0.65rem] text-lagoon-soft", children: "·" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Link,
-              {
-                to: "/admin",
-                "data-ocid": "footer.admin_link",
-                className: "font-body text-[0.65rem] text-lagoon-soft hover:text-navy",
-                children: "Admin"
-              }
-            )
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center pb-24 text-center md:pb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Link,
+            {
+              to: "/admin",
+              "data-ocid": "footer.admin_link",
+              className: "font-body text-[0.65rem] text-lagoon-soft hover:text-navy",
+              children: "Admin"
+            }
+          ) })
         ] })
       ]
     }
@@ -41657,6 +41654,7 @@ function Button({
 const NAV_LINKS = [
   { href: "/#services", label: "Services" },
   { href: "/#network", label: "Network" },
+  { href: "/shop", label: "Shop" },
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" }
 ];
@@ -50515,6 +50513,8 @@ function Checkbox({
     }
   );
 }
+const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
+const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
 const LayoutGroupContext = reactExports.createContext({});
 function useConstant(init) {
   const ref = reactExports.useRef(null);
@@ -58976,41 +58976,29 @@ function useReducedMotion() {
   const [shouldReduceMotion] = reactExports.useState(prefersReducedMotion.current);
   return shouldReduceMotion;
 }
-const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-CrkXn0gp.js"), true ? [] : void 0));
-const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
-const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
+const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-Bpm1Hk8l.js"), true ? [] : void 0));
 function Hero() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "section",
     {
       id: "top",
       "data-ocid": "hero",
-      className: "relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light",
+      className: "relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light md:flex md:min-h-[85vh] md:items-center",
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          BrandVideo,
-          {
-            src: HERO_VIDEO,
-            label: "Avalon Ice brand animation",
-            className: "absolute inset-0 h-full w-full object-cover"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: "pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent",
-            "aria-hidden": "true"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: "pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream",
-            "aria-hidden": "true"
-          }
-        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 hidden md:block", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BrandVideo,
+            {
+              src: HERO_VIDEO,
+              label: "Avalon Ice brand animation",
+              className: "absolute inset-0 h-full w-full object-cover"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream" })
+        ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(FrostOverlay, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 md:py-32", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "chip chip-solid mb-6", "data-ocid": "hero.badge", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(MapPin, { className: "size-3.5" }),
             "Avalon, N.J. · Cape May County"
@@ -59022,7 +59010,6 @@ function Hero() {
             " ",
             "Delivery."
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-6 max-w-xl font-body text-lg font-medium text-lagoon", children: "Jersey Shore ice distribution — commercial wholesale, events & festivals, and same-day shore runs from Cape May County up the Garden State Parkway." }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-9 flex flex-wrap items-center gap-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
@@ -59064,8 +59051,118 @@ function Hero() {
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-ice-deep", children: "|" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Cell: 856-308-9986" })
-          ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-9 md:hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BrandVideo,
+            {
+              src: HERO_VIDEO,
+              label: "Avalon Ice brand animation",
+              className: "h-full w-full object-cover"
+            }
+          ) }) }) })
         ] })
+      ]
+    }
+  );
+}
+function TruckSVG({ className }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "svg",
+    {
+      viewBox: "0 0 180 92",
+      className,
+      "aria-hidden": "true",
+      role: "presentation",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "rect",
+          {
+            x: "4",
+            y: "8",
+            width: "112",
+            height: "58",
+            rx: "6",
+            fill: "#FDFCF8",
+            stroke: "#0C3552",
+            strokeWidth: "4"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "text",
+          {
+            x: "60",
+            y: "34",
+            textAnchor: "middle",
+            fontFamily: "var(--font-display), Georgia, serif",
+            fontSize: "17",
+            fill: "#0C3552",
+            children: "AVALON"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "30", y: "41", width: "60", height: "4", rx: "2", fill: "#8CBEC5" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "text",
+          {
+            x: "60",
+            y: "60",
+            textAnchor: "middle",
+            fontFamily: "var(--font-display), Georgia, serif",
+            fontSize: "14",
+            fill: "#0C3552",
+            children: "ICE"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z",
+            fill: "#0C3552"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "122", y: "32", width: "22", height: "15", rx: "3", fill: "#A3CCD1" }),
+        [34, 86, 146].map((cx2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: cx2, cy: "72", r: "13", fill: "#061F33" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: cx2, cy: "72", r: "5.5", fill: "#F7F2EA" })
+        ] }, cx2))
+      ]
+    }
+  );
+}
+function MascotParade() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: "relative mt-12 h-52 overflow-hidden sm:h-64",
+      "aria-hidden": "true",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-9 left-1/2 z-0 -translate-x-1/2 sm:bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "img",
+          {
+            src: "/assets/images/avalon-egret.webp",
+            alt: "",
+            className: "animate-mascot-wave h-36 w-auto mix-blend-multiply sm:h-48"
+          }
+        ) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-x-0 bottom-0 z-10 h-10 border-t-[3px] border-navy bg-navy sm:h-11", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "road-stripes absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 opacity-70" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "animate-truck-drive absolute bottom-7 left-0 z-20 w-36 sm:w-44",
+            style: { "--truck-duration": "17s" },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(TruckSVG, { className: "h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "animate-truck-drive absolute bottom-7 left-0 z-20 w-28 sm:w-32",
+            style: {
+              "--truck-duration": "26s",
+              "--truck-delay": "-14s"
+            },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(TruckSVG, { className: "h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" })
+          }
+        )
       ]
     }
   );
@@ -59092,7 +59189,8 @@ function ShowcaseVideo() {
             label: "Avalon Ice delivery route loop",
             className: "h-full w-full rounded-xl object-cover"
           }
-        ) }) }) })
+        ) }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(MascotParade, {})
       ] })
     }
   );
@@ -59900,6 +59998,101 @@ function Home() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Contact, {})
   ] });
 }
+function Shop() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "section",
+    {
+      id: "shop",
+      "data-ocid": "shop",
+      className: "relative flex min-h-[82vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-16 md:py-24",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0", "aria-hidden": "true", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BrandVideo,
+            {
+              src: HERO_VIDEO,
+              label: "Avalon Ice brand animation",
+              className: "absolute inset-0 h-full w-full object-cover"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-0 bg-cream/70 md:bg-gradient-to-b md:from-cream/80 md:via-cream/55 md:to-cream/80" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(FrostOverlay, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-2xl px-4 text-center sm:px-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ShoppingBag, { className: "size-4" }),
+            "The Avalon Ice Shop"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            IceFrame,
+            {
+              clip: "a",
+              shadow: "ice",
+              cracks: true,
+              innerClassName: "flex flex-col items-center gap-5 px-6 py-12 sm:px-14 sm:py-14",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "img",
+                  {
+                    src: "/assets/images/avalon-ice-logo.webp",
+                    alt: "Avalon Ice — Cape May County, N.J.",
+                    className: "w-36 rounded-md mix-blend-multiply sm:w-44"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "h1",
+                  {
+                    "data-ocid": "shop.coming_soon",
+                    className: "text-block-ice text-5xl leading-tight sm:text-6xl",
+                    children: "Coming Soon"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "span",
+                  {
+                    className: "block h-[5px] w-28 border-y-2 border-ice-deep",
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-script text-2xl text-lagoon", children: "Merch, gear & bagged ice — straight from the shore." }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "chip chip-solid", children: "Labor Day Weekend 2026" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "max-w-sm font-body text-sm leading-relaxed text-lagoon", children: "The direct Avalon Ice storefront is on its way. Until the doors open, wholesale, event, and delivery inquiries are already rolling." }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 flex flex-wrap items-center justify-center gap-3.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      asChild: true,
+                      size: "lg",
+                      "data-ocid": "shop.order_button",
+                      className: "btn-brutal btn-brutal-ice bg-navy px-6 py-5 font-body text-sm font-bold uppercase tracking-wide text-cream-bright hover:bg-navy",
+                      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/#order-form", children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(Truck, { className: "size-4" }),
+                        "Request Delivery / Quote"
+                      ] })
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    Button,
+                    {
+                      asChild: true,
+                      size: "lg",
+                      "data-ocid": "shop.notify_button",
+                      className: "btn-brutal bg-cream-bright px-6 py-5 font-body text-sm font-bold uppercase tracking-wide text-navy hover:bg-ice-frost",
+                      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "mailto:Sales@AvalonIce.com?subject=Avalon%20Ice%20Shop%20Waitlist", children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(Mail, { className: "size-4" }),
+                        "Get Notified"
+                      ] })
+                    }
+                  )
+                ] })
+              ]
+            }
+          ) })
+        ] })
+      ]
+    }
+  );
+}
 const rootRoute = createRootRoute({
   component: () => /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Outlet, {}) })
 });
@@ -59908,12 +60101,17 @@ const indexRoute = createRoute({
   path: "/",
   component: Home
 });
+const shopRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/shop",
+  component: Shop
+});
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/admin",
   component: Admin
 });
-const routeTree = rootRoute.addChildren([indexRoute, adminRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, shopRoute, adminRoute]);
 const router = createRouter({ routeTree });
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(RouterProvider, { router });

@@ -32,7 +32,7 @@ const CREAM = "#F7F2EA";
 const SHELL = "#FDFCF8";
 
 /* ------------------------------------------------------------------ */
-/* Towns, routes (lat/lon) — 33 towns served, 11 hubs, origin Avalon   */
+/* Towns, routes (lat/lon) — South Jersey + shore, origin Woodbine HQ  */
 /* ------------------------------------------------------------------ */
 
 interface Town {
@@ -45,9 +45,17 @@ interface Town {
 
 const TOWNS: Town[] = [
   { n: "Cape May", ll: [38.9351, -74.906], hub: true },
+  { n: "West Cape May", ll: [38.9387, -74.9418] },
   { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
   { n: "Wildwood", ll: [38.9918, -74.8146], hub: true },
+  { n: "North Wildwood", ll: [39.0007, -74.7994] },
+  { n: "Rio Grande", ll: [39.0117, -74.8807] },
   { n: "Stone Harbor", ll: [39.0479, -74.7649] },
+  { n: "Cape May Court House", ll: [39.0827, -74.8237] },
+  { n: "Marmora", ll: [39.2662, -74.6499] },
+  { n: "Tuckahoe", ll: [39.2882, -74.7532] },
+  { n: "Millville", ll: [39.4021, -75.0393], hub: true, inland: true },
+  { n: "Vineland", ll: [39.4864, -75.0257], hub: true, inland: true },
   { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
   { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
   { n: "Strathmere", ll: [39.2007, -74.656] },
@@ -396,6 +404,24 @@ function makeDashTexture(repeat: number): THREE.CanvasTexture {
   t.wrapS = THREE.RepeatWrapping;
   t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeat, 1);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function makeGlowTexture(): THREE.CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = 256;
+  c.height = 256;
+  const x = c.getContext("2d");
+  if (x) {
+    const g = x.createRadialGradient(128, 128, 10, 128, 128, 128);
+    g.addColorStop(0, "rgba(163,204,209,0.9)");
+    g.addColorStop(0.4, "rgba(163,204,209,0.35)");
+    g.addColorStop(1, "rgba(163,204,209,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 256, 256);
+  }
+  const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
@@ -752,7 +778,11 @@ function TownPin({
         }}
       >
         <sphereGeometry args={[dotR, 18, 14]} />
-        <meshStandardMaterial color={NAVY} roughness={0.35} metalness={0.05} />
+        <meshStandardMaterial
+          color={PIN_RED}
+          roughness={0.32}
+          metalness={0.06}
+        />
       </mesh>
 
       {/* Red map-pin tag, shown only for the selected town */}
@@ -805,35 +835,47 @@ function HeronBeacon({ space }: { space: MapSpace }) {
   );
   const ringA = useRef<THREE.Mesh>(null);
   const ringB = useRef<THREE.Mesh>(null);
+  const ringC = useRef<THREE.Mesh>(null);
   const bobRef = useRef<THREE.Group>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+  const glow = useMemo(() => makeGlowTexture(), []);
   const pos = toWorld(space, HQ_LL[1], HQ_LL[0], TOP_Y);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     const pulse = (offset: number, mesh: THREE.Mesh | null) => {
       if (!mesh) return;
-      const p = ((t + offset) % 2.2) / 2.2;
-      mesh.scale.setScalar(0.5 + p * 1.7);
-      (mesh.material as THREE.MeshBasicMaterial).opacity = 0.5 * (1 - p);
+      const p = ((t + offset) % 2.4) / 2.4;
+      mesh.scale.setScalar(0.5 + p * 2.1);
+      (mesh.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - p);
     };
     pulse(0, ringA.current);
-    pulse(1.1, ringB.current);
+    pulse(0.8, ringB.current);
+    pulse(1.6, ringC.current);
     const bob = bobRef.current;
-    if (bob) bob.position.y = Math.sin(t * 1.4) * 0.7;
+    if (bob) bob.position.y = Math.sin(t * 1.4) * 0.8;
+    // Breathing halo behind the pin
+    const g = glowRef.current;
+    if (g) {
+      const s = 1 + Math.sin(t * 2.2) * 0.12;
+      g.scale.setScalar(s);
+      (g.material as THREE.MeshBasicMaterial).opacity =
+        0.75 + Math.sin(t * 2.2) * 0.2;
+    }
   });
 
   return (
     <group position={pos}>
       {/* Pulsing dispatch rings on the ice */}
-      {[ringA, ringB].map((ref, i) => (
+      {[ringA, ringB, ringC].map((ref, i) => (
         <mesh
           key={`pulse-${i.toString()}`}
           ref={ref}
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, 0.2, 0]}
         >
-          <ringGeometry args={[5.2, 6.2, 48]} />
-          <meshBasicMaterial color="#1B4F70" transparent opacity={0.5} />
+          <ringGeometry args={[6.6, 7.8, 56]} />
+          <meshBasicMaterial color="#1B4F70" transparent opacity={0.55} />
         </mesh>
       ))}
 
@@ -853,27 +895,37 @@ function HeronBeacon({ space }: { space: MapSpace }) {
         </mesh>
       </group>
 
-      {/* Teardrop heron pin floating above the warehouse */}
+      {/* Teardrop heron pin floating above the warehouse, wrapped in a
+          breathing ice-blue halo so the HQ reads from any zoom level */}
       <group ref={bobRef}>
-        <Billboard position={[0, 15.5, 0]}>
+        <Billboard position={[0, 18, 0]}>
+          <mesh ref={glowRef} position={[0, -1, -0.2]}>
+            <planeGeometry args={[26, 26]} />
+            <meshBasicMaterial
+              map={glow}
+              transparent
+              opacity={0.85}
+              depthWrite={false}
+            />
+          </mesh>
           {/* tail */}
-          <mesh position={[0, -5.4, -0.05]} rotation={[Math.PI, 0, 0]}>
-            <coneGeometry args={[2.1, 5.2, 4]} />
+          <mesh position={[0, -7, -0.05]} rotation={[Math.PI, 0, 0]}>
+            <coneGeometry args={[2.7, 6.6, 4]} />
             <meshBasicMaterial color={NAVY} />
           </mesh>
           <mesh>
-            <circleGeometry args={[4.8, 44]} />
+            <circleGeometry args={[6.2, 48]} />
             <meshBasicMaterial color={NAVY} />
           </mesh>
           <mesh position={[0, 0, 0.02]}>
-            <circleGeometry args={[4.2, 44]} />
+            <circleGeometry args={[5.5, 48]} />
             <meshBasicMaterial map={texture} toneMapped={false} />
           </mesh>
         </Billboard>
       </group>
 
-      <Html center position={[0, 25, 0]} zIndexRange={[28, 0]}>
-        <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-3.5 py-1.5 font-body text-xs font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
+      <Html center position={[0, 29.5, 0]} zIndexRange={[28, 0]}>
+        <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-4 py-1.5 font-body text-sm font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
           Woodbine HQ
         </div>
       </Html>
@@ -980,9 +1032,9 @@ function MapScene({
   controlsRef: React.RefObject<OrbitControlsImpl | null>;
   flightRef: React.MutableRefObject<Flight | null>;
 }) {
-  const routeA = useRoute(space, ROUTE_LL, 1.15, 95, 0.055);
-  const routeB = useRoute(space, SPUR_LL, 0.75, 45, 0.03);
-  const routeC = useRoute(space, SOUTH_LL, 0.85, 40, 0.04);
+  const routeA = useRoute(space, ROUTE_LL, 0.55, 120, 0.055);
+  const routeB = useRoute(space, SPUR_LL, 0.38, 60, 0.03);
+  const routeC = useRoute(space, SOUTH_LL, 0.42, 52, 0.04);
   const curves = {
     A: routeA.handle.curve,
     B: routeB.handle.curve,
@@ -1230,8 +1282,11 @@ export default function NJDeliveryMap() {
         <dl className="font-body text-navy">
           {[
             { value: "1", label: "origin · Woodbine HQ" },
-            { value: "11", label: "delivery hubs" },
-            { value: "33", label: "towns served" },
+            {
+              value: String(TOWNS.filter((t) => t.hub).length),
+              label: "delivery hubs",
+            },
+            { value: String(TOWNS.length), label: "towns served" },
           ].map((row, i) => (
             <div
               key={row.label}

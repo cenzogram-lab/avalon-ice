@@ -459,3 +459,61 @@
     color: #0c3552;
   }
 }
+
+@layer utilities {
+  /* ------------------------------------------------------------------ */
+  /* On the Road: waving mascot + truck parade                           */
+  /* ------------------------------------------------------------------ */
+
+  @keyframes mascot-wave {
+    0%,
+    100% {
+      transform: rotate(-2.5deg) translateY(0);
+    }
+    50% {
+      transform: rotate(3deg) translateY(-7px);
+    }
+  }
+  .animate-mascot-wave {
+    transform-origin: 50% 92%;
+    animation: mascot-wave 4.5s ease-in-out infinite;
+  }
+
+  @keyframes truck-drive {
+    from {
+      transform: translateX(-160%);
+    }
+    to {
+      transform: translateX(105vw);
+    }
+  }
+  .animate-truck-drive {
+    animation: truck-drive var(--truck-duration, 18s) linear infinite;
+    animation-delay: var(--truck-delay, 0s);
+  }
+
+  @keyframes road-scroll {
+    from {
+      background-position-x: 0;
+    }
+    to {
+      background-position-x: -52px;
+    }
+  }
+  .road-stripes {
+    background-image: repeating-linear-gradient(
+      90deg,
+      #f7f2ea 0 26px,
+      transparent 26px 52px
+    );
+    animation: road-scroll 1.1s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-mascot-wave,
+    .animate-truck-drive,
+    .road-stripes {
+      animation: none;
+    }
+  }
+}

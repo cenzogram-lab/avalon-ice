@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitInquiry } from "@/lib/api";
+import { HERO_VIDEO, LOOP_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
 import type {
   EventFormValues,
@@ -41,11 +42,6 @@ import { Suspense, lazy, useRef, useState } from "react";
 
 const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
 
-const HERO_VIDEO =
-  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
-const LOOP_VIDEO =
-  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
-
 /* ------------------------------------------------------------------ */
 /* Hero                                                               */
 /* ------------------------------------------------------------------ */
@@ -55,29 +51,26 @@ function Hero() {
     <section
       id="top"
       data-ocid="hero"
-      className="relative flex min-h-[88vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light"
+      className="relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light md:flex md:min-h-[85vh] md:items-center"
     >
-      {/* Looping brand animation, painted only once it can play */}
-      <BrandVideo
-        src={HERO_VIDEO}
-        label="Avalon Ice brand animation"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-
-      {/* Legibility scrim + fade into the next cream section */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream"
-        aria-hidden="true"
-      />
+      {/* md+: full-bleed cover video behind the content. On phones the video
+          instead renders inline below the CTAs at its native aspect ratio,
+          so it scales with the viewport with no cropping or letterboxing. */}
+      <div className="absolute inset-0 hidden md:block" aria-hidden="true">
+        <BrandVideo
+          src={HERO_VIDEO}
+          label="Avalon Ice brand animation"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        {/* Legibility scrim + fade into the next cream section */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream" />
+      </div>
 
       {/* Ambient frost / ice-particle drift */}
       <FrostOverlay />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 md:py-32">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32">
         <span className="chip chip-solid mb-6" data-ocid="hero.badge">
           <MapPin className="size-3.5" />
           Avalon, N.J. · Cape May County
@@ -90,12 +83,6 @@ function Hero() {
           </span>{" "}
           Delivery.
         </h1>
-
-        <p className="mt-6 max-w-xl font-body text-lg font-medium text-lagoon">
-          Jersey Shore ice distribution — commercial wholesale, events &amp;
-          festivals, and same-day shore runs from Cape May County up the Garden
-          State Parkway.
-        </p>
 
         <div className="mt-9 flex flex-wrap items-center gap-4">
           <Button
@@ -134,6 +121,19 @@ function Hero() {
           <span className="text-ice-deep">|</span>
           <span>Cell: 856-308-9986</span>
         </div>
+
+        {/* Mobile: inline hero video at native aspect ratio */}
+        <div className="mt-9 md:hidden">
+          <div className="overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
+            <div className="aspect-video w-full bg-gradient-ice-card">
+              <BrandVideo
+                src={HERO_VIDEO}
+                label="Avalon Ice brand animation"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -142,6 +142,106 @@ function Hero() {
 /* ------------------------------------------------------------------ */
 /* Secondary showcase video — delivery & route                         */
 /* ------------------------------------------------------------------ */
+
+function TruckSVG({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 180 92"
+      className={className}
+      aria-hidden="true"
+      role="presentation"
+    >
+      {/* Box body with livery */}
+      <rect
+        x="4"
+        y="8"
+        width="112"
+        height="58"
+        rx="6"
+        fill="#FDFCF8"
+        stroke="#0C3552"
+        strokeWidth="4"
+      />
+      <text
+        x="60"
+        y="34"
+        textAnchor="middle"
+        fontFamily="var(--font-display), Georgia, serif"
+        fontSize="17"
+        fill="#0C3552"
+      >
+        AVALON
+      </text>
+      <rect x="30" y="41" width="60" height="4" rx="2" fill="#8CBEC5" />
+      <text
+        x="60"
+        y="60"
+        textAnchor="middle"
+        fontFamily="var(--font-display), Georgia, serif"
+        fontSize="14"
+        fill="#0C3552"
+      >
+        ICE
+      </text>
+      {/* Cab */}
+      <path
+        d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z"
+        fill="#0C3552"
+      />
+      <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
+      {/* Wheels */}
+      {[34, 86, 146].map((cx) => (
+        <g key={cx}>
+          <circle cx={cx} cy="72" r="13" fill="#061F33" />
+          <circle cx={cx} cy="72" r="5.5" fill="#F7F2EA" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/** Waving egret mascot behind a looping parade of delivery trucks. */
+function MascotParade() {
+  return (
+    <div
+      className="relative mt-12 h-52 overflow-hidden sm:h-64"
+      aria-hidden="true"
+    >
+      {/* Mascot in the background, gently waving */}
+      <div className="absolute bottom-9 left-1/2 z-0 -translate-x-1/2 sm:bottom-10">
+        <img
+          src="/assets/images/avalon-egret.webp"
+          alt=""
+          className="animate-mascot-wave h-36 w-auto mix-blend-multiply sm:h-48"
+        />
+      </div>
+
+      {/* Roadway */}
+      <div className="absolute inset-x-0 bottom-0 z-10 h-10 border-t-[3px] border-navy bg-navy sm:h-11">
+        <div className="road-stripes absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 opacity-70" />
+      </div>
+
+      {/* Trucks drive in front of the mascot */}
+      <div
+        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-36 sm:w-44"
+        style={{ "--truck-duration": "17s" } as React.CSSProperties}
+      >
+        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
+      </div>
+      <div
+        className="animate-truck-drive absolute bottom-7 left-0 z-20 w-28 sm:w-32"
+        style={
+          {
+            "--truck-duration": "26s",
+            "--truck-delay": "-14s",
+          } as React.CSSProperties
+        }
+      >
+        <TruckSVG className="h-auto w-full drop-shadow-[0_4px_0_rgba(6,31,51,0.25)]" />
+      </div>
+    </div>
+  );
+}
 
 function ShowcaseVideo() {
   return (
@@ -172,6 +272,8 @@ function ShowcaseVideo() {
             </div>
           </div>
         </IceFrame>
+
+        <MascotParade />
       </div>
     </section>
   );
