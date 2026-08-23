@@ -1,4 +1,4 @@
-import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-CqxPYnM5.js";
+import { R as React, u as useSyncExternalStoreExports, r as reactExports, g as getDefaultExportFromCjs, j as jsxRuntimeExports, c as clientExports, L as LoaderCircle, S as Select, a as SelectTrigger, b as SelectValue, d as SelectContent, e as SelectGroup, f as SelectLabel, h as SelectItem, B as Button, X as X$1 } from "./index-CfoS7MLC.js";
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n) {
     for (var e = 1; e < arguments.length; e++) {
@@ -53665,10 +53665,20 @@ function MapScene({
         enableDamping: true,
         dampingFactor: 0.085,
         enablePan: false,
+        enableZoom: true,
+        enableRotate: true,
         minPolarAngle: 0.18,
         maxPolarAngle: Math.PI * 0.46,
         minZoom: 3,
-        maxZoom: 40
+        maxZoom: 40,
+        rotateSpeed: 0.85,
+        zoomSpeed: 0.9,
+        touches: { ONE: TOUCH.ROTATE, TWO: TOUCH.DOLLY_ROTATE },
+        mouseButtons: {
+          LEFT: MOUSE.ROTATE,
+          MIDDLE: MOUSE.DOLLY,
+          RIGHT: MOUSE.ROTATE
+        }
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(CameraRig, { controlsRef, flightRef })
@@ -53729,7 +53739,7 @@ function NJDeliveryMap() {
     { label: "Shore towns", towns: TOWNS.filter((t) => !t.hub) },
     { label: "Inland hubs", towns: TOWNS.filter((t) => t.inland) }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-[30rem] w-full overflow-hidden sm:h-[36rem]", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "map-touch-surface relative h-[26rem] w-full touch-none overflow-hidden sm:h-[32rem] lg:h-[36rem]", children: [
     !geo || !space ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex h-full w-full flex-col items-center justify-center gap-3 bg-cream", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "size-8 animate-spin text-lagoon" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-body text-sm font-semibold uppercase tracking-widest text-navy", children: "Carving New Jersey out of ice…" })

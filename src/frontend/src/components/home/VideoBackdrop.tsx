@@ -9,7 +9,7 @@ type Scrim = "side" | "even" | "band";
  */
 const SCRIM_CLASS: Record<Scrim, string> = {
   side: "bg-gradient-to-b from-cream/85 via-cream/70 to-cream/85 md:bg-gradient-to-r md:from-cream/90 md:via-cream/55 md:to-transparent",
-  even: "bg-cream/78 md:bg-gradient-to-b md:from-cream/82 md:via-cream/58 md:to-cream/82",
+  even: "bg-cream/35 md:bg-gradient-to-b md:from-cream/40 md:via-cream/25 md:to-cream/40",
   band: "bg-navy/70 md:bg-gradient-to-r md:from-navy/85 md:via-navy/65 md:to-navy/45",
 };
 
@@ -37,10 +37,7 @@ export default function VideoBackdrop({
 }) {
   return (
     <div
-      className={cn(
-        "absolute inset-0 overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light",
-        className,
-      )}
+      className={cn("absolute inset-0 overflow-hidden bg-cream", className)}
       aria-hidden="true"
     >
       <BrandVideo

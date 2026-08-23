@@ -4,7 +4,7 @@ import IceFrame from "@/components/home/IceFrame";
 import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MERCH_VIDEO } from "@/lib/media";
+import { MERCH_PROMO_VIDEO } from "@/lib/media";
 import { Mail, ShoppingBag, Truck } from "lucide-react";
 
 /**
@@ -25,11 +25,11 @@ export default function Shop() {
     <section
       id="shop"
       data-ocid="shop"
-      className="relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24"
+      className="relative overflow-hidden bg-cream py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24"
     >
       {!isMobile && (
         <VideoBackdrop
-          src={MERCH_VIDEO}
+          src={MERCH_PROMO_VIDEO}
           label="Avalon Ice merch promo"
           scrim="even"
         />
@@ -112,7 +112,7 @@ export default function Shop() {
           <div className="mt-8 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
             <div className="aspect-video w-full bg-gradient-ice-card">
               <BrandVideo
-                src={MERCH_VIDEO}
+                src={MERCH_PROMO_VIDEO}
                 label="Avalon Ice merch promo"
                 className="h-full w-full object-cover"
               />

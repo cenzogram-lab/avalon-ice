@@ -656,3 +656,13 @@
     );
   }
 }
+
+@layer utilities {
+  /* The 3D map canvas must claim touch gestures so a finger drag orbits
+     the state instead of scrolling the page past it. */
+  .map-touch-surface canvas {
+    /* react-three-fiber writes touch-action:auto inline on the canvas, so
+       this has to win over an inline style. */
+    touch-action: none !important;
+  }
+}

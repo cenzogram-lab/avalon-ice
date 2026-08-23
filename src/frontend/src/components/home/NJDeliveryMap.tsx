@@ -1105,10 +1105,21 @@ function MapScene({
         enableDamping
         dampingFactor={0.085}
         enablePan={false}
+        enableZoom
+        enableRotate
         minPolarAngle={0.18}
         maxPolarAngle={Math.PI * 0.46}
         minZoom={3}
         maxZoom={40}
+        rotateSpeed={0.85}
+        zoomSpeed={0.9}
+        // Touch: one finger orbits the state, two fingers pinch-zoom.
+        touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
+        mouseButtons={{
+          LEFT: THREE.MOUSE.ROTATE,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.ROTATE,
+        }}
       />
       <CameraRig controlsRef={controlsRef} flightRef={flightRef} />
     </>
@@ -1186,7 +1197,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="relative h-[30rem] w-full overflow-hidden sm:h-[36rem]">
+    <div className="map-touch-surface relative h-[26rem] w-full touch-none overflow-hidden sm:h-[32rem] lg:h-[36rem]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />

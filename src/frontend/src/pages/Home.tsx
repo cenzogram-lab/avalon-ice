@@ -18,7 +18,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSubmitInquiry } from "@/lib/api";
-import { HERO_VIDEO, LOOP_VIDEO } from "@/lib/media";
+import { HERO_VIDEO, LOOP_VIDEO, MERCH_TEASER_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
 import type {
   EventFormValues,
@@ -604,14 +604,18 @@ function ShopTeaser() {
             shadow="ice"
             cracks
             className="relative"
-            innerClassName="flex flex-col items-center gap-6 px-6 py-9 text-center md:flex-row md:justify-between md:gap-10 md:px-12 md:py-9 md:text-left"
+            innerClassName="flex flex-col items-center gap-6 px-6 py-9 text-center lg:flex-row lg:justify-between lg:gap-8 lg:px-12 lg:py-9 lg:text-left"
           >
-            <img
-              src="/assets/images/avalon-heron.webp"
-              alt=""
-              aria-hidden="true"
-              className="size-20 shrink-0 rounded-full border-[3px] border-navy bg-cream-bright sm:size-24"
-            />
+            {/* Merch cut playing inside the banner */}
+            <div className="w-full shrink-0 overflow-hidden rounded-xl border-[3px] border-navy shadow-[0_5px_0_#A3CCD1] sm:max-w-sm lg:w-64 xl:w-72">
+              <div className="aspect-video w-full bg-gradient-ice-card">
+                <BrandVideo
+                  src={MERCH_TEASER_VIDEO}
+                  label="Avalon Ice merch preview"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
 
             <div className="md:flex-1">
               <span className="eyebrow inline-flex items-center gap-2">
@@ -629,7 +633,7 @@ function ShopTeaser() {
               </p>
             </div>
 
-            <div className="flex shrink-0 flex-col items-center gap-3 md:items-end">
+            <div className="flex shrink-0 flex-col items-center gap-3 lg:items-end">
               <Button
                 asChild
                 size="lg"

@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/#services", label: "Services" },
   { href: "/#network", label: "Network" },
   { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About" },
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" },
 ];
@@ -43,7 +44,7 @@ export default function Navbar() {
       data-ocid="navbar"
       className="sticky top-0 z-40 border-b-[3px] border-navy bg-cream-bright/95 backdrop-blur-sm"
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
+      <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
         <a
           href="/#top"
           data-ocid="navbar.brand"
@@ -75,7 +76,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               data-ocid={`navbar.link.${link.label.toLowerCase()}`}
-              className="rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-5 2xl:text-lg"
+              className="whitespace-nowrap rounded-full px-2 py-2.5 font-body text-sm font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-4 2xl:text-lg"
             >
               {link.label}
             </a>

@@ -41206,24 +41206,54 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$h = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$h);
+const __iconNode$j = [
+  ["path", { d: "M12 22V8", key: "qkxhtm" }],
+  ["path", { d: "M5 12H2a10 10 0 0 0 20 0h-3", key: "1hv3nh" }],
+  ["circle", { cx: "12", cy: "5", r: "3", key: "rqqgnr" }]
+];
+const Anchor$1 = createLucideIcon("anchor", __iconNode$j);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$g = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$g);
+const __iconNode$i = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$i);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$f);
+const __iconNode$h = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$h);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$g = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$g);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
+  [
+    "path",
+    {
+      d: "M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z",
+      key: "18jl4k"
+    }
+  ],
+  ["path", { d: "M16 8 2 22", key: "vp34q" }],
+  ["path", { d: "M17.5 15H9", key: "1oz8nu" }]
+];
+const Feather = createLucideIcon("feather", __iconNode$f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41746,6 +41776,7 @@ const NAV_LINKS = [
   { href: "/#services", label: "Services" },
   { href: "/#network", label: "Network" },
   { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About" },
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" }
 ];
@@ -41771,7 +41802,7 @@ function Navbar() {
       "data-ocid": "navbar",
       className: "sticky top-0 z-40 border-b-[3px] border-navy bg-cream-bright/95 backdrop-blur-sm",
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "a",
             {
@@ -41805,7 +41836,7 @@ function Navbar() {
                 {
                   href: link.href,
                   "data-ocid": `navbar.link.${link.label.toLowerCase()}`,
-                  className: "rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-5 2xl:text-lg",
+                  className: "whitespace-nowrap rounded-full px-2 py-2.5 font-body text-sm font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-4 2xl:text-lg",
                   children: link.label
                 },
                 link.href
@@ -41939,6 +41970,356 @@ function Layout({ children }) {
         ] })
       }
     ) })
+  ] });
+}
+function BrandVideo({
+  src,
+  className,
+  label
+}) {
+  const [ready, setReady] = reactExports.useState(false);
+  const ref = reactExports.useRef(null);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "video",
+    {
+      ref,
+      autoPlay: true,
+      loop: true,
+      muted: true,
+      playsInline: true,
+      preload: "auto",
+      controlsList: "nodownload noplaybackrate noremoteplayback",
+      disablePictureInPicture: true,
+      disableRemotePlayback: true,
+      onCanPlay: () => {
+        var _a2;
+        setReady(true);
+        (_a2 = ref.current) == null ? void 0 : _a2.play().catch(() => {
+        });
+      },
+      src,
+      "aria-label": label,
+      className: cn(
+        "pointer-events-none transition-opacity duration-700 ease-out",
+        ready ? "opacity-100" : "opacity-0",
+        className
+      )
+    }
+  );
+}
+function FrostOverlay({
+  density = 28,
+  className
+}) {
+  const canvasRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = 0;
+    let height = 0;
+    let raf = 0;
+    const resize2 = () => {
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize2();
+    const flakes = Array.from({ length: density }, (_2, i) => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: 1.5 + Math.random() * 3.5,
+      speed: 8e-3 + Math.random() * 0.02,
+      sway: 8 + Math.random() * 22,
+      phase: Math.random() * Math.PI * 2,
+      alpha: 0.14 + Math.random() * 0.28,
+      sparkle: i % 6 === 0
+    }));
+    const drawFrame = (t) => {
+      ctx.clearRect(0, 0, width, height);
+      for (const f2 of flakes) {
+        const x3 = f2.x * width + Math.sin(t * 4e-4 + f2.phase) * f2.sway;
+        const y2 = ((f2.y - t * 3e-5 * f2.speed / 0.01) % 1 + 1) % 1 * height;
+        ctx.globalAlpha = f2.alpha;
+        if (f2.sparkle) {
+          ctx.strokeStyle = "#FDFCF8";
+          ctx.lineWidth = 1.2;
+          const s = f2.r * 2;
+          ctx.beginPath();
+          ctx.moveTo(x3 - s, y2);
+          ctx.lineTo(x3 + s, y2);
+          ctx.moveTo(x3, y2 - s);
+          ctx.lineTo(x3, y2 + s);
+          ctx.stroke();
+        } else {
+          const grad = ctx.createRadialGradient(x3, y2, 0, x3, y2, f2.r * 2.2);
+          grad.addColorStop(0, "rgba(253,252,248,0.95)");
+          grad.addColorStop(1, "rgba(201,228,228,0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x3, y2, f2.r * 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    };
+    if (reduced) {
+      drawFrame(0);
+    } else {
+      const loop = (t) => {
+        drawFrame(t);
+        raf = requestAnimationFrame(loop);
+      };
+      raf = requestAnimationFrame(loop);
+    }
+    const observer2 = new ResizeObserver(() => {
+      resize2();
+      if (reduced) drawFrame(0);
+    });
+    observer2.observe(canvas);
+    return () => {
+      cancelAnimationFrame(raf);
+      observer2.disconnect();
+    };
+  }, [density]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "canvas",
+    {
+      ref: canvasRef,
+      "aria-hidden": "true",
+      tabIndex: -1,
+      className: cn(
+        "pointer-events-none absolute inset-0 h-full w-full",
+        className
+      )
+    }
+  );
+}
+const FILL_CLASS = {
+  ice: "",
+  cream: "ice-frame-fill--cream",
+  navy: "ice-frame-fill--navy"
+};
+const SHADOW_CLASS = {
+  ice: "ice-shadow",
+  deep: "ice-shadow-deep",
+  navy: "ice-shadow-navy",
+  none: ""
+};
+function IceFrame({
+  clip = "a",
+  fill = "ice",
+  shadow = "ice",
+  cracks = false,
+  className,
+  innerClassName,
+  children
+}) {
+  const clipClass = `clip-ice-${clip}`;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn(SHADOW_CLASS[shadow], className), children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("ice-frame-border", clipClass), children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("ice-frame-keyline", clipClass), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: cn(
+        "ice-frame-fill",
+        FILL_CLASS[fill],
+        cracks && "ice-cracks",
+        clipClass,
+        innerClassName
+      ),
+      children
+    }
+  ) }) }) });
+}
+const SCRIM_CLASS = {
+  side: "bg-gradient-to-b from-cream/85 via-cream/70 to-cream/85 md:bg-gradient-to-r md:from-cream/90 md:via-cream/55 md:to-transparent",
+  even: "bg-cream/35 md:bg-gradient-to-b md:from-cream/40 md:via-cream/25 md:to-cream/40",
+  band: "bg-navy/70 md:bg-gradient-to-r md:from-navy/85 md:via-navy/65 md:to-navy/45"
+};
+function VideoBackdrop({
+  src,
+  label,
+  scrim = "even",
+  fadeToCream = true,
+  className
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: cn("absolute inset-0 overflow-hidden bg-cream", className),
+      "aria-hidden": "true",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          BrandVideo,
+          {
+            src,
+            label,
+            className: "absolute inset-0 h-full w-full object-cover"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: cn(
+              "pointer-events-none absolute inset-0",
+              SCRIM_CLASS[scrim]
+            )
+          }
+        ),
+        fadeToCream && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream md:h-24" })
+      ]
+    }
+  );
+}
+function useIsMobile(breakpoint = 768) {
+  const query = `(max-width: ${breakpoint - 1}px)`;
+  const [isMobile, setIsMobile] = reactExports.useState(
+    () => typeof window === "undefined" ? false : window.matchMedia(query).matches
+  );
+  reactExports.useEffect(() => {
+    const mql = window.matchMedia(query);
+    const update = (e) => setIsMobile(e.matches);
+    update(mql);
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [query]);
+  return isMobile;
+}
+const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_mascot_drone_loop_v2.mp4";
+const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
+const MERCH_TEASER_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_merch_shop_final.mp4";
+const MERCH_PROMO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_merch_promo_final.mp4";
+const MASCOT_LOGO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
+const CHAPTERS = [
+  {
+    icon: MapPin,
+    eyebrow: "The Origin",
+    title: "Born in Avalon, Cape May County.",
+    body: "Avalon Ice started where the Parkway runs out and the barrier islands begin. Seven miles of beach, a working harbor, and a summer that triples the population overnight — a town that runs on ice and never had a supplier of its own. So we built one here, on the island, instead of trucking it down from somewhere that has never had to restock a marina at 6 a.m. on the Fourth of July.",
+    clip: "a"
+  },
+  {
+    icon: Truck,
+    eyebrow: "The Heritage",
+    title: "A shore route, run by shore people.",
+    body: "Every route still starts at our Woodbine HQ and runs the same coast our families have worked for generations — Cape May and the Wildwoods, Stone Harbor and Sea Isle, Ocean City and up the Parkway to North Jersey. We know which kitchens need a second drop on a holiday weekend, which festivals blow through a pallet before noon, and which marina gate is easier at low tide. That is not a logistics network you buy. It is one you grow up in.",
+    clip: "b"
+  },
+  {
+    icon: Feather,
+    eyebrow: "The Mascot",
+    title: "Why a heron carries our ice.",
+    body: "Stand on any back bay marsh in Cape May County at dawn and you will find a Great Blue Heron working the shallows — patient, unhurried, and there before anyone else is awake. It is the bird of these wetlands, and it keeps the same hours we do. Ours carries a bag of ice up the coast because that is the job: show up early, move quietly, deliver cold. He has been on the truck, the bag, and the door ever since.",
+    clip: "c"
+  }
+];
+function About() {
+  const isMobile = useIsMobile();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "section",
+      {
+        id: "about",
+        "data-ocid": "about",
+        className: "relative overflow-hidden bg-cream py-14 sm:py-16 md:flex md:min-h-[62vh] md:items-center md:py-24",
+        children: [
+          !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            VideoBackdrop,
+            {
+              src: MASCOT_LOGO_VIDEO,
+              label: "Avalon Ice animated logo",
+              scrim: "side"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(FrostOverlay, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "chip chip-solid mb-6", "data-ocid": "about.badge", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor$1, { className: "size-3.5" }),
+              "Est. Avalon, N.J."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "script-heading max-w-3xl text-5xl sm:text-6xl md:text-7xl", children: [
+              "The story behind the",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-block-ice text-4xl sm:text-5xl md:text-6xl", children: "Ice" }),
+              "."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-6 max-w-xl font-body text-lg font-medium text-lagoon", children: "An island supplier, a shore route, and one very patient bird." }),
+            isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-9 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              BrandVideo,
+              {
+                src: MASCOT_LOGO_VIDEO,
+                label: "Avalon Ice animated logo",
+                className: "h-full w-full object-cover"
+              }
+            ) }) })
+          ] })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "section",
+      {
+        "data-ocid": "about.story",
+        className: "texture-paper bg-cream py-14 md:py-20",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 md:gap-12 lg:grid-cols-3", children: CHAPTERS.map((chapter) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            IceFrame,
+            {
+              clip: chapter.clip,
+              cracks: true,
+              className: "h-full",
+              innerClassName: "flex h-full flex-col gap-3 p-7 pb-8",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(chapter.icon, { className: "size-4" }),
+                  chapter.eyebrow
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-block-navy text-lg leading-snug sm:text-xl", children: chapter.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-body text-sm leading-relaxed text-lagoon", children: chapter.body })
+              ]
+            },
+            chapter.title
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto mt-14 flex max-w-6xl flex-col items-center gap-5 px-4 text-center sm:px-6", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "script-heading text-3xl sm:text-4xl", children: "Cold for every cooler on the coast." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap items-center justify-center gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  asChild: true,
+                  size: "lg",
+                  "data-ocid": "about.order_button",
+                  className: "btn-brutal btn-brutal-ice bg-navy px-7 py-6 font-body text-sm font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/#order-form", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Truck, { className: "size-5" }),
+                    "Request Delivery / Quote"
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  asChild: true,
+                  size: "lg",
+                  "data-ocid": "about.network_button",
+                  className: "btn-brutal bg-cream-bright px-7 py-6 font-body text-sm font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-frost",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(MapPin, { className: "size-5" }),
+                    "See the Network"
+                  ] })
+                }
+              )
+            ] })
+          ] })
+        ]
+      }
+    )
   ] });
 }
 const badgeVariants = cva(
@@ -50166,214 +50547,6 @@ const __vitePreload = function preload2(baseModule, deps, importerUrl) {
     return baseModule().catch(handlePreloadError);
   });
 };
-function BrandVideo({
-  src,
-  className,
-  label
-}) {
-  const [ready, setReady] = reactExports.useState(false);
-  const ref = reactExports.useRef(null);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "video",
-    {
-      ref,
-      autoPlay: true,
-      loop: true,
-      muted: true,
-      playsInline: true,
-      preload: "auto",
-      controlsList: "nodownload noplaybackrate noremoteplayback",
-      disablePictureInPicture: true,
-      disableRemotePlayback: true,
-      onCanPlay: () => {
-        var _a2;
-        setReady(true);
-        (_a2 = ref.current) == null ? void 0 : _a2.play().catch(() => {
-        });
-      },
-      src,
-      "aria-label": label,
-      className: cn(
-        "pointer-events-none transition-opacity duration-700 ease-out",
-        ready ? "opacity-100" : "opacity-0",
-        className
-      )
-    }
-  );
-}
-function FrostOverlay({
-  density = 28,
-  className
-}) {
-  const canvasRef = reactExports.useRef(null);
-  reactExports.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let width = 0;
-    let height = 0;
-    let raf = 0;
-    const resize2 = () => {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = Math.max(1, Math.round(width * dpr));
-      canvas.height = Math.max(1, Math.round(height * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize2();
-    const flakes = Array.from({ length: density }, (_2, i) => ({
-      x: Math.random(),
-      y: Math.random(),
-      r: 1.5 + Math.random() * 3.5,
-      speed: 8e-3 + Math.random() * 0.02,
-      sway: 8 + Math.random() * 22,
-      phase: Math.random() * Math.PI * 2,
-      alpha: 0.14 + Math.random() * 0.28,
-      sparkle: i % 6 === 0
-    }));
-    const drawFrame = (t) => {
-      ctx.clearRect(0, 0, width, height);
-      for (const f2 of flakes) {
-        const x3 = f2.x * width + Math.sin(t * 4e-4 + f2.phase) * f2.sway;
-        const y2 = ((f2.y - t * 3e-5 * f2.speed / 0.01) % 1 + 1) % 1 * height;
-        ctx.globalAlpha = f2.alpha;
-        if (f2.sparkle) {
-          ctx.strokeStyle = "#FDFCF8";
-          ctx.lineWidth = 1.2;
-          const s = f2.r * 2;
-          ctx.beginPath();
-          ctx.moveTo(x3 - s, y2);
-          ctx.lineTo(x3 + s, y2);
-          ctx.moveTo(x3, y2 - s);
-          ctx.lineTo(x3, y2 + s);
-          ctx.stroke();
-        } else {
-          const grad = ctx.createRadialGradient(x3, y2, 0, x3, y2, f2.r * 2.2);
-          grad.addColorStop(0, "rgba(253,252,248,0.95)");
-          grad.addColorStop(1, "rgba(201,228,228,0)");
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(x3, y2, f2.r * 2.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      ctx.globalAlpha = 1;
-    };
-    if (reduced) {
-      drawFrame(0);
-    } else {
-      const loop = (t) => {
-        drawFrame(t);
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    }
-    const observer2 = new ResizeObserver(() => {
-      resize2();
-      if (reduced) drawFrame(0);
-    });
-    observer2.observe(canvas);
-    return () => {
-      cancelAnimationFrame(raf);
-      observer2.disconnect();
-    };
-  }, [density]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "canvas",
-    {
-      ref: canvasRef,
-      "aria-hidden": "true",
-      tabIndex: -1,
-      className: cn(
-        "pointer-events-none absolute inset-0 h-full w-full",
-        className
-      )
-    }
-  );
-}
-const FILL_CLASS = {
-  ice: "",
-  cream: "ice-frame-fill--cream",
-  navy: "ice-frame-fill--navy"
-};
-const SHADOW_CLASS = {
-  ice: "ice-shadow",
-  deep: "ice-shadow-deep",
-  navy: "ice-shadow-navy",
-  none: ""
-};
-function IceFrame({
-  clip = "a",
-  fill = "ice",
-  shadow = "ice",
-  cracks = false,
-  className,
-  innerClassName,
-  children
-}) {
-  const clipClass = `clip-ice-${clip}`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn(SHADOW_CLASS[shadow], className), children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("ice-frame-border", clipClass), children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: cn("ice-frame-keyline", clipClass), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "div",
-    {
-      className: cn(
-        "ice-frame-fill",
-        FILL_CLASS[fill],
-        cracks && "ice-cracks",
-        clipClass,
-        innerClassName
-      ),
-      children
-    }
-  ) }) }) });
-}
-const SCRIM_CLASS = {
-  side: "bg-gradient-to-b from-cream/85 via-cream/70 to-cream/85 md:bg-gradient-to-r md:from-cream/90 md:via-cream/55 md:to-transparent",
-  even: "bg-cream/78 md:bg-gradient-to-b md:from-cream/82 md:via-cream/58 md:to-cream/82",
-  band: "bg-navy/70 md:bg-gradient-to-r md:from-navy/85 md:via-navy/65 md:to-navy/45"
-};
-function VideoBackdrop({
-  src,
-  label,
-  scrim = "even",
-  fadeToCream = true,
-  className
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "div",
-    {
-      className: cn(
-        "absolute inset-0 overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light",
-        className
-      ),
-      "aria-hidden": "true",
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          BrandVideo,
-          {
-            src,
-            label,
-            className: "absolute inset-0 h-full w-full object-cover"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: cn(
-              "pointer-events-none absolute inset-0",
-              SCRIM_CLASS[scrim]
-            )
-          }
-        ),
-        fadeToCream && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream md:h-24" })
-      ]
-    }
-  );
-}
 var CHECKBOX_NAME = "Checkbox";
 var [createCheckboxContext] = createContextScope(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
@@ -50655,23 +50828,6 @@ function Checkbox({
     }
   );
 }
-function useIsMobile(breakpoint = 768) {
-  const query = `(max-width: ${breakpoint - 1}px)`;
-  const [isMobile, setIsMobile] = reactExports.useState(
-    () => typeof window === "undefined" ? false : window.matchMedia(query).matches
-  );
-  reactExports.useEffect(() => {
-    const mql = window.matchMedia(query);
-    const update = (e) => setIsMobile(e.matches);
-    update(mql);
-    mql.addEventListener("change", update);
-    return () => mql.removeEventListener("change", update);
-  }, [query]);
-  return isMobile;
-}
-const HERO_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_hero_animation.mp4";
-const LOOP_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";
-const MERCH_VIDEO = "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_merch_promo_final.mp4";
 const LayoutGroupContext = reactExports.createContext({});
 function useConstant(init) {
   const ref = reactExports.useRef(null);
@@ -59221,7 +59377,7 @@ function useReducedMotion() {
   const [shouldReduceMotion] = reactExports.useState(prefersReducedMotion.current);
   return shouldReduceMotion;
 }
-const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-Dl-9eXVC.js"), true ? [] : void 0));
+const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-DfioT77r.js"), true ? [] : void 0));
 function Hero() {
   const isMobile = useIsMobile();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -59733,17 +59889,16 @@ function ShopTeaser() {
             shadow: "ice",
             cracks: true,
             className: "relative",
-            innerClassName: "flex flex-col items-center gap-6 px-6 py-9 text-center md:flex-row md:justify-between md:gap-10 md:px-12 md:py-9 md:text-left",
+            innerClassName: "flex flex-col items-center gap-6 px-6 py-9 text-center lg:flex-row lg:justify-between lg:gap-8 lg:px-12 lg:py-9 lg:text-left",
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "img",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full shrink-0 overflow-hidden rounded-xl border-[3px] border-navy shadow-[0_5px_0_#A3CCD1] sm:max-w-sm lg:w-64 xl:w-72", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                BrandVideo,
                 {
-                  src: "/assets/images/avalon-heron.webp",
-                  alt: "",
-                  "aria-hidden": "true",
-                  className: "size-20 shrink-0 rounded-full border-[3px] border-navy bg-cream-bright sm:size-24"
+                  src: MERCH_TEASER_VIDEO,
+                  label: "Avalon Ice merch preview",
+                  className: "h-full w-full object-cover"
                 }
-              ),
+              ) }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "md:flex-1", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(ShoppingBag, { className: "size-4" }),
@@ -59759,7 +59914,7 @@ function ShopTeaser() {
                 ),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 font-script text-xl text-lagoon sm:text-2xl", children: "Packaged & bulk ice · merch, gear & more." })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex shrink-0 flex-col items-center gap-3 md:items-end", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex shrink-0 flex-col items-center gap-3 lg:items-end", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   Button,
                   {
@@ -60432,12 +60587,12 @@ function Shop() {
     {
       id: "shop",
       "data-ocid": "shop",
-      className: "relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24",
+      className: "relative overflow-hidden bg-cream py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24",
       children: [
         !isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx(
           VideoBackdrop,
           {
-            src: MERCH_VIDEO,
+            src: MERCH_PROMO_VIDEO,
             label: "Avalon Ice merch promo",
             scrim: "even"
           }
@@ -60516,7 +60671,7 @@ function Shop() {
           isMobile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-8 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "aspect-video w-full bg-gradient-ice-card", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             BrandVideo,
             {
-              src: MERCH_VIDEO,
+              src: MERCH_PROMO_VIDEO,
               label: "Avalon Ice merch promo",
               className: "h-full w-full object-cover"
             }
@@ -60534,6 +60689,11 @@ const indexRoute = createRoute({
   path: "/",
   component: Home
 });
+const aboutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/about",
+  component: About
+});
 const shopRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/shop",
@@ -60544,7 +60704,12 @@ const adminRoute = createRoute({
   path: "/admin",
   component: Admin
 });
-const routeTree = rootRoute.addChildren([indexRoute, shopRoute, adminRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  aboutRoute,
+  shopRoute,
+  adminRoute
+]);
 const router = createRouter({ routeTree });
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(RouterProvider, { router });
