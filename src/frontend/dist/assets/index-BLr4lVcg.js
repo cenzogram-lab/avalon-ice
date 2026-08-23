@@ -53966,6 +53966,79 @@ function transform(...args) {
   const interpolator = interpolate(inputRange, outputRange, options);
   return useImmediate ? interpolator(inputValue) : interpolator;
 }
+function attachFollow(value, source, options = {}) {
+  const initialValue = value.get();
+  let activeAnimation = null;
+  let latestValue = initialValue;
+  let latestSetter;
+  const unit = typeof initialValue === "string" ? initialValue.replace(/[\d.-]/g, "") : void 0;
+  const stopAnimation = () => {
+    if (activeAnimation) {
+      activeAnimation.stop();
+      activeAnimation = null;
+    }
+    value.animation = void 0;
+  };
+  const startAnimation = () => {
+    const currentValue = asNumber$1(value.get());
+    const targetValue = asNumber$1(latestValue);
+    if (currentValue === targetValue) {
+      stopAnimation();
+      return;
+    }
+    const velocity = activeAnimation ? activeAnimation.getGeneratorVelocity() : value.getVelocity();
+    stopAnimation();
+    activeAnimation = new JSAnimation({
+      keyframes: [currentValue, targetValue],
+      velocity,
+      // Default to spring if no type specified (matches useSpring behavior)
+      type: "spring",
+      restDelta: 1e-3,
+      restSpeed: 0.01,
+      ...options,
+      onUpdate: latestSetter
+    });
+  };
+  const scheduleAnimation = () => {
+    var _a2;
+    startAnimation();
+    value.animation = activeAnimation ?? void 0;
+    (_a2 = value["events"].animationStart) == null ? void 0 : _a2.notify();
+    activeAnimation == null ? void 0 : activeAnimation.then(() => {
+      var _a3;
+      value.animation = void 0;
+      (_a3 = value["events"].animationComplete) == null ? void 0 : _a3.notify();
+    });
+  };
+  value.attach((v2, set) => {
+    latestValue = v2;
+    latestSetter = (latest) => set(parseValue(latest, unit));
+    frame.postRender(scheduleAnimation);
+  }, stopAnimation);
+  if (isMotionValue(source)) {
+    let skipNextAnimation = options.skipInitialAnimation === true;
+    const removeSourceOnChange = source.on("change", (v2) => {
+      if (skipNextAnimation) {
+        skipNextAnimation = false;
+        value.jump(parseValue(v2, unit), false);
+      } else {
+        value.set(parseValue(v2, unit));
+      }
+    });
+    const removeValueOnDestroy = value.on("destroy", removeSourceOnChange);
+    return () => {
+      removeSourceOnChange();
+      removeValueOnDestroy();
+    };
+  }
+  return stopAnimation;
+}
+function parseValue(v2, unit) {
+  return unit ? v2 + unit : v2;
+}
+function asNumber$1(v2) {
+  return typeof v2 === "number" ? v2 : parseFloat(v2);
+}
 const valueTypes = [...dimensionValueTypes, color, complex];
 const findValueType = (v2) => valueTypes.find(testValueType(v2));
 const createAxisDelta = () => ({
@@ -58971,12 +59044,27 @@ function useMapTransform(inputValue, inputRange, outputMap, options) {
   }
   return output;
 }
+function useFollowValue(source, options = {}) {
+  const { isStatic } = reactExports.useContext(MotionConfigContext);
+  const getFromSource = () => isMotionValue(source) ? source.get() : source;
+  if (isStatic) {
+    return useTransform(getFromSource);
+  }
+  const value = useMotionValue(getFromSource());
+  reactExports.useInsertionEffect(() => {
+    return attachFollow(value, source, options);
+  }, [value, JSON.stringify(options)]);
+  return value;
+}
+function useSpring(source, options = {}) {
+  return useFollowValue(source, { type: "spring", ...options });
+}
 function useReducedMotion() {
   !hasReducedMotionListener.current && initPrefersReducedMotion();
   const [shouldReduceMotion] = reactExports.useState(prefersReducedMotion.current);
   return shouldReduceMotion;
 }
-const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-Bpm1Hk8l.js"), true ? [] : void 0));
+const NJDeliveryMap = reactExports.lazy(() => __vitePreload(() => import("./NJDeliveryMap-ResRJEqo.js"), true ? [] : void 0));
 function Hero() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "section",
@@ -59222,6 +59310,10 @@ const PRODUCTS = [
   }
 ];
 function IceCubeSVG({ className }) {
+  const uid = reactExports.useId().replace(/[^a-zA-Z0-9]/g, "");
+  const topId = `cube-top-${uid}`;
+  const leftId = `cube-left-${uid}`;
+  const rightId = `cube-right-${uid}`;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "svg",
     {
@@ -59230,17 +59322,104 @@ function IceCubeSVG({ className }) {
       "aria-hidden": "true",
       role: "presentation",
       children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("defs", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: topId, x1: "0", y1: "0", x2: "1", y2: "1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0", stopColor: "#FDFCF8" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "1", stopColor: "#E4F1F0" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: leftId, x1: "0", y1: "0", x2: "0", y2: "1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0", stopColor: "#D9ECEB" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.7", stopColor: "#C9E4E4" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "1", stopColor: "#9ECBD0" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: rightId, x1: "0", y1: "0", x2: "0", y2: "1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0", stopColor: "#B7D9DC" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.65", stopColor: "#A3CCD1" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "1", stopColor: "#82B4BC" })
+          ] })
+        ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { stroke: "#0C3552", strokeWidth: "3.5", strokeLinejoin: "round", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "50,5 93,27 50,49 7,27", fill: "#F4FAF9" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "7,27 50,49 50,95 7,73", fill: "#C9E4E4" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "93,27 50,49 50,95 93,73", fill: "#A3CCD1" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "50,5 93,27 50,49 7,27", fill: `url(#${topId})` }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "7,27 50,49 50,95 7,73", fill: `url(#${leftId})` }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "93,27 50,49 50,95 93,73", fill: `url(#${rightId})` })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "path",
           {
-            d: "M24 30l14-7M62 62v14",
+            d: "M10 71 L50 91.5 L90 71",
+            fill: "none",
+            stroke: "#5E8A93",
+            strokeOpacity: "0.5",
+            strokeWidth: "3",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "polygon",
+          {
+            points: "60,47 69,42.5 69,79 60,84.5",
+            fill: "#FDFCF8",
+            opacity: "0.32"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "polygon",
+          {
+            points: "74,40 78,38 78,74.5 74,77",
+            fill: "#FDFCF8",
+            opacity: "0.5"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "polygon",
+          {
+            points: "50,10 77,23.5 62,31 35,17.5",
+            fill: "#FFFFFF",
+            opacity: "0.5"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: "24",
+            cy: "60",
+            r: "2.3",
+            fill: "#E9F4F3",
+            stroke: "#5E8A93",
+            strokeOpacity: "0.4",
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: "39",
+            cy: "79",
+            r: "1.7",
+            fill: "#E9F4F3",
+            stroke: "#5E8A93",
+            strokeOpacity: "0.4",
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: "81",
+            cy: "61",
+            r: "2",
+            fill: "#F4FAF9",
+            stroke: "#5E8A93",
+            strokeOpacity: "0.35",
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M24 32l12-6M62 60v13M31 66l7 4",
             stroke: "#0C3552",
-            strokeOpacity: "0.28",
+            strokeOpacity: "0.25",
             strokeWidth: "2",
             strokeLinecap: "round",
             fill: "none"
@@ -59274,15 +59453,40 @@ function ProductCard({
   const reduceMotion = useReducedMotion();
   const start = 0.02 + index2 * 0.09;
   const end = 0.52 + index2 * 0.1;
+  const slideMid = (start + end) / 2;
   const cubeX = useTransform(progress2, [start, end], [-(340 + index2 * 130), 0]);
   const cubeRotate = useTransform(
     progress2,
     [start, end],
     [-200 - index2 * 40, index2 % 2 === 0 ? -6 : 5]
   );
+  const cubeXSpring = useSpring(cubeX, {
+    stiffness: 65,
+    damping: 14,
+    mass: 1.15
+  });
+  const cubeRotateSpring = useSpring(cubeRotate, {
+    stiffness: 58,
+    damping: 13
+  });
   const cubeOpacity = useTransform(progress2, [start, start + 0.12], [0, 1]);
   const cardY = useTransform(progress2, [start, end], [46, 0]);
   const cardOpacity = useTransform(progress2, [start, start + 0.2], [0, 1]);
+  const trailOpacity = useTransform(
+    progress2,
+    [start + 0.03, slideMid, end - 0.02],
+    [0, 0.75, 0]
+  );
+  const trailScale = useTransform(
+    progress2,
+    [start + 0.03, slideMid, end - 0.02],
+    [0.25, 1, 0.2]
+  );
+  const settle = useTransform(
+    progress2,
+    [end - 0.03, Math.min(end + 0.14, 1)],
+    [0, 1]
+  );
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     motion.div,
     {
@@ -59290,13 +59494,63 @@ function ProductCard({
       style: reduceMotion ? void 0 : { y: cardY, opacity: cardOpacity },
       className: "relative",
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
           motion.div,
           {
-            style: reduceMotion ? void 0 : { x: cubeX, rotate: cubeRotate, opacity: cubeOpacity },
+            style: reduceMotion ? void 0 : {
+              x: cubeXSpring,
+              rotate: cubeRotateSpring,
+              opacity: cubeOpacity
+            },
             className: `absolute -top-9 z-0 ${index2 % 2 === 0 ? "-right-3" : "-left-3"} ${CUBE_SIZES[index2]}`,
             "aria-hidden": "true",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-bob-cube", children: /* @__PURE__ */ jsxRuntimeExports.jsx(IceCubeSVG, { className: "h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" }) })
+            children: [
+              !reduceMotion && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute right-2/3 top-1/2 w-40 -translate-y-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                motion.div,
+                {
+                  style: { opacity: trailOpacity, scaleX: trailScale },
+                  className: "h-[7px] origin-right rounded-full bg-gradient-to-l from-ice-deep/60 via-ice/40 to-transparent blur-[1.5px]"
+                }
+              ) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "animate-bob-cube relative", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(IceCubeSVG, { className: "h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  motion.div,
+                  {
+                    style: reduceMotion ? void 0 : { opacity: settle },
+                    className: "pointer-events-none",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "span",
+                        {
+                          className: "ice-drip -bottom-1 left-[30%]",
+                          style: {
+                            "--drip-delay": `${index2 * 0.7}s`
+                          }
+                        }
+                      ),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        "span",
+                        {
+                          className: "ice-drip -bottom-2 left-[64%]",
+                          style: {
+                            "--drip-delay": `${1.6 + index2 * 0.5}s`,
+                            "--drip-duration": "3.9s"
+                          }
+                        }
+                      )
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-2 left-1/2 w-[92%] -translate-x-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                motion.div,
+                {
+                  style: reduceMotion ? void 0 : { opacity: settle, scaleX: settle },
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ice-puddle w-full" })
+                }
+              ) })
+            ]
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -59307,6 +59561,14 @@ function ProductCard({
             className: "relative z-10 h-full",
             innerClassName: "flex h-full flex-col gap-3 p-6 pb-7",
             children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "span",
+                {
+                  className: "ice-sheen",
+                  style: { "--sheen-delay": `${index2 * 1.4}s` },
+                  "aria-hidden": "true"
+                }
+              ),
               /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-block-navy text-lg leading-snug sm:text-xl", children: product.title }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-body text-sm leading-relaxed text-lagoon", children: product.description }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-auto flex flex-wrap gap-2 pt-2", children: product.chips.map((chip) => /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -59326,33 +59588,74 @@ function ProductCard({
 }
 function Products() {
   const sectionRef = reactExports.useRef(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 88%", "end 78%"]
   });
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const bgY1 = useTransform(scrollYProgress, [0, 1], [80, -100]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], [30, -160]);
+  const bgY3 = useTransform(scrollYProgress, [0, 1], [120, -50]);
+  const bgRot1 = useTransform(scrollYProgress, [0, 1], [-18, 12]);
+  const bgRot2 = useTransform(scrollYProgress, [0, 1], [10, -22]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "section",
     {
       ref: sectionRef,
       id: "services",
       "data-ocid": "products",
       className: "texture-paper overflow-x-clip bg-cream py-16 md:py-24",
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-6xl px-4 sm:px-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Snowflake, { className: "size-4" }),
-          "What We'll Be Running"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "script-heading mt-3 max-w-2xl text-4xl sm:text-5xl md:text-6xl", children: "Cold for every cooler on the coast." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-14 grid gap-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4", children: PRODUCTS.map((product, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-          ProductCard,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
           {
-            product,
-            index: i,
-            progress: scrollYProgress
-          },
-          product.title
-        )) })
-      ] })
+            className: "pointer-events-none absolute inset-0 hidden md:block",
+            "aria-hidden": "true",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                motion.div,
+                {
+                  style: reduceMotion ? void 0 : { y: bgY1, rotate: bgRot1 },
+                  className: "absolute left-[3%] top-28 w-12 opacity-50",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(IceCubeSVG, { className: "h-auto w-full" })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                motion.div,
+                {
+                  style: reduceMotion ? void 0 : { y: bgY2, rotate: bgRot2 },
+                  className: "absolute right-[3%] top-1/2 w-10 opacity-40",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(IceCubeSVG, { className: "h-auto w-full" })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                motion.div,
+                {
+                  style: reduceMotion ? void 0 : { y: bgY3, rotate: bgRot1 },
+                  className: "absolute bottom-8 left-[9%] w-14 opacity-45",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(IceCubeSVG, { className: "h-auto w-full" })
+                }
+              )
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-6xl px-4 sm:px-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "eyebrow inline-flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Snowflake, { className: "size-4" }),
+            "What We'll Be Running"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "script-heading mt-3 max-w-2xl text-4xl sm:text-5xl md:text-6xl", children: "Cold for every cooler on the coast." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-14 grid gap-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4", children: PRODUCTS.map((product, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ProductCard,
+            {
+              product,
+              index: i,
+              progress: scrollYProgress
+            },
+            product.title
+          )) })
+        ] })
+      ]
     }
   );
 }

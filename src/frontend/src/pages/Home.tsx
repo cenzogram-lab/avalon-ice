@@ -36,9 +36,10 @@ import {
   motion,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from "motion/react";
-import { Suspense, lazy, useRef, useState } from "react";
+import { Suspense, lazy, useId, useRef, useState } from "react";
 
 const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
 
@@ -322,6 +323,11 @@ const PRODUCTS: Product[] = [
 ];
 
 function IceCubeSVG({ className }: { className?: string }) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const topId = `cube-top-${uid}`;
+  const leftId = `cube-left-${uid}`;
+  const rightId = `cube-right-${uid}`;
+
   return (
     <svg
       viewBox="0 0 100 100"
@@ -329,19 +335,98 @@ function IceCubeSVG({ className }: { className?: string }) {
       aria-hidden="true"
       role="presentation"
     >
+      <defs>
+        {/* Wet-ice face gradients: bright frosted top, darker saturated
+            faces toward the melting base */}
+        <linearGradient id={topId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FDFCF8" />
+          <stop offset="1" stopColor="#E4F1F0" />
+        </linearGradient>
+        <linearGradient id={leftId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#D9ECEB" />
+          <stop offset="0.7" stopColor="#C9E4E4" />
+          <stop offset="1" stopColor="#9ECBD0" />
+        </linearGradient>
+        <linearGradient id={rightId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#B7D9DC" />
+          <stop offset="0.65" stopColor="#A3CCD1" />
+          <stop offset="1" stopColor="#82B4BC" />
+        </linearGradient>
+      </defs>
+
       <g stroke="#0C3552" strokeWidth="3.5" strokeLinejoin="round">
-        <polygon points="50,5 93,27 50,49 7,27" fill="#F4FAF9" />
-        <polygon points="7,27 50,49 50,95 7,73" fill="#C9E4E4" />
-        <polygon points="93,27 50,49 50,95 93,73" fill="#A3CCD1" />
+        <polygon points="50,5 93,27 50,49 7,27" fill={`url(#${topId})`} />
+        <polygon points="7,27 50,49 50,95 7,73" fill={`url(#${leftId})`} />
+        <polygon points="93,27 50,49 50,95 93,73" fill={`url(#${rightId})`} />
       </g>
+
+      {/* Wet base edge pooling toward the bottom */}
       <path
-        d="M24 30l14-7M62 62v14"
+        d="M10 71 L50 91.5 L90 71"
+        fill="none"
+        stroke="#5E8A93"
+        strokeOpacity="0.5"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      {/* Specular gloss streaks on the sunlit face */}
+      <polygon
+        points="60,47 69,42.5 69,79 60,84.5"
+        fill="#FDFCF8"
+        opacity="0.32"
+      />
+      <polygon
+        points="74,40 78,38 78,74.5 74,77"
+        fill="#FDFCF8"
+        opacity="0.5"
+      />
+      {/* Sheen pooling on the top face */}
+      <polygon
+        points="50,10 77,23.5 62,31 35,17.5"
+        fill="#FFFFFF"
+        opacity="0.5"
+      />
+
+      {/* Clinging meltwater droplets */}
+      <circle
+        cx="24"
+        cy="60"
+        r="2.3"
+        fill="#E9F4F3"
+        stroke="#5E8A93"
+        strokeOpacity="0.4"
+        strokeWidth="1"
+      />
+      <circle
+        cx="39"
+        cy="79"
+        r="1.7"
+        fill="#E9F4F3"
+        stroke="#5E8A93"
+        strokeOpacity="0.4"
+        strokeWidth="1"
+      />
+      <circle
+        cx="81"
+        cy="61"
+        r="2"
+        fill="#F4FAF9"
+        stroke="#5E8A93"
+        strokeOpacity="0.35"
+        strokeWidth="1"
+      />
+
+      {/* Internal cracks */}
+      <path
+        d="M24 32l12-6M62 60v13M31 66l7 4"
         stroke="#0C3552"
-        strokeOpacity="0.28"
+        strokeOpacity="0.25"
         strokeWidth="2"
         strokeLinecap="round"
         fill="none"
       />
+      {/* Sparkle glint */}
       <path
         d="M70 16h8M74 12v8"
         stroke="#FDFCF8"
@@ -375,15 +460,44 @@ function ProductCard({
   // rotation and per-cube parallax speed, settling behind their card.
   const start = 0.02 + index * 0.09;
   const end = 0.52 + index * 0.1;
+  const slideMid = (start + end) / 2;
   const cubeX = useTransform(progress, [start, end], [-(340 + index * 130), 0]);
   const cubeRotate = useTransform(
     progress,
     [start, end],
     [-200 - index * 40, index % 2 === 0 ? -6 : 5],
   );
+  // Springs trail the scroll targets, so the cube glides with inertia and
+  // overshoots slightly before settling — like ice skidding to a stop.
+  const cubeXSpring = useSpring(cubeX, {
+    stiffness: 65,
+    damping: 14,
+    mass: 1.15,
+  });
+  const cubeRotateSpring = useSpring(cubeRotate, {
+    stiffness: 58,
+    damping: 13,
+  });
   const cubeOpacity = useTransform(progress, [start, start + 0.12], [0, 1]);
   const cardY = useTransform(progress, [start, end], [46, 0]);
   const cardOpacity = useTransform(progress, [start, start + 0.2], [0, 1]);
+  // Wet slick trail behind the cube: strongest mid-slide, gone at rest.
+  const trailOpacity = useTransform(
+    progress,
+    [start + 0.03, slideMid, end - 0.02],
+    [0, 0.75, 0],
+  );
+  const trailScale = useTransform(
+    progress,
+    [start + 0.03, slideMid, end - 0.02],
+    [0.25, 1, 0.2],
+  );
+  // Meltwater appears once the cube has settled into place.
+  const settle = useTransform(
+    progress,
+    [end - 0.03, Math.min(end + 0.14, 1)],
+    [0, 1],
+  );
 
   return (
     <motion.div
@@ -396,13 +510,61 @@ function ProductCard({
         style={
           reduceMotion
             ? undefined
-            : { x: cubeX, rotate: cubeRotate, opacity: cubeOpacity }
+            : {
+                x: cubeXSpring,
+                rotate: cubeRotateSpring,
+                opacity: cubeOpacity,
+              }
         }
         className={`absolute -top-9 z-0 ${index % 2 === 0 ? "-right-3" : "-left-3"} ${CUBE_SIZES[index]}`}
         aria-hidden="true"
       >
-        <div className="animate-bob-cube">
+        {/* Wet slick streak dragged behind the sliding cube */}
+        {!reduceMotion && (
+          <div className="absolute right-2/3 top-1/2 w-40 -translate-y-1/2">
+            <motion.div
+              style={{ opacity: trailOpacity, scaleX: trailScale }}
+              className="h-[7px] origin-right rounded-full bg-gradient-to-l from-ice-deep/60 via-ice/40 to-transparent blur-[1.5px]"
+            />
+          </div>
+        )}
+
+        <div className="animate-bob-cube relative">
           <IceCubeSVG className="h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" />
+          {/* Meltwater drips once the cube comes to rest */}
+          <motion.div
+            style={reduceMotion ? undefined : { opacity: settle }}
+            className="pointer-events-none"
+          >
+            <span
+              className="ice-drip -bottom-1 left-[30%]"
+              style={
+                {
+                  "--drip-delay": `${index * 0.7}s`,
+                } as React.CSSProperties
+              }
+            />
+            <span
+              className="ice-drip -bottom-2 left-[64%]"
+              style={
+                {
+                  "--drip-delay": `${1.6 + index * 0.5}s`,
+                  "--drip-duration": "3.9s",
+                } as React.CSSProperties
+              }
+            />
+          </motion.div>
+        </div>
+
+        {/* Melt puddle spreading beneath the settled cube */}
+        <div className="absolute -bottom-2 left-1/2 w-[92%] -translate-x-1/2">
+          <motion.div
+            style={
+              reduceMotion ? undefined : { opacity: settle, scaleX: settle }
+            }
+          >
+            <div className="ice-puddle w-full" />
+          </motion.div>
         </div>
       </motion.div>
 
@@ -412,6 +574,12 @@ function ProductCard({
         className="relative z-10 h-full"
         innerClassName="flex h-full flex-col gap-3 p-6 pb-7"
       >
+        {/* Slow light sweep across the wet card face */}
+        <span
+          className="ice-sheen"
+          style={{ "--sheen-delay": `${index * 1.4}s` } as React.CSSProperties}
+          aria-hidden="true"
+        />
         <h3 className="text-block-navy text-lg leading-snug sm:text-xl">
           {product.title}
         </h3>
@@ -435,10 +603,18 @@ function ProductCard({
 
 function Products() {
   const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 88%", "end 78%"],
   });
+
+  // Loose background cubes drifting at different parallax rates.
+  const bgY1 = useTransform(scrollYProgress, [0, 1], [80, -100]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], [30, -160]);
+  const bgY3 = useTransform(scrollYProgress, [0, 1], [120, -50]);
+  const bgRot1 = useTransform(scrollYProgress, [0, 1], [-18, 12]);
+  const bgRot2 = useTransform(scrollYProgress, [0, 1], [10, -22]);
 
   return (
     <section
@@ -447,6 +623,31 @@ function Products() {
       data-ocid="products"
       className="texture-paper overflow-x-clip bg-cream py-16 md:py-24"
     >
+      {/* Drifting background ice, behind the cards */}
+      <div
+        className="pointer-events-none absolute inset-0 hidden md:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY1, rotate: bgRot1 }}
+          className="absolute left-[3%] top-28 w-12 opacity-50"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY2, rotate: bgRot2 }}
+          className="absolute right-[3%] top-1/2 w-10 opacity-40"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+        <motion.div
+          style={reduceMotion ? undefined : { y: bgY3, rotate: bgRot1 }}
+          className="absolute bottom-8 left-[9%] w-14 opacity-45"
+        >
+          <IceCubeSVG className="h-auto w-full" />
+        </motion.div>
+      </div>
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <span className="eyebrow inline-flex items-center gap-2">
           <Snowflake className="size-4" />
