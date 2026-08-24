@@ -83,7 +83,7 @@ const TOWNS: Town[] = [
   { n: "Asbury Park", ll: [40.2204, -74.0121], hub: true },
   { n: "Long Branch", ll: [40.3043, -73.9924], hub: true },
   { n: "Sea Bright", ll: [40.3615, -73.9718] },
-  { n: "Sandy Hook", ll: [40.4237, -73.9915] },
+  { n: "Highlands", ll: [40.4037, -73.9915] },
   { n: "Trenton", ll: [40.2206, -74.7597], hub: true, inland: true },
   { n: "Newark", ll: [40.7357, -74.1724], hub: true, inland: true },
   { n: "Jersey City", ll: [40.7178, -74.0431], hub: true, inland: true },
@@ -1220,7 +1220,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="map-touch-surface relative h-[26rem] w-full touch-none overflow-hidden sm:h-[32rem] lg:h-[36rem]">
+    <div className="map-touch-surface relative h-[22rem] w-full touch-none overflow-hidden sm:h-[27rem] lg:h-[30rem]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />

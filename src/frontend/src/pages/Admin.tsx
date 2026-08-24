@@ -149,7 +149,9 @@ export default function Admin() {
 }
 
 function AuthGate({ onToken }: { onToken: (t: string) => void }) {
-  const [mode, setMode] = useState<"setup" | "login">("setup");
+  // Login is the everyday case — setup runs once, on the first deploy —
+  // so a returning admin lands straight on the form they actually need.
+  const [mode, setMode] = useState<"setup" | "login">("login");
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-4 py-16">
