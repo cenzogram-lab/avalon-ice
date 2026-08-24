@@ -46,9 +46,40 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { Suspense, lazy, useId, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useId, useRef, useState } from "react";
 
 const NJDeliveryMap = lazy(() => import("@/components/home/NJDeliveryMap"));
+
+/**
+ * True once `ref` comes within `rootMargin` of the viewport.
+ *
+ * React fetches a lazy chunk as soon as the component renders, even far
+ * below the fold — gating on this keeps the ~870KB 3D map out of the
+ * homepage's first load until the visitor is heading for it.
+ */
+function useNearViewport(
+  ref: React.RefObject<Element | null>,
+  rootMargin = "600px",
+) {
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || near) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setNear(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) setNear(true);
+      },
+      { rootMargin },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, rootMargin, near]);
+  return near;
+}
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                               */
@@ -661,6 +692,9 @@ function ShopTeaser() {
 /* ------------------------------------------------------------------ */
 
 function Network() {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const nearMap = useNearViewport(mapRef);
+
   return (
     <section
       id="network"
@@ -682,7 +716,7 @@ function Network() {
           trucks make their runs.
         </p>
 
-        <div className="mt-10">
+        <div ref={mapRef} className="mt-10">
           <IceFrame
             clip="b"
             fill="cream"
@@ -700,7 +734,7 @@ function Network() {
                   </div>
                 }
               >
-                <NJDeliveryMap />
+                {nearMap && <NJDeliveryMap />}
               </Suspense>
             </ErrorBoundary>
           </IceFrame>

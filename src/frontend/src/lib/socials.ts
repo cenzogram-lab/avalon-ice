@@ -1,14 +1,14 @@
-import type { IconType } from "react-icons";
 import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaTiktok,
-} from "react-icons/fa6";
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  TikTokIcon,
+} from "@/components/BrandIcons";
+import type { ComponentType, SVGProps } from "react";
 
 export interface SocialLink {
   label: string;
-  icon: IconType;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 /**
@@ -17,8 +17,8 @@ export interface SocialLink {
  * profile URLs exist.
  */
 export const SOCIALS: SocialLink[] = [
-  { label: "Instagram", icon: FaInstagram },
-  { label: "Facebook", icon: FaFacebookF },
-  { label: "TikTok", icon: FaTiktok },
-  { label: "LinkedIn", icon: FaLinkedinIn },
+  { label: "Instagram", icon: InstagramIcon },
+  { label: "Facebook", icon: FacebookIcon },
+  { label: "TikTok", icon: TikTokIcon },
+  { label: "LinkedIn", icon: LinkedInIcon },
 ];
