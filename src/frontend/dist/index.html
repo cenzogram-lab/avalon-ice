@@ -32,7 +32,132 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <script type="module" crossorigin src="/assets/index-2-w0up3g.js"></script>
+    <link rel="preload" as="image" href="/assets/images/avalon-heron.webp" />
+
+    <!--
+      Loading screen. Inlined here rather than rendered by React because the
+      wait it covers IS the JS bundle downloading and parsing — a React-side
+      loader would not paint until that work is already done.
+
+      The truck mirrors src/components/AvalonTruck.tsx; keep the two in sync.
+      Removed by main.tsx once the app mounts (see hideBootScreen).
+    -->
+    <style>
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        overflow: hidden;
+        background: linear-gradient(to bottom, #fdfcf8, #f7f2ea 55%, #e4f1f0);
+        font-family: "Work Sans", system-ui, sans-serif;
+        transition: opacity 0.45s ease, visibility 0.45s ease;
+      }
+      #boot[data-hidden="true"] {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .boot-wordmark {
+        font-family: "Bevan", Georgia, serif;
+        font-size: clamp(1.5rem, 5vw, 2.25rem);
+        letter-spacing: 0.02em;
+        color: #0c3552;
+        text-align: center;
+        margin: 0;
+      }
+      .boot-tagline {
+        margin: 0.6rem 0 0;
+        font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #4d7c8a;
+        text-align: center;
+      }
+      /* Full-bleed: the road has to reach both screen edges, or the truck
+         drives off the end of it while entering and leaving. */
+      .boot-scene {
+        position: relative;
+        width: 100vw;
+        height: 7.5rem;
+      }
+      .boot-road {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2.25rem;
+        background: #0c3552;
+        border-top: 3px solid #0c3552;
+        overflow: hidden;
+      }
+      .boot-stripes {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200%;
+        height: 4px;
+        background: repeating-linear-gradient(
+          to right,
+          #f7f2ea 0 28px,
+          transparent 28px 56px
+        );
+        opacity: 0.75;
+        animation: boot-stripes 0.75s linear infinite;
+      }
+      .boot-truck {
+        position: absolute;
+        /* Tuned so the wheels meet the asphalt: the SVG carries a little
+           empty space below the tyres, so this is not the road height. */
+        bottom: 0.85rem;
+        width: 9.5rem;
+        height: auto;
+        animation: boot-drive 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      }
+      .boot-bounce {
+        animation: boot-bounce 0.5s ease-in-out infinite;
+      }
+      @keyframes boot-stripes {
+        to {
+          transform: translate(-56px, -50%);
+        }
+      }
+      @keyframes boot-drive {
+        0% {
+          left: -11rem;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+      @keyframes boot-bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-2px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-stripes,
+        .boot-truck,
+        .boot-bounce {
+          animation: none;
+        }
+        .boot-truck {
+          left: 50%;
+          margin-left: -4.75rem;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-BlpUSD30.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-B9YVDtju.js">
     <link rel="modulepreload" crossorigin href="/assets/tanstack-C4EZNDgT.js">
     <link rel="modulepreload" crossorigin href="/assets/icp-DN9EvJH3.js">
@@ -41,5 +166,60 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <div id="boot" role="status" aria-live="polite">
+      <p class="sr-only-boot" style="position: absolute; left: -9999px">
+        Loading Avalon Ice
+      </p>
+      <div>
+        <p class="boot-wordmark">Avalon Ice</p>
+        <p class="boot-tagline">The Shore's Coldest Delivery</p>
+      </div>
+
+      <div class="boot-scene">
+        <div class="boot-road"><div class="boot-stripes"></div></div>
+        <div class="boot-truck">
+          <div class="boot-bounce">
+            <svg viewBox="0 0 180 92" width="100%" height="100%" aria-hidden="true">
+              <rect x="4" y="8" width="112" height="58" rx="6" fill="#FDFCF8" stroke="#0C3552" stroke-width="4" />
+              <circle cx="33" cy="37" r="20" fill="#F7F2EA" stroke="#0C3552" stroke-width="2.5" />
+              <clipPath id="boot-heron"><circle cx="33" cy="37" r="18.5" /></clipPath>
+              <image href="/assets/images/avalon-heron.webp" x="14.5" y="18.5" width="37" height="37" clip-path="url(#boot-heron)" preserveAspectRatio="xMidYMid slice" />
+              <text x="87" y="33" text-anchor="middle" font-family="Bevan, Georgia, serif" font-size="13" fill="#0C3552">AVALON</text>
+              <rect x="69" y="39" width="36" height="3.5" rx="1.75" fill="#8CBEC5" />
+              <text x="87" y="57" text-anchor="middle" font-family="Bevan, Georgia, serif" font-size="13" fill="#0C3552">ICE</text>
+              <path d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z" fill="#0C3552" />
+              <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
+              <g fill="#061F33">
+                <circle cx="34" cy="72" r="13" /><circle cx="86" cy="72" r="13" /><circle cx="146" cy="72" r="13" />
+              </g>
+              <g fill="#F7F2EA">
+                <circle cx="34" cy="72" r="5.5" /><circle cx="86" cy="72" r="5.5" /><circle cx="146" cy="72" r="5.5" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      Failsafe: if the bundle never loads (offline, CDN failure, a throw
+      before main.tsx runs), the loading screen must not trap the visitor
+      behind a truck forever. main.tsx normally dismisses it seconds earlier;
+      this window is deliberately generous so a slow connection is never cut
+      off mid-load and left staring at an empty page.
+    -->
+    <script>
+      setTimeout(function () {
+        var boot = document.getElementById("boot");
+        if (boot && boot.dataset.hidden !== "true") {
+          boot.dataset.hidden = "true";
+          setTimeout(function () {
+            boot.remove();
+          }, 600);
+        }
+      }, 20000);
+    </script>
+
   </body>
 </html>

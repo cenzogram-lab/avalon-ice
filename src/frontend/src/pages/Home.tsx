@@ -632,22 +632,14 @@ function ShopTeaser() {
         scrim="even"
       />
 
-      {/* Left-aligned and narrow so the merch footage stays visible beside
-          the mark rather than being covered by a full-width flag. */}
-      {/* w-full matters: the section is a flex container from md up, so
+      {/* No ribbon here — the band leans on the merch footage itself, so the
+          heron stays visible. The "Coming Soon" mark lives on /shop.
+          w-full matters: the section is a flex container from md up, so
           without it this wrapper shrinks to fit and mx-auto re-centers the
-          band instead of holding it to the left. */}
+          card instead of holding it to the left. */}
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <div className="max-w-md">
-          <ComingSoonRibbon
-            compact
-            tagline="Merch, gear & bagged ice."
-            headingOcid="shop_teaser.heading"
-          />
-        </div>
-
         {/* Copy and CTA ride a cream card so they stay legible over video */}
-        <div className="ice-shadow mt-6 max-w-md border-[4px] border-navy bg-cream-bright/95 px-5 py-6 text-center backdrop-blur-[2px] sm:px-7">
+        <div className="ice-shadow max-w-md border-[4px] border-navy bg-cream-bright/95 px-5 py-6 text-center backdrop-blur-[2px] sm:px-7">
           <h3 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
             Shore Gear, Straight From the Ice House
           </h3>
