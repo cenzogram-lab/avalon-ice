@@ -1,8 +1,8 @@
 /** Brand loop videos hosted on file.garden (direct mp4 links). */
 
-/** Homepage main hero — mascot drone loop. */
+/** Homepage main hero loop. */
 export const HERO_VIDEO =
-  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_mascot_drone_loop_v2.mp4";
+  "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/0823.mp4";
 /** "On the Road" delivery/route loop. */
 export const LOOP_VIDEO =
   "https://file.garden/aoCNkzJZYxDjRiWz/AVALONICE/avalon_ice_loop(1).mp4";

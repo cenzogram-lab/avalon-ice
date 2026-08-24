@@ -38,7 +38,7 @@ export default function Footer() {
 
           <p className="mt-6 max-w-sm font-body text-sm leading-relaxed text-lagoon">
             Packaged &amp; bulk ice distribution — Cape May County and up the
-            shore. Launching Labor Day Weekend 2026.
+            shore.
           </p>
         </div>
 
