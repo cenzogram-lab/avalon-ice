@@ -22,13 +22,40 @@ function useScrollOnNavigate() {
     select: (s) => ({ pathname: s.location.pathname, hash: s.location.hash }),
   });
 
+  // `pathname` is a re-run trigger, not a value this effect reads: a plain
+  // route change (/ -> /shop) leaves `hash` empty both times, so depending
+  // on `hash` alone would never fire and the new page would open still
+  // scrolled to the old offset.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname re-runs this on route changes
   useEffect(() => {
     const id = hash.replace(/^#/, "");
 
     // No hash: a route change should start at the top of the new page.
+    // Re-asserting over a few frames matters — content painting in after
+    // the first reset (video backdrops, lazy sections) can otherwise leave
+    // the page a little way down. Any real scroll input hands control back.
     if (!id) {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      return;
+      let topFrame = 0;
+      let held = 0;
+      let cancelled = false;
+      const release = () => {
+        cancelled = true;
+      };
+      const hold = () => {
+        if (cancelled) return;
+        if (window.scrollY !== 0) window.scrollTo({ top: 0, left: 0 });
+        if (++held < 20) topFrame = requestAnimationFrame(hold);
+      };
+      topFrame = requestAnimationFrame(hold);
+      for (const evt of ["wheel", "touchstart", "keydown"]) {
+        window.addEventListener(evt, release, { once: true, passive: true });
+      }
+      return () => {
+        cancelAnimationFrame(topFrame);
+        for (const evt of ["wheel", "touchstart", "keydown"]) {
+          window.removeEventListener(evt, release);
+        }
+      };
     }
 
     let frame = 0;
