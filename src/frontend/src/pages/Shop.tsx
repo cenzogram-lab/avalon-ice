@@ -5,7 +5,7 @@ import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MERCH_PROMO_VIDEO } from "@/lib/media";
-import { Mail, Truck } from "lucide-react";
+import { Truck } from "lucide-react";
 
 /**
  * /shop — branded storefront placeholder. No products are listed yet:
@@ -25,7 +25,7 @@ export default function Shop() {
     <section
       id="shop"
       data-ocid="shop"
-      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[75vh] sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24 lg:min-h-[85vh]"
+      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[75vh] sm:py-16 md:flex md:min-h-[82vh] md:items-end md:pb-16 md:pt-24 lg:min-h-[85vh]"
     >
       {!isMobile && (
         <VideoBackdrop
@@ -37,34 +37,25 @@ export default function Shop() {
 
       <FrostOverlay />
 
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 text-center sm:px-6">
-        <div className="mt-8">
-          <ComingSoonRibbon as="h1" headingOcid="shop.coming_soon" />
-        </div>
+      {/* Left-aligned and narrow so the promo footage stays visible beside
+          the mark rather than being covered by a full-width flag. */}
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="max-w-md">
+          <ComingSoonRibbon compact as="h1" headingOcid="shop.coming_soon" />
 
-        <div className="mt-8 flex w-full flex-col items-stretch gap-3.5 sm:w-auto sm:flex-row sm:items-center sm:justify-center">
-          <Button
-            asChild
-            size="lg"
-            data-ocid="shop.order_button"
-            className="btn-brutal btn-brutal-ice bg-navy min-h-12 px-6 py-6 font-body text-sm font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
-          >
-            <a href="/#order-form">
-              <Truck className="size-4" />
-              Request Delivery / Quote
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            data-ocid="shop.notify_button"
-            className="btn-brutal bg-cream-bright min-h-12 px-6 py-6 font-body text-sm font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
-          >
-            <a href="mailto:Sales@AvalonIce.com?subject=Avalon%20Ice%20Shop%20Waitlist">
-              <Mail className="size-4" />
-              Get Notified
-            </a>
-          </Button>
+          <div className="mt-8 flex w-full flex-col items-stretch gap-3.5 sm:w-auto sm:flex-row sm:items-center">
+            <Button
+              asChild
+              size="lg"
+              data-ocid="shop.order_button"
+              className="btn-brutal btn-brutal-ice bg-navy min-h-12 px-6 py-6 font-body text-sm font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
+            >
+              <a href="/#order-form">
+                <Truck className="size-4" />
+                Request Delivery / Quote
+              </a>
+            </Button>
+          </div>
         </div>
 
         {/* Phones: the promo plays inline at its native aspect ratio rather

@@ -623,7 +623,7 @@ function ShopTeaser() {
     <section
       id="shop-preview"
       data-ocid="shop_teaser"
-      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[70vh] md:min-h-[80vh] md:py-20 md:flex md:items-center"
+      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[70vh] md:flex md:min-h-[80vh] md:items-end md:pb-14 md:pt-24"
     >
       {/* The merch cut plays full-bleed behind the band */}
       <VideoBackdrop
@@ -632,14 +632,22 @@ function ShopTeaser() {
         scrim="even"
       />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-        <ComingSoonRibbon
-          tagline="Merch, gear & bagged ice."
-          headingOcid="shop_teaser.heading"
-        />
+      {/* Left-aligned and narrow so the merch footage stays visible beside
+          the mark rather than being covered by a full-width flag. */}
+      {/* w-full matters: the section is a flex container from md up, so
+          without it this wrapper shrinks to fit and mx-auto re-centers the
+          band instead of holding it to the left. */}
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="max-w-md">
+          <ComingSoonRibbon
+            compact
+            tagline="Merch, gear & bagged ice."
+            headingOcid="shop_teaser.heading"
+          />
+        </div>
 
         {/* Copy and CTA ride a cream card so they stay legible over video */}
-        <div className="ice-shadow mx-auto mt-10 max-w-3xl border-[4px] border-navy bg-cream-bright/95 px-6 py-8 text-center backdrop-blur-[2px] sm:px-10">
+        <div className="ice-shadow mt-6 max-w-md border-[4px] border-navy bg-cream-bright/95 px-5 py-6 text-center backdrop-blur-[2px] sm:px-7">
           <h3 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
             Shore Gear, Straight From the Ice House
           </h3>
@@ -694,17 +702,19 @@ function Network() {
           trucks make their runs.
         </p>
 
-        <div ref={mapRef} className="mt-10">
+        {/* Narrower than the section so the frame reads as a widget rather
+            than a full-width panel. */}
+        <div ref={mapRef} className="mt-10 max-w-4xl">
           <IceFrame
             clip="b"
             fill="cream"
             shadow="ice"
-            innerClassName="p-1.5 sm:p-2"
+            innerClassName="p-1 sm:p-1.5"
           >
             <ErrorBoundary label="the delivery map">
               <Suspense
                 fallback={
-                  <div className="flex h-[30rem] w-full flex-col items-center justify-center gap-3 sm:h-[34rem]">
+                  <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 sm:h-[27rem] lg:h-[30rem]">
                     <Loader2 className="size-8 animate-spin text-lagoon" />
                     <p className="font-body text-sm font-medium text-lagoon">
                       Charting the shore…
@@ -1388,8 +1398,8 @@ export default function Home() {
       <Hero />
       <ShopTeaser />
       <Products />
-      <Network />
       <ShowcaseVideo />
+      <Network />
       <OrderSection />
       <Contact />
     </>
