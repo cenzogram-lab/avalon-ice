@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/#services", label: "Services" },
   { href: "/#network", label: "Network" },
   { href: "/shop", label: "Shop" },
+  { href: "/about", label: "About" },
   { href: "/#order-form", label: "Order" },
   { href: "/#contact", label: "Contact" },
 ];
@@ -43,11 +44,11 @@ export default function Navbar() {
       data-ocid="navbar"
       className="sticky top-0 z-40 border-b-[3px] border-navy bg-cream-bright/95 backdrop-blur-sm"
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
+      <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
         <a
           href="/#top"
           data-ocid="navbar.brand"
-          className="flex shrink-0 items-center gap-2.5"
+          className="flex min-h-12 min-w-12 shrink-0 items-center gap-2.5"
         >
           <img
             src="/assets/images/avalon-heron.webp"
@@ -75,7 +76,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               data-ocid={`navbar.link.${link.label.toLowerCase()}`}
-              className="rounded-full px-4 py-2.5 font-body text-base font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-5 2xl:text-lg"
+              className="flex min-h-12 items-center whitespace-nowrap rounded-full px-2 py-3 font-body text-sm font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-4 2xl:text-lg"
             >
               {link.label}
             </a>
@@ -91,7 +92,7 @@ export default function Navbar() {
             asChild
             size="sm"
             data-ocid="navbar.call_button"
-            className="btn-brutal btn-brutal-ice hidden bg-cream-bright font-body text-xs font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-mist md:inline-flex lg:h-11 lg:px-5 lg:text-sm"
+            className="btn-brutal btn-brutal-ice hidden bg-cream-bright font-body text-xs font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-mist min-h-12 md:inline-flex lg:px-5 lg:text-sm"
           >
             <a href="tel:8563089986">
               <Phone className="size-4" />
@@ -103,7 +104,7 @@ export default function Navbar() {
             size="icon"
             aria-label="Call Avalon Ice"
             data-ocid="navbar.call_icon"
-            className="btn-brutal btn-brutal-ice size-10 bg-cream-bright text-navy hover:bg-ice-mist md:hidden"
+            className="btn-brutal btn-brutal-ice size-12 bg-cream-bright text-navy hover:bg-ice-mist md:hidden"
           >
             <a href="tel:8563089986">
               <Phone className="size-4" />
@@ -115,7 +116,7 @@ export default function Navbar() {
             asChild
             size="sm"
             data-ocid="navbar.contact_button"
-            className="btn-brutal btn-brutal-ice hidden bg-navy font-body text-xs font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-lagoon md:inline-flex lg:h-11 lg:px-6 lg:text-sm"
+            className="btn-brutal btn-brutal-ice hidden bg-navy font-body text-xs font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-lagoon min-h-12 md:inline-flex lg:px-6 lg:text-sm"
           >
             <a href="/#order-form">
               <Mail className="size-4" />
@@ -129,7 +130,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="btn-brutal btn-brutal-ice inline-flex size-10 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden"
+            className="btn-brutal btn-brutal-ice inline-flex size-12 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -145,7 +146,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setOpen(false)}
                 data-ocid={`navbar.mobile_link.${link.label.toLowerCase()}`}
-                className="rounded-md px-3 py-2.5 font-body text-lg font-bold uppercase tracking-wide text-lagoon hover:bg-ice-mist hover:text-navy"
+                className="flex min-h-12 items-center rounded-md px-3 py-3 font-body text-lg font-bold uppercase tracking-wide text-lagoon hover:bg-ice-mist hover:text-navy"
               >
                 {link.label}
               </a>

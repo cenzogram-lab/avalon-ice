@@ -17,7 +17,29 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     sourcemap: false,
-    minify: false,
+    // The template shipped production builds unminified, which was the bulk
+    // of the payload. esbuild minification is vite's default.
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        // Split long-lived vendor code out of the app chunk so a copy
+        // tweak doesn't invalidate the whole download.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          // three/@react-three are intentionally NOT split out: naming them
+          // turns the lazy map's dependency into a static entry import,
+          // which drags the whole 3D stack into the first paint.
+          if (/[\\/]node_modules[\\/](@icp-sdk|@caffeineai|@dfinity)[\\/]/.test(id))
+            return "icp";
+          if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id))
+            return "react";
+          if (/[\\/]node_modules[\\/](@tanstack)[\\/]/.test(id))
+            return "tanstack";
+          if (/[\\/]node_modules[\\/](motion|framer-motion|motion-dom|motion-utils)[\\/]/.test(id))
+            return "motion";
+        },
+      },
+    },
   },
   css: {
     postcss: "./postcss.config.js",

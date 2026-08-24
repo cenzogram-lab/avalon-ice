@@ -1,4 +1,5 @@
 import { createActor } from "@/backend";
+import { notifyInquiry } from "@/lib/notify";
 import type { Inquiry, InquiryFormValues, SubmissionResult } from "@/lib/types";
 import { InquiryStatus, InquiryType } from "@/lib/types";
 import { useActor } from "@caffeineai/core-infrastructure";
@@ -81,11 +82,17 @@ export function useSubmitInquiry() {
       if (!actor || isFetching) throw new Error("Backend is still loading");
       const inquiry = buildInquiry(form);
       const id = await actor.submitInquiry(inquiry);
-      return {
-        referenceId: `AVL-${id.toString()}`,
-        inquiry: { ...inquiry, id },
-      };
+      const stored = { ...inquiry, id };
+      const referenceId = `AVL-${id.toString()}`;
+      // Notify Sales@AvalonIce.com. Deliberately not awaited: the lead is
+      // already persisted, so relay latency or failure must not surface as
+      // a submission error.
+      void notifyInquiry(stored, referenceId);
+      return { referenceId, inquiry: stored };
     },
+    // One retry absorbs a transient blip without the visitor re-typing.
+    retry: 1,
+    retryDelay: 1200,
   });
 }
 

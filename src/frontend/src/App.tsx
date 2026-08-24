@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import About from "@/pages/About";
 import Admin from "@/pages/Admin";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
@@ -24,6 +25,12 @@ const indexRoute = createRoute({
   component: Home,
 });
 
+const aboutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/about",
+  component: About,
+});
+
 const shopRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/shop",
@@ -36,7 +43,12 @@ const adminRoute = createRoute({
   component: Admin,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, shopRoute, adminRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  aboutRoute,
+  shopRoute,
+  adminRoute,
+]);
 
 const router = createRouter({ routeTree });
 

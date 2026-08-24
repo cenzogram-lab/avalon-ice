@@ -1,3 +1,4 @@
+import RoadParade from "@/components/home/RoadParade";
 import { SOCIALS } from "@/lib/socials";
 import { Link } from "@tanstack/react-router";
 import { Mail, MapPin } from "lucide-react";
@@ -51,7 +52,7 @@ export default function Footer() {
           <a
             href="mailto:Sales@AvalonIce.com"
             data-ocid="footer.email"
-            className="mt-5 inline-flex items-center gap-2.5 font-script text-2xl text-navy hover:text-lagoon"
+            className="mt-4 inline-flex min-h-12 items-center gap-2.5 font-script text-2xl text-navy hover:text-lagoon"
           >
             <Mail className="size-5 text-lagoon" />
             Sales@AvalonIce.com
@@ -60,7 +61,7 @@ export default function Footer() {
             <a
               href="tel:8563089986"
               data-ocid="footer.phone"
-              className="hover:text-navy"
+              className="inline-flex min-h-12 items-center hover:text-navy"
             >
               Cell: (856) 308-9986
             </a>
@@ -83,10 +84,12 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* The fleet keeps rolling along the foot of the site */}
+      <RoadParade />
+
       <div className="border-t border-navy/25">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 font-body text-xs font-bold uppercase tracking-[0.14em] text-lagoon sm:flex-row sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 font-body text-xs font-bold uppercase tracking-[0.14em] text-lagoon sm:px-6">
           <span>© 2026 Avalon Ice · Cape May County, N.J.</span>
-          <span>Coming · Labor Day Weekend 2026</span>
         </div>
         {/* Extra bottom padding on mobile keeps the fixed contact CTA clear */}
         <div className="flex items-center justify-center pb-24 text-center md:pb-4">

@@ -1105,10 +1105,21 @@ function MapScene({
         enableDamping
         dampingFactor={0.085}
         enablePan={false}
+        enableZoom
+        enableRotate
         minPolarAngle={0.18}
         maxPolarAngle={Math.PI * 0.46}
         minZoom={3}
         maxZoom={40}
+        rotateSpeed={0.85}
+        zoomSpeed={0.9}
+        // Touch: one finger orbits the state, two fingers pinch-zoom.
+        touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
+        mouseButtons={{
+          LEFT: THREE.MOUSE.ROTATE,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.ROTATE,
+        }}
       />
       <CameraRig controlsRef={controlsRef} flightRef={flightRef} />
     </>
@@ -1186,7 +1197,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="relative h-[30rem] w-full overflow-hidden sm:h-[36rem]">
+    <div className="map-touch-surface relative h-[26rem] w-full touch-none overflow-hidden sm:h-[32rem] lg:h-[36rem]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />
@@ -1226,7 +1237,7 @@ export default function NJDeliveryMap() {
         >
           <SelectTrigger
             data-ocid="network.town_select"
-            className="h-9 w-44 rounded-full border-2 border-navy bg-gradient-ice-card font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_4px_0_#A3CCD1]"
+            className="!h-12 w-44 rounded-full border-2 border-navy bg-gradient-ice-card font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_4px_0_#A3CCD1]"
             aria-label="Select a town"
           >
             <SelectValue placeholder="Select a town" />
@@ -1255,7 +1266,7 @@ export default function NJDeliveryMap() {
           onClick={() => setShowCounties((v) => !v)}
           data-ocid="network.county_toggle"
           aria-pressed={showCounties}
-          className={`h-9 rounded-full border-2 border-navy font-body text-xs font-bold uppercase tracking-wider shadow-[0_4px_0_#A3CCD1] hover:bg-navy hover:text-cream-bright ${
+          className={`h-12 rounded-full border-2 border-navy font-body text-xs font-bold uppercase tracking-wider shadow-[0_4px_0_#A3CCD1] hover:bg-navy hover:text-cream-bright ${
             showCounties
               ? "bg-navy text-cream-bright"
               : "bg-gradient-ice-card text-navy"
@@ -1268,7 +1279,7 @@ export default function NJDeliveryMap() {
           size="sm"
           onClick={handleReset}
           data-ocid="network.reset_view"
-          className="h-9 rounded-full border-2 border-navy bg-gradient-ice-card font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_4px_0_#A3CCD1] hover:bg-navy hover:text-cream-bright"
+          className="h-12 rounded-full border-2 border-navy bg-gradient-ice-card font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_4px_0_#A3CCD1] hover:bg-navy hover:text-cream-bright"
         >
           Reset view
         </Button>
@@ -1316,7 +1327,7 @@ export default function NJDeliveryMap() {
             type="button"
             aria-label="Close town details"
             onClick={handleReset}
-            className="absolute right-2 top-1.5 p-1 text-ice-deep hover:text-navy"
+            className="absolute right-1 top-1 inline-flex size-11 items-center justify-center text-ice-deep hover:text-navy"
           >
             <X className="size-4" />
           </button>

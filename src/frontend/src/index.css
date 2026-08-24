@@ -624,3 +624,64 @@
     }
   }
 }
+
+@layer utilities {
+  /* Wide hand-drawn banner silhouette (shallow, jittered long edges) */
+  .clip-ice-banner {
+    clip-path: polygon(
+      0.4% 9%,
+      2.5% 2%,
+      14% 5%,
+      28% 1.5%,
+      42% 4.5%,
+      58% 1.5%,
+      72% 5%,
+      86% 2%,
+      97.6% 4.5%,
+      99.6% 11%,
+      98.4% 34%,
+      99.7% 62%,
+      98.2% 88%,
+      96.6% 97.5%,
+      85% 95%,
+      70% 98.6%,
+      55% 95.4%,
+      40% 98.8%,
+      26% 95.6%,
+      12% 98.4%,
+      2.2% 96%,
+      0.6% 88%,
+      1.8% 60%,
+      0.3% 34%
+    );
+  }
+}
+
+@layer utilities {
+  /* The 3D map canvas must claim touch gestures so a finger drag orbits
+     the state instead of scrolling the page past it. */
+  .map-touch-surface canvas {
+    /* react-three-fiber writes touch-action:auto inline on the canvas, so
+       this has to win over an inline style. */
+    touch-action: none !important;
+  }
+}
+
+@layer utilities {
+  /* ------------------------------------------------------------------ */
+  /* Angular ribbon flag — the merch banner                              */
+  /* ------------------------------------------------------------------ */
+
+  /* Bold swallowtail flag: both ends notched inward to a point. */
+  .clip-flag {
+    clip-path: polygon(0 0, 100% 0, 95.5% 50%, 100% 100%, 0 100%, 4.5% 50%);
+  }
+
+  /* Folded ribbon tails that sit behind the flag's ends. */
+  .clip-tail-left {
+    clip-path: polygon(0 0, 100% 14%, 100% 86%, 0 100%, 26% 50%);
+  }
+  .clip-tail-right {
+    clip-path: polygon(0 14%, 100% 0, 74% 50%, 100% 100%, 0 86%);
+  }
+}
