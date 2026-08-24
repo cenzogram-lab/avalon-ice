@@ -1,3 +1,4 @@
+import ErrorBoundary from "@/components/ErrorBoundary";
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
@@ -27,6 +28,7 @@ import type {
 } from "@/lib/types";
 import { Link } from "@tanstack/react-router";
 import {
+  AlertTriangle,
   Check,
   Loader2,
   Mail,
@@ -121,7 +123,7 @@ function Hero() {
           <a
             href="mailto:Sales@AvalonIce.com?subject=Ice%20Delivery%20Request"
             data-ocid="hero.email"
-            className="font-script text-lg text-lagoon hover:underline"
+            className="inline-flex min-h-12 items-center font-script text-lg text-lagoon hover:underline"
           >
             Sales@AvalonIce.com
           </a>
@@ -687,18 +689,20 @@ function Network() {
             shadow="ice"
             innerClassName="p-1.5 sm:p-2"
           >
-            <Suspense
-              fallback={
-                <div className="flex h-[30rem] w-full flex-col items-center justify-center gap-3 sm:h-[34rem]">
-                  <Loader2 className="size-8 animate-spin text-lagoon" />
-                  <p className="font-body text-sm font-medium text-lagoon">
-                    Charting the shore…
-                  </p>
-                </div>
-              }
-            >
-              <NJDeliveryMap />
-            </Suspense>
+            <ErrorBoundary label="the delivery map">
+              <Suspense
+                fallback={
+                  <div className="flex h-[30rem] w-full flex-col items-center justify-center gap-3 sm:h-[34rem]">
+                    <Loader2 className="size-8 animate-spin text-lagoon" />
+                    <p className="font-body text-sm font-medium text-lagoon">
+                      Charting the shore…
+                    </p>
+                  </div>
+                }
+              >
+                <NJDeliveryMap />
+              </Suspense>
+            </ErrorBoundary>
           </IceFrame>
         </div>
       </div>
@@ -787,7 +791,7 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
           placeholder="Tell us what you need…"
         />
       </Field>
-      <SubmitButton submitting={submit.isPending} />
+      <SubmitButton submitting={submit.isPending} failed={submit.isError} />
     </form>
   );
 }
@@ -957,7 +961,7 @@ function WholesaleForm({
           </SelectContent>
         </Select>
       </Field>
-      <SubmitButton submitting={submit.isPending} />
+      <SubmitButton submitting={submit.isPending} failed={submit.isError} />
     </form>
   );
 }
@@ -1118,7 +1122,7 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         />
         On-site freezer required
       </label>
-      <SubmitButton submitting={submit.isPending} />
+      <SubmitButton submitting={submit.isPending} failed={submit.isError} />
     </form>
   );
 }
@@ -1145,17 +1149,54 @@ function Field({
   );
 }
 
-function SubmitButton({ submitting }: { submitting: boolean }) {
+function SubmitButton({
+  submitting,
+  failed,
+}: {
+  submitting: boolean;
+  failed?: boolean;
+}) {
   return (
-    <Button
-      type="submit"
-      size="lg"
-      disabled={submitting}
-      data-ocid="order.submit_button"
-      className="btn-brutal btn-brutal-ice mt-2 w-full bg-navy py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy sm:w-auto"
-    >
-      {submitting ? "Submitting…" : "Submit Inquiry"}
-    </Button>
+    <div className="mt-2 flex flex-col gap-3">
+      {/* A dropped submit must never fail silently — this is the site's
+          primary conversion path, so surface it with a way to recover. */}
+      {failed && (
+        <div
+          role="alert"
+          data-ocid="order.submit_error"
+          className="flex items-start gap-2.5 rounded-xl border-[3px] border-destructive/70 bg-destructive/10 px-4 py-3 font-body text-sm text-navy"
+        >
+          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
+          <span>
+            We couldn't send that just now — your details are still here, so
+            press submit to try again. If it keeps failing, call{" "}
+            <a
+              href="tel:8563089986"
+              className="font-bold text-navy underline underline-offset-2"
+            >
+              (856) 308-9986
+            </a>{" "}
+            or email{" "}
+            <a
+              href="mailto:Sales@AvalonIce.com"
+              className="font-bold text-navy underline underline-offset-2"
+            >
+              Sales@AvalonIce.com
+            </a>
+            .
+          </span>
+        </div>
+      )}
+      <Button
+        type="submit"
+        size="lg"
+        disabled={submitting}
+        data-ocid="order.submit_button"
+        className="btn-brutal btn-brutal-ice min-h-12 w-full bg-navy py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy sm:w-auto"
+      >
+        {submitting ? "Submitting…" : failed ? "Try Again" : "Submit Inquiry"}
+      </Button>
+    </div>
   );
 }
 
@@ -1242,21 +1283,21 @@ function OrderSection() {
                     <TabsTrigger
                       value="general"
                       data-ocid="order.tab.general"
-                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                      className="min-h-12 flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
                     >
                       General
                     </TabsTrigger>
                     <TabsTrigger
                       value="wholesale"
                       data-ocid="order.tab.wholesale"
-                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                      className="min-h-12 flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
                     >
                       Wholesale
                     </TabsTrigger>
                     <TabsTrigger
                       value="event"
                       data-ocid="order.tab.event"
-                      className="flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
+                      className="min-h-12 flex-1 font-body font-bold uppercase tracking-wide data-[state=active]:bg-navy data-[state=active]:text-cream-bright"
                     >
                       Event
                     </TabsTrigger>

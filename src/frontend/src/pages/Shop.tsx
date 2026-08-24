@@ -84,7 +84,7 @@ export default function Shop() {
                 asChild
                 size="lg"
                 data-ocid="shop.order_button"
-                className="btn-brutal btn-brutal-ice bg-navy px-6 py-5 font-body text-sm font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
+                className="btn-brutal btn-brutal-ice bg-navy min-h-12 px-6 py-6 font-body text-sm font-bold uppercase tracking-wide text-cream-bright hover:bg-navy"
               >
                 <a href="/#order-form">
                   <Truck className="size-4" />
@@ -95,7 +95,7 @@ export default function Shop() {
                 asChild
                 size="lg"
                 data-ocid="shop.notify_button"
-                className="btn-brutal bg-cream-bright px-6 py-5 font-body text-sm font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
+                className="btn-brutal bg-cream-bright min-h-12 px-6 py-6 font-body text-sm font-bold uppercase tracking-wide text-navy hover:bg-ice-frost"
               >
                 <a href="mailto:Sales@AvalonIce.com?subject=Avalon%20Ice%20Shop%20Waitlist">
                   <Mail className="size-4" />

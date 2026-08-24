@@ -86,6 +86,9 @@ export function useSubmitInquiry() {
         inquiry: { ...inquiry, id },
       };
     },
+    // One retry absorbs a transient blip without the visitor re-typing.
+    retry: 1,
+    retryDelay: 1200,
   });
 }
 

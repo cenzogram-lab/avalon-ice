@@ -52,7 +52,7 @@ export default function Footer() {
           <a
             href="mailto:Sales@AvalonIce.com"
             data-ocid="footer.email"
-            className="mt-5 inline-flex items-center gap-2.5 font-script text-2xl text-navy hover:text-lagoon"
+            className="mt-4 inline-flex min-h-12 items-center gap-2.5 font-script text-2xl text-navy hover:text-lagoon"
           >
             <Mail className="size-5 text-lagoon" />
             Sales@AvalonIce.com
@@ -61,7 +61,7 @@ export default function Footer() {
             <a
               href="tel:8563089986"
               data-ocid="footer.phone"
-              className="hover:text-navy"
+              className="inline-flex min-h-12 items-center hover:text-navy"
             >
               Cell: (856) 308-9986
             </a>
