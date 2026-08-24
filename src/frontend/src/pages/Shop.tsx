@@ -25,7 +25,7 @@ export default function Shop() {
     <section
       id="shop"
       data-ocid="shop"
-      className="relative overflow-hidden bg-cream py-14 sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24"
+      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[75vh] sm:py-16 md:flex md:min-h-[82vh] md:items-center md:py-24 lg:min-h-[85vh]"
     >
       {!isMobile && (
         <VideoBackdrop

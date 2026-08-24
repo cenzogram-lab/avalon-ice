@@ -93,7 +93,7 @@ function Hero() {
     <section
       id="top"
       data-ocid="hero"
-      className="relative overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light md:flex md:min-h-[85vh] md:items-center"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light sm:min-h-[90vh] md:flex md:min-h-[85vh] md:items-center"
     >
       {/* md+: full-bleed cover video behind the content. On phones the video
           instead renders inline below the CTAs at its native aspect ratio,
@@ -623,7 +623,7 @@ function ShopTeaser() {
     <section
       id="shop-preview"
       data-ocid="shop_teaser"
-      className="relative overflow-hidden bg-cream py-14 md:py-20"
+      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[70vh] md:min-h-[80vh] md:py-20 md:flex md:items-center"
     >
       {/* The merch cut plays full-bleed behind the band */}
       <VideoBackdrop
