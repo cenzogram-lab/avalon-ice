@@ -27,7 +27,9 @@ const NAVY = "#0C3552";
 const FROST = "#7FB0BA";
 const FROST_L = "#A3CCD1";
 const PIN_RED = "#C8322B";
-const PIN_STEM = "#99231C";
+/* A selected town swaps out of red into the brand blues. */
+const PIN_SEL = "#0C3552";
+const PIN_SEL_STEM = "#1B4F70";
 const CREAM = "#F7F2EA";
 const SHELL = "#FDFCF8";
 
@@ -655,7 +657,7 @@ function Truck({
   ];
 
   return (
-    <group ref={group} scale={1.3}>
+    <group ref={group} scale={0.6}>
       {/* Box body: liveried sides, shell everywhere else */}
       <mesh position={[0, 3.3, -1]} castShadow>
         <boxGeometry args={[4.2, 4.4, 9.2]} />
@@ -719,9 +721,10 @@ function Truck({
 }
 
 /**
- * Towns render as small navy dots on the ice (like the county map art).
- * The red map-pin tag only appears on the town the user selects — the
- * Woodbine HQ beacon stays the one prominent marker otherwise.
+ * Towns render as skinny red pinpoints stuck in the ice (like the county
+ * map art). Selecting one turns its point brand navy and drops the pin
+ * tag above it — the Woodbine HQ beacon stays the one prominent marker
+ * otherwise.
  */
 function TownPin({
   town,
@@ -734,12 +737,16 @@ function TownPin({
   selected: boolean;
   onSelect: (t: Town) => void;
 }) {
-  const dotRef = useRef<THREE.Mesh>(null);
+  const dotRef = useRef<THREE.Group>(null);
   const pinRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const headR = town.hub ? 2.3 : 1.9;
   const stemH = headR * 2.7;
-  const dotR = town.hub ? 1.15 : 0.95;
+  // A slim needle rather than a bead, so towns read as pinpoints.
+  const needleH = town.hub ? 3.4 : 2.7;
+  const needleR = town.hub ? 0.22 : 0.18;
+  const tipR = town.hub ? 0.5 : 0.42;
+  const pointColor = selected ? PIN_SEL : PIN_RED;
   const pos = toWorld(space, town.ll[1], town.ll[0], TOP_Y);
 
   useFrame(() => {
@@ -758,34 +765,50 @@ function TownPin({
 
   return (
     <group position={pos}>
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: R3F mesh, not a DOM node — keyboard selection is available via the town dropdown */}
-      <mesh
-        ref={dotRef}
-        position={[0, 0.5, 0]}
-        castShadow
-        onPointerOver={(e) => {
-          e.stopPropagation();
-          setHovered(true);
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={() => {
-          setHovered(false);
-          document.body.style.cursor = "auto";
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect(town);
-        }}
-      >
-        <sphereGeometry args={[dotR, 18, 14]} />
-        <meshStandardMaterial
-          color={PIN_RED}
-          roughness={0.32}
-          metalness={0.06}
-        />
-      </mesh>
+      <group ref={dotRef}>
+        {/* Invisible hit volume: the needle itself is far too thin to
+            be a comfortable tap target, especially on touch. */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: R3F mesh, not a DOM node — keyboard selection is available via the town dropdown */}
+        <mesh
+          position={[0, 1.4, 0]}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            setHovered(true);
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            setHovered(false);
+            document.body.style.cursor = "auto";
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(town);
+          }}
+        >
+          <sphereGeometry args={[2.6, 10, 8]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
 
-      {/* Red map-pin tag, shown only for the selected town */}
+        {/* Skinny pinpoint, tapered into the ice */}
+        <mesh position={[0, needleH / 2, 0]} castShadow>
+          <cylinderGeometry args={[needleR, needleR * 0.5, needleH, 10]} />
+          <meshStandardMaterial
+            color={pointColor}
+            roughness={0.32}
+            metalness={0.06}
+          />
+        </mesh>
+        <mesh position={[0, needleH, 0]} castShadow>
+          <sphereGeometry args={[tipR, 14, 12]} />
+          <meshStandardMaterial
+            color={pointColor}
+            roughness={0.32}
+            metalness={0.06}
+          />
+        </mesh>
+      </group>
+
+      {/* Brand-blue map-pin tag, shown only for the selected town */}
       <group ref={pinRef} scale={0.001} visible={selected}>
         <mesh
           position={[0, stemH / 2, 0]}
@@ -794,7 +817,7 @@ function TownPin({
         >
           <coneGeometry args={[headR * 0.7, stemH, 22]} />
           <meshStandardMaterial
-            color={PIN_STEM}
+            color={PIN_SEL_STEM}
             roughness={0.4}
             metalness={0.06}
           />
@@ -802,7 +825,7 @@ function TownPin({
         <mesh position={[0, stemH + headR * 0.5, 0]} castShadow>
           <sphereGeometry args={[headR, 26, 20]} />
           <meshStandardMaterial
-            color={PIN_RED}
+            color={PIN_SEL}
             roughness={0.32}
             metalness={0.06}
           />
@@ -1314,7 +1337,7 @@ export default function NJDeliveryMap() {
 
       {/* Hint */}
       <div className="pointer-events-none absolute bottom-3 right-3 hidden rounded-full border-2 border-navy bg-gradient-ice-card px-4 py-2 font-body text-[0.7rem] font-semibold text-lagoon shadow-[0_4px_0_#A3CCD1] sm:block">
-        Pick a town above, or tap a town dot · drag to orbit
+        Pick a town above, or tap a town point · drag to orbit
       </div>
 
       {/* Detail card */}

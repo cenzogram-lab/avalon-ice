@@ -1,5 +1,6 @@
 import ErrorBoundary from "@/components/ErrorBoundary";
 import BrandVideo from "@/components/home/BrandVideo";
+import ComingSoonRibbon from "@/components/home/ComingSoonRibbon";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
 import RoadParade from "@/components/home/RoadParade";
@@ -614,7 +615,7 @@ function Products() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Shop teaser — angular "Coming Soon" ribbon banner                   */
+/* Shop teaser — merch promo hero band under the "Coming Soon" ribbon  */
 /* ------------------------------------------------------------------ */
 
 function ShopTeaser() {
@@ -622,116 +623,42 @@ function ShopTeaser() {
     <section
       id="shop-preview"
       data-ocid="shop_teaser"
-      className="texture-paper bg-cream py-12 md:py-16"
+      className="relative overflow-hidden bg-cream py-14 md:py-20"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Bold angular ribbon flag: swallowtail ends, dual navy/ice
-            strokes, and a vintage cream field carrying the headline. */}
-        <div className="relative">
-          {/* Folded tails tucked behind each end of the flag */}
-          <div
-            aria-hidden="true"
-            className="clip-tail-left absolute inset-y-7 -left-2 hidden w-14 bg-navy-deep md:block lg:-left-5 lg:w-20"
-          />
-          <div
-            aria-hidden="true"
-            className="clip-tail-right absolute inset-y-7 -right-2 hidden w-14 bg-navy-deep md:block lg:-right-5 lg:w-20"
-          />
+      {/* The merch cut plays full-bleed behind the band */}
+      <VideoBackdrop
+        src={MERCH_TEASER_VIDEO}
+        label="Avalon Ice merch promo"
+        scrim="even"
+      />
 
-          {/* Solid ice slab offset, cut to the same silhouette */}
-          <div
-            aria-hidden="true"
-            className="clip-flag absolute inset-0 translate-x-[9px] translate-y-[12px] bg-ice"
-          />
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+        <ComingSoonRibbon
+          tagline="Merch, gear & bagged ice."
+          headingOcid="shop_teaser.heading"
+        />
 
-          <div className="clip-flag relative bg-navy p-[5px]">
-            <div className="clip-flag h-full bg-ice-light p-[4px]">
-              <div className="clip-flag relative h-full bg-cream-bright px-10 py-9 text-center sm:px-16 sm:py-11 md:px-20">
-                {/* Angular speed shards flanking the headline */}
-                <div
-                  aria-hidden="true"
-                  className="absolute left-20 top-1/2 hidden -translate-y-1/2 items-center gap-2 lg:flex"
-                >
-                  <span className="block h-16 w-3 -skew-x-12 bg-navy" />
-                  <span className="block h-12 w-2.5 -skew-x-12 bg-ice-deep" />
-                  <span className="block h-8 w-2 -skew-x-12 bg-ice" />
-                </div>
-                <div
-                  aria-hidden="true"
-                  className="absolute right-20 top-1/2 hidden -translate-y-1/2 items-center gap-2 lg:flex"
-                >
-                  <span className="block h-8 w-2 -skew-x-12 bg-ice" />
-                  <span className="block h-12 w-2.5 -skew-x-12 bg-ice-deep" />
-                  <span className="block h-16 w-3 -skew-x-12 bg-navy" />
-                </div>
-
-                <span className="inline-flex items-center gap-3">
-                  <img
-                    src="/assets/images/avalon-heron.webp"
-                    alt=""
-                    aria-hidden="true"
-                    className="size-10 rounded-full border-2 border-navy bg-cream-bright sm:size-12"
-                  />
-                  <span className="eyebrow whitespace-nowrap tracking-[0.14em] sm:tracking-[0.22em]">
-                    The Avalon Ice Shop
-                  </span>
-                </span>
-
-                <h2
-                  data-ocid="shop_teaser.heading"
-                  className="text-block-ice mt-3 text-[2.5rem] leading-[0.88] sm:text-6xl md:text-7xl lg:text-8xl"
-                >
-                  Coming Soon
-                </h2>
-
-                <div className="mx-auto mt-6 h-[3px] w-24 bg-navy sm:w-32" />
-
-                <p className="mt-4 font-script text-2xl text-lagoon sm:text-3xl">
-                  Merch, gear &amp; bagged ice.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Merch cut + call to action, sitting on the cream field */}
-        <div className="mt-10 flex flex-col items-center gap-8 md:mt-12 lg:flex-row lg:gap-12">
-          <div className="ice-shadow w-full max-w-md shrink-0 lg:w-[26rem]">
-            <div className="border-[4px] border-navy bg-gradient-ice-card">
-              <div className="aspect-video w-full">
-                <BrandVideo
-                  src={MERCH_TEASER_VIDEO}
-                  label="Avalon Ice merch preview"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 text-center lg:text-left">
-            <h3 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
-              Shore Gear, Straight From the Ice House
-            </h3>
-            <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-relaxed text-lagoon sm:text-base lg:mx-0">
-              Tees, hoodies, hats, and cooler gear stamped with the heron —
-              alongside packaged and bulk ice, ready to order the moment the
-              doors open.
-            </p>
-            <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
-              <Button
-                asChild
-                size="lg"
-                data-ocid="shop_teaser.visit_button"
-                className="btn-brutal btn-brutal-ice bg-navy px-7 py-6 font-body text-sm font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy"
-              >
-                <Link to="/shop">
-                  <ShoppingBag className="size-5" />
-                  Visit the Shop
-                </Link>
-              </Button>
-              <span className="chip">Labor Day Weekend 2026</span>
-            </div>
-          </div>
+        {/* Copy and CTA ride a cream card so they stay legible over video */}
+        <div className="ice-shadow mx-auto mt-10 max-w-3xl border-[4px] border-navy bg-cream-bright/95 px-6 py-8 text-center backdrop-blur-[2px] sm:px-10">
+          <h3 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
+            Shore Gear, Straight From the Ice House
+          </h3>
+          <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-relaxed text-lagoon sm:text-base">
+            Tees, hoodies, hats, and cooler gear stamped with the heron —
+            alongside packaged and bulk ice, ready to order the moment the doors
+            open.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            data-ocid="shop_teaser.visit_button"
+            className="btn-brutal btn-brutal-ice mt-6 bg-navy px-7 py-6 font-body text-sm font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy"
+          >
+            <Link to="/shop">
+              <ShoppingBag className="size-5" />
+              Visit the Shop
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
