@@ -116,7 +116,7 @@ mixin (inquiries : List.List<Types.Inquiry>, auth : Types.AuthState) {
   // Admin auth: authenticate email + password, returning a session token.
   public shared ({ caller }) func login(email : Text, password : Text) : async ?Text {
     ignore caller;
-    if (email != "Sales@AvalonIce.com") {
+    if (email != "Sales@AvalonIce.co") {
       return null;
     };
     switch (auth.passwordHash) {

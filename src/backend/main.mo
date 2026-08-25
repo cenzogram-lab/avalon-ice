@@ -20,7 +20,7 @@ actor {
   include InquiriesApi(inquiries, auth);
   include Expose({
     entities = [
-      // Inquiry data is admin-only: the controller (Sales@AvalonIce.com) reads
+      // Inquiry data is admin-only: the controller (Sales@AvalonIce.co) reads
       // every row; no end user reads it directly.
       inquiries.toEntityManual("inquiry", "Inquiry", "id")
         .payload("id", func i = i.id)

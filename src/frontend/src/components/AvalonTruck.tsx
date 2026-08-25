@@ -45,48 +45,64 @@ export default function AvalonTruck({ className }: { className?: string }) {
 
       {/* Heron badge on the box door */}
       <circle
-        cx="33"
+        cx="27"
         cy="37"
-        r="20"
+        r="17"
         fill="#F7F2EA"
         stroke="#0C3552"
         strokeWidth="2.5"
       />
       <clipPath id={clipId}>
-        <circle cx="33" cy="37" r="18.5" />
+        <circle cx="27" cy="37" r="15.5" />
       </clipPath>
       <image
         href="/assets/images/avalon-heron.webp"
-        x="14.5"
-        y="18.5"
-        width="37"
-        height="37"
+        x="11.5"
+        y="21.5"
+        width="31"
+        height="31"
         clipPath={`url(#${clipId})`}
         preserveAspectRatio="xMidYMid slice"
       />
 
-      {/* Livery, set beside the badge */}
+      {/* Livery matching the brand animation: script wordmark over a
+          boxed ICE badge, with cubes stacked at the base. */}
       <text
-        x="87"
-        y="33"
+        x="79"
+        y="26"
         textAnchor="middle"
-        fontFamily="var(--font-display), Georgia, serif"
-        fontSize="13"
+        fontFamily="var(--font-script), 'Lobster', cursive"
+        fontSize="16"
         fill="#0C3552"
       >
-        AVALON
+        Avalon
       </text>
-      <rect x="69" y="39" width="36" height="3.5" rx="1.75" fill="#8CBEC5" />
+      <rect
+        x="55"
+        y="31"
+        width="48"
+        height="18"
+        rx="3"
+        fill="#CDE7E9"
+        stroke="#0C3552"
+        strokeWidth="2.5"
+      />
       <text
-        x="87"
-        y="57"
+        x="79"
+        y="45"
         textAnchor="middle"
         fontFamily="var(--font-display), Georgia, serif"
         fontSize="13"
+        letterSpacing="1.5"
         fill="#0C3552"
       >
         ICE
       </text>
+      {/* Ice cubes at the foot of the livery */}
+      <g fill="#CDE7E9" stroke="#0C3552" strokeWidth="2">
+        <rect x="57" y="53" width="9" height="9" rx="2" />
+        <rect x="69" y="53" width="9" height="9" rx="2" />
+      </g>
 
       {/* Cab */}
       <path

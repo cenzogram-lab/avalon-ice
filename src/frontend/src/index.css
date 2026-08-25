@@ -116,6 +116,27 @@
     scroll-margin-top: 5rem;
   }
 
+  /* Ambient brand videos must read as motion graphics, never as players.
+     iOS Safari paints a large start-playback button over an autoplaying
+     inline video and Chrome can surface its own overlay; the attributes
+     alone do not remove them, so the shadow-DOM controls are hidden here.
+     Object-fit is set alongside so a backdrop always fills its box rather
+     than letterboxing or squashing at odd device aspect ratios. */
+  .brand-video {
+    object-fit: cover;
+    background-color: transparent;
+  }
+  .brand-video::-webkit-media-controls,
+  .brand-video::-webkit-media-controls-panel,
+  .brand-video::-webkit-media-controls-start-playback-button,
+  .brand-video::-webkit-media-controls-play-button,
+  .brand-video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    -webkit-appearance: none;
+    appearance: none;
+    opacity: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

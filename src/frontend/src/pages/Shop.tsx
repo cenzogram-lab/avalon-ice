@@ -1,9 +1,6 @@
-import BrandVideo from "@/components/home/BrandVideo";
 import ComingSoonRibbon from "@/components/home/ComingSoonRibbon";
-import FrostOverlay from "@/components/home/FrostOverlay";
 import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { MERCH_PROMO_VIDEO } from "@/lib/media";
 import { Truck } from "lucide-react";
 
@@ -12,30 +9,24 @@ import { Truck } from "lucide-react";
  * the "Coming Soon" ribbon announces the upcoming Avalon Ice merch and
  * direct storefront over the looping merch promo.
  *
- * The section height is content-driven on phones (and only adopts a
- * viewport minimum from md up), so the hero grows with its content
- * instead of blowing out or clipping on short screens.
+ * The merch promo plays full-bleed behind the mark at every width, and
+ * the section's viewport minimum scales with the breakpoint so the ribbon
+ * and CTA stay legible without blowing out on short phone screens.
  */
 export default function Shop() {
-  // One video element per breakpoint: a full-bleed backdrop on larger
-  // screens, an inline uncropped player on phones.
-  const isMobile = useIsMobile();
-
   return (
     <section
       id="shop"
       data-ocid="shop"
-      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[75vh] sm:py-16 md:flex md:min-h-[82vh] md:items-end md:pb-16 md:pt-24 lg:min-h-[85vh]"
+      className="relative flex min-h-[50vh] items-end overflow-hidden bg-cream py-14 sm:min-h-[65vh] sm:py-16 md:min-h-[80vh] md:pb-16 md:pt-24 lg:min-h-[85vh]"
     >
-      {!isMobile && (
-        <VideoBackdrop
-          src={MERCH_PROMO_VIDEO}
-          label="Avalon Ice merch promo"
-          scrim="even"
-        />
-      )}
-
-      <FrostOverlay />
+      {/* Full-bleed at every width: phones get the same backdrop rather
+          than an inline card, so the mark always sits over the footage. */}
+      <VideoBackdrop
+        src={MERCH_PROMO_VIDEO}
+        label="Avalon Ice merch promo"
+        scrim="even"
+      />
 
       {/* Left-aligned and narrow so the promo footage stays visible beside
           the mark rather than being covered by a full-width flag. */}
@@ -58,19 +49,6 @@ export default function Shop() {
           </div>
         </div>
 
-        {/* Phones: the promo plays inline at its native aspect ratio rather
-            than as a cropped backdrop, so nothing is cut off. */}
-        {isMobile && (
-          <div className="mt-8 overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
-            <div className="aspect-video w-full bg-gradient-ice-card">
-              <BrandVideo
-                src={MERCH_PROMO_VIDEO}
-                label="Avalon Ice merch promo"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

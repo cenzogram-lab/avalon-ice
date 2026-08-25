@@ -50,12 +50,12 @@ export default function Footer() {
             before the season starts.
           </p>
           <a
-            href="mailto:Sales@AvalonIce.com"
+            href="mailto:Sales@AvalonIce.co"
             data-ocid="footer.email"
             className="mt-4 inline-flex min-h-12 items-center gap-2.5 font-script text-2xl text-navy hover:text-lagoon"
           >
             <Mail className="size-5 text-lagoon" />
-            Sales@AvalonIce.com
+            Sales@AvalonIce.co
           </a>
           <p className="mt-2 font-body text-sm font-semibold text-lagoon">
             <a
