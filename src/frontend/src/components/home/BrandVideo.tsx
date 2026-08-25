@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type State = "loading" | "playing" | "failed";
 
@@ -13,6 +13,13 @@ type State = "loading" | "playing" | "failed";
  * failure is logged loudly and recorded on `data-video-state`, so a dead
  * URL or CDN outage is diagnosable instead of being an invisible element
  * stuck at opacity 0.
+ *
+ * Mobile autoplay is fussy and worth spelling out. React assigns `muted`
+ * as a DOM *property*, and the attribute is what iOS Safari inspects when
+ * it decides whether an autoplay is allowed — so the property is forced on
+ * the element before play is attempted. Without that, WebKit blocks the
+ * autoplay and paints its big start-playback button over the video, which
+ * is exactly the play badge that must never appear on an ambient backdrop.
  */
 export default function BrandVideo({
   src,
@@ -25,6 +32,17 @@ export default function BrandVideo({
 }) {
   const [state, setState] = useState<State>("loading");
   const ref = useRef<HTMLVideoElement>(null);
+
+  // Belt and braces for mobile WebKit/Blink: force muted before any play
+  // attempt, and keep trying quietly if the browser deferred the start.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.muted = true;
+    el.defaultMuted = true;
+    el.playsInline = true;
+    el.play().catch(() => {});
+  }, []);
 
   const handleError = () => {
     const err = ref.current?.error;
@@ -43,10 +61,19 @@ export default function BrandVideo({
       loop
       muted
       playsInline
+      controls={false}
       preload="auto"
-      controlsList="nodownload noplaybackrate noremoteplayback"
+      poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+      controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
       disablePictureInPicture
       disableRemotePlayback
+      // Older WebKit and the Android/X5 engines read these attribute
+      // spellings rather than the standard `playsinline`.
+      {...{
+        "webkit-playsinline": "true",
+        "x5-playsinline": "true",
+        "x5-video-player-type": "h5",
+      }}
       onCanPlay={() => {
         setState("playing");
         // Some browsers pause autoplay videos restored from bfcache.
@@ -59,7 +86,7 @@ export default function BrandVideo({
       data-video-state={state}
       data-ocid="brand_video"
       className={cn(
-        "pointer-events-none transition-opacity duration-700 ease-out",
+        "brand-video pointer-events-none transition-opacity duration-700 ease-out",
         state === "playing" ? "opacity-100" : "opacity-0",
         // A failed video must not sit on top of the gradient it fell back to.
         state === "failed" && "hidden",

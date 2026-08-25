@@ -84,7 +84,7 @@ export function useSubmitInquiry() {
       const id = await actor.submitInquiry(inquiry);
       const stored = { ...inquiry, id };
       const referenceId = `AVL-${id.toString()}`;
-      // Notify Sales@AvalonIce.com. Deliberately not awaited: the lead is
+      // Notify Sales@AvalonIce.co. Deliberately not awaited: the lead is
       // already persisted, so relay latency or failure must not surface as
       // a submission error.
       void notifyInquiry(stored, referenceId);

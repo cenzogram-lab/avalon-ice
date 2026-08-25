@@ -2,7 +2,7 @@ import type { Inquiry } from "@/lib/types";
 import { INQUIRY_TYPE_LABELS } from "@/lib/types";
 
 /** Every inquiry notification is addressed here. */
-export const NOTIFY_EMAIL = "Sales@AvalonIce.com";
+export const NOTIFY_EMAIL = "Sales@AvalonIce.co";
 
 /**
  * Relay endpoint that forwards a submitted inquiry to NOTIFY_EMAIL.

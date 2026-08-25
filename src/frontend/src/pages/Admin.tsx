@@ -66,7 +66,7 @@ import {
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-const ADMIN_EMAIL = "Sales@AvalonIce.com";
+const ADMIN_EMAIL = "Sales@AvalonIce.co";
 
 function formatDate(ts: bigint): string {
   const ms = Number(ts / 1_000_000n);

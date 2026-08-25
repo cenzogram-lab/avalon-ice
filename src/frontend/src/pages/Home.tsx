@@ -1,7 +1,6 @@
 import ErrorBoundary from "@/components/ErrorBoundary";
 import BrandVideo from "@/components/home/BrandVideo";
 import ComingSoonRibbon from "@/components/home/ComingSoonRibbon";
-import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
 import RoadParade from "@/components/home/RoadParade";
 import VideoBackdrop from "@/components/home/VideoBackdrop";
@@ -18,7 +17,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useSubmitInquiry } from "@/lib/api";
 import { HERO_VIDEO, LOOP_VIDEO, MERCH_TEASER_VIDEO } from "@/lib/media";
 import { InquiryType } from "@/lib/types";
@@ -87,29 +85,21 @@ function useNearViewport(
 /* ------------------------------------------------------------------ */
 
 function Hero() {
-  const isMobile = useIsMobile();
-
   return (
     <section
       id="top"
       data-ocid="hero"
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light sm:min-h-[90vh] md:flex md:min-h-[85vh] md:items-center"
+      className="relative flex min-h-[85vh] items-center overflow-hidden bg-gradient-to-b from-cream-bright via-cream to-ice-light sm:min-h-[88vh] md:min-h-[85vh]"
     >
-      {/* md+: full-bleed cover video behind the content. On phones the video
-          instead renders inline below the CTAs at its native aspect ratio,
-          so it scales with the viewport with no cropping or letterboxing.
-          Only the element for the current breakpoint is mounted, so phones
-          never download or decode the backdrop copy. */}
-      {!isMobile && (
-        <VideoBackdrop
-          src={HERO_VIDEO}
-          label="Avalon Ice brand animation"
-          scrim="side"
-        />
-      )}
-
-      {/* Ambient frost / ice-particle drift */}
-      <FrostOverlay />
+      {/* Full-bleed cover video behind the content at every width. Phones
+          get the same backdrop rather than an inline card below the CTAs,
+          so the headline always sits over the footage instead of the video
+          dropping out of the background. */}
+      <VideoBackdrop
+        src={HERO_VIDEO}
+        label="Avalon Ice brand animation"
+        scrim="side"
+      />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32">
         <span className="chip chip-solid mb-6" data-ocid="hero.badge">
@@ -153,30 +143,15 @@ function Hero() {
         <div className="mt-9 inline-flex flex-wrap items-center gap-2.5 rounded-xl border-[3px] border-navy bg-cream-bright/95 px-5 py-3 font-body text-sm font-semibold text-navy shadow-[0_5px_0_#A3CCD1]">
           <Mail className="size-4 text-lagoon" />
           <a
-            href="mailto:Sales@AvalonIce.com?subject=Ice%20Delivery%20Request"
+            href="mailto:Sales@AvalonIce.co?subject=Ice%20Delivery%20Request"
             data-ocid="hero.email"
             className="inline-flex min-h-12 items-center font-script text-lg text-lagoon hover:underline"
           >
-            Sales@AvalonIce.com
+            Sales@AvalonIce.co
           </a>
           <span className="text-ice-deep">|</span>
           <span>Cell: 856-308-9986</span>
         </div>
-
-        {/* Mobile: inline hero video at native aspect ratio */}
-        {isMobile && (
-          <div className="mt-9">
-            <div className="overflow-hidden rounded-2xl border-[3px] border-navy shadow-[0_6px_0_#A3CCD1]">
-              <div className="aspect-video w-full bg-gradient-ice-card">
-                <BrandVideo
-                  src={HERO_VIDEO}
-                  label="Avalon Ice brand animation"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );
@@ -623,7 +598,7 @@ function ShopTeaser() {
     <section
       id="shop-preview"
       data-ocid="shop_teaser"
-      className="relative min-h-[60vh] overflow-hidden bg-cream py-14 sm:min-h-[70vh] md:flex md:min-h-[80vh] md:items-end md:pb-14 md:pt-24"
+      className="relative flex min-h-[50vh] items-end overflow-hidden bg-cream py-14 sm:min-h-[65vh] md:min-h-[80vh] md:pb-14 md:pt-24 lg:min-h-[85vh]"
     >
       {/* The merch cut plays full-bleed behind the band */}
       <VideoBackdrop
@@ -687,12 +662,18 @@ function Network() {
         <h2 className="script-heading mt-3 text-4xl sm:text-5xl md:text-6xl">
           From Avalon to the whole shore.
         </h2>
-        <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-lagoon">
-          Every route starts at our Woodbine HQ and runs up the Garden State
-          Parkway — supplying marinas, bars, festivals, and venues from Cape May
-          County to North Jersey. Orbit the state and watch the Avalon Ice
-          trucks make their runs.
-        </p>
+        <div className="mt-5 max-w-2xl space-y-4 font-body text-base leading-relaxed text-lagoon">
+          <p>
+            Based in Woodbine, Avalon Ice is built to serve the shore. Our
+            routes connect Cape May County and surrounding South Jersey
+            communities with reliable, locally produced ice — delivered
+            directly to retailers, marinas, restaurants, bars, and businesses.
+          </p>
+          <p>
+            Explore the map to see the communities we're building our routes
+            around.
+          </p>
+        </div>
 
         {/* Narrower than the section so the frame reads as a widget rather
             than a full-width panel. */}
@@ -1192,10 +1173,10 @@ function SubmitButton({
             </a>{" "}
             or email{" "}
             <a
-              href="mailto:Sales@AvalonIce.com"
+              href="mailto:Sales@AvalonIce.co"
               className="font-bold text-navy underline underline-offset-2"
             >
-              Sales@AvalonIce.com
+              Sales@AvalonIce.co
             </a>
             .
           </span>
@@ -1370,8 +1351,8 @@ function Contact() {
             data-ocid="contact.email_button"
             className="btn-brutal btn-brutal-ice bg-transparent px-7 py-6 font-body text-base font-bold uppercase tracking-wide text-cream-bright hover:bg-navy-deep"
           >
-            <a href="mailto:Sales@AvalonIce.com?subject=Ice%20Delivery%20Inquiry">
-              <Mail className="size-5" /> Sales@AvalonIce.com
+            <a href="mailto:Sales@AvalonIce.co?subject=Ice%20Delivery%20Inquiry">
+              <Mail className="size-5" /> Sales@AvalonIce.co
             </a>
           </Button>
         </div>

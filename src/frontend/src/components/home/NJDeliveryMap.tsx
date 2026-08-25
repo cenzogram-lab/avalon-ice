@@ -42,101 +42,104 @@ interface Town {
   ll: [number, number];
   hub?: boolean;
   origin?: boolean;
-  inland?: boolean;
+  /** Atlantic County / coastal expansion network, drawn a touch softer. */
+  secondary?: boolean;
 }
 
 const TOWNS: Town[] = [
+  /* --- Origin ------------------------------------------------------ */
+  { n: "Woodbine", ll: [39.2418, -74.8149], hub: true, origin: true },
+
+  /* --- Core network: Cape May County ------------------------------- */
+  { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
+  { n: "Stone Harbor", ll: [39.0479, -74.7649], hub: true },
+  { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
+  { n: "Ocean City", ll: [39.2776, -74.5746], hub: true },
   { n: "Cape May", ll: [38.9351, -74.906], hub: true },
   { n: "West Cape May", ll: [38.9387, -74.9418] },
-  { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
   { n: "Wildwood", ll: [38.9918, -74.8146], hub: true },
+  { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
   { n: "North Wildwood", ll: [39.0007, -74.7994] },
+  { n: "Cape May Court House", ll: [39.0827, -74.8237], hub: true },
   { n: "Rio Grande", ll: [39.0117, -74.8807] },
-  { n: "Stone Harbor", ll: [39.0479, -74.7649] },
-  { n: "Cape May Court House", ll: [39.0827, -74.8237] },
+  { n: "Villas", ll: [39.029, -74.9382] },
+  { n: "North Cape May", ll: [38.982, -74.954] },
+  { n: "Town Bank", ll: [38.9668, -74.956] },
   { n: "Marmora", ll: [39.2662, -74.6499] },
   { n: "Tuckahoe", ll: [39.2882, -74.7532] },
-  { n: "Millville", ll: [39.4021, -75.0393], hub: true, inland: true },
-  { n: "Vineland", ll: [39.4864, -75.0257], hub: true, inland: true },
-  { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
-  { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
-  { n: "Strathmere", ll: [39.2007, -74.656] },
-  { n: "Ocean City", ll: [39.2776, -74.5746] },
-  { n: "Somers Point", ll: [39.3187, -74.6113] },
-  { n: "Margate City", ll: [39.3279, -74.5035] },
-  { n: "Ventnor City", ll: [39.3401, -74.4771] },
-  { n: "Atlantic City", ll: [39.3643, -74.4229], hub: true },
-  { n: "Brigantine", ll: [39.4101, -74.3646] },
-  { n: "Beach Haven", ll: [39.5626, -74.2432] },
-  { n: "Surf City", ll: [39.6612, -74.171] },
-  { n: "Barnegat Light", ll: [39.7534, -74.1121] },
-  { n: "Seaside Park", ll: [39.9276, -74.0782] },
-  { n: "Seaside Heights", ll: [39.9443, -74.0731] },
-  { n: "Toms River", ll: [39.9537, -74.1979], hub: true },
-  { n: "Bay Head", ll: [40.0768, -74.0454] },
-  { n: "Point Pleasant Beach", ll: [40.0913, -74.0451] },
-  { n: "Manasquan", ll: [40.1262, -74.0454] },
-  { n: "Spring Lake", ll: [40.1534, -74.0287] },
-  { n: "Belmar", ll: [40.1785, -74.0182] },
-  { n: "Bradley Beach", ll: [40.202, -74.0121] },
-  { n: "Ocean Grove", ll: [40.2118, -74.006] },
-  { n: "Asbury Park", ll: [40.2204, -74.0121], hub: true },
-  { n: "Long Branch", ll: [40.3043, -73.9924], hub: true },
-  { n: "Sea Bright", ll: [40.3615, -73.9718] },
-  { n: "Highlands", ll: [40.4037, -73.9915] },
-  { n: "Trenton", ll: [40.2206, -74.7597], hub: true, inland: true },
-  { n: "Newark", ll: [40.7357, -74.1724], hub: true, inland: true },
-  { n: "Jersey City", ll: [40.7178, -74.0431], hub: true, inland: true },
+  { n: "Seaville", ll: [39.2432, -74.6721] },
+  { n: "Ocean View", ll: [39.2079, -74.7093] },
+  { n: "Dennisville", ll: [39.1873, -74.8241] },
+  { n: "South Dennis", ll: [39.1804, -74.8477] },
+  { n: "Goshen", ll: [39.1315, -74.863] },
+  { n: "Swainton", ll: [39.1201, -74.771] },
+  { n: "Clermont", ll: [39.1451, -74.7982] },
+  { n: "Upper Township", ll: [39.2704, -74.7154] },
+
+  /* --- Secondary: Atlantic County & coastal South Jersey ----------- */
+  { n: "Somers Point", ll: [39.3187, -74.6113], secondary: true },
+  { n: "Longport", ll: [39.3129, -74.531], secondary: true },
+  { n: "Margate City", ll: [39.3279, -74.5035], secondary: true },
+  { n: "Ventnor City", ll: [39.3401, -74.4771], secondary: true },
+  { n: "Atlantic City", ll: [39.3643, -74.4229], hub: true, secondary: true },
+  { n: "Brigantine", ll: [39.4101, -74.3646], secondary: true },
+  { n: "Egg Harbor Township", ll: [39.379, -74.6088], secondary: true },
+  { n: "Mays Landing", ll: [39.4526, -74.7288], secondary: true },
 ];
 
 /** Woodbine HQ — every route starts here. */
 const HQ_LL: [number, number] = [39.2418, -74.8149];
 
+/** Coastal run north: HQ → Tuckahoe → Marmora → Somers Point → A.C. */
 const ROUTE_LL: [number, number][] = [
   HQ_LL,
-  [39.1007, -74.7177],
-  [39.1537, -74.6927],
-  [39.24, -74.63],
+  [39.2882, -74.7532],
+  [39.2662, -74.6499],
+  [39.2776, -74.5746],
   [39.3187, -74.6113],
-  [39.43, -74.48],
-  [39.58, -74.32],
-  [39.74, -74.22],
-  [39.87, -74.205],
-  [39.9537, -74.1979],
-  [40.07, -74.14],
-  [40.2, -74.11],
-  [40.34, -74.13],
-  [40.48, -74.17],
-  [40.62, -74.19],
-  [40.7357, -74.1724],
-  [40.7178, -74.0431],
+  [39.3279, -74.5035],
+  [39.3643, -74.4229],
+  [39.4101, -74.3646],
 ];
+
+/** Barrier-island run: HQ → Ocean View → Sea Isle → Avalon → Stone Harbor. */
 const SPUR_LL: [number, number][] = [
-  [40.07, -74.14],
-  [40.05, -74.38],
-  [40.12, -74.58],
-  [40.2206, -74.7597],
+  HQ_LL,
+  [39.2079, -74.7093],
+  [39.1537, -74.6927],
+  [39.1007, -74.7177],
+  [39.0479, -74.7649],
 ];
 
 /** Southern run: HQ → Court House → Rio Grande → Wildwood → Cape May. */
 const SOUTH_LL: [number, number][] = [
   HQ_LL,
+  [39.1451, -74.7982],
   [39.0827, -74.8237],
   [39.0117, -74.8807],
   [38.9918, -74.8146],
   [38.9351, -74.906],
 ];
 
+/** Bayshore run: HQ → South Dennis → Goshen → Villas → North Cape May. */
+const BAY_LL: [number, number][] = [
+  HQ_LL,
+  [39.1804, -74.8477],
+  [39.1315, -74.863],
+  [39.029, -74.9382],
+  [38.982, -74.954],
+];
+
 const WATER: { n: string; ll: [number, number] }[] = [
-  { n: "Atlantic Ocean", ll: [39.02, -73.78] },
-  { n: "Delaware Bay", ll: [38.62, -75.05] },
-  { n: "Raritan Bay", ll: [40.78, -73.72] },
+  { n: "Atlantic Ocean", ll: [39.05, -74.35] },
+  { n: "Delaware Bay", ll: [38.95, -75.13] },
 ];
 
 function blurb(t: Town): string {
   if (t.origin)
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
-  if (t.inland) return "Served daily up the Parkway from the shore.";
+  if (t.secondary)
+    return "On the Atlantic County expansion run — coastal South Jersey.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
   return "On the shore run — bars, marinas, venues, and events.";
 }
@@ -350,6 +353,26 @@ function fallbackGeoData(): GeoData {
 /* ------------------------------------------------------------------ */
 
 type Projection = (lonLat: [number, number]) => [number, number];
+
+/**
+ * Centre of the South Jersey service view — between Woodbine and the
+ * barrier islands, so Cape May County fills the frame with Atlantic County
+ * reaching in from the north.
+ */
+const SOUTH_FOCUS_LL: [number, number] = [39.6, -75.02];
+
+/** Camera zoom for each view, as a multiple of the statewide framing. */
+const SOUTH_ZOOM = 2.18;
+/* Below 1 because the isometric angle spreads the state's diagonal wider
+   than the flat projection height, so a 1:1 framing clips North Jersey. */
+const STATE_ZOOM = 0.82;
+
+/**
+ * Pins and trucks are sized in world units, so they would shrink to
+ * nothing when the camera pulls back to the whole state. Scaling them per
+ * view keeps them readable at both framings.
+ */
+const DETAIL_SCALE = { south: 1, state: 2.4 } as const;
 
 function mercatorRaw([lon, lat]: [number, number]): [number, number] {
   const x = (lon * Math.PI) / 180;
@@ -624,10 +647,13 @@ function Truck({
   curve,
   offset,
   speed,
+  detail,
 }: {
   curve: THREE.CatmullRomCurve3;
   offset: number;
   speed: number;
+  /** Marker scale for the active view; see DETAIL_SCALE. */
+  detail: number;
 }) {
   const group = useRef<THREE.Group>(null);
   const t = useRef(offset);
@@ -657,7 +683,7 @@ function Truck({
   ];
 
   return (
-    <group ref={group} scale={0.6}>
+    <group ref={group} scale={0.26 * detail}>
       {/* Box body: liveried sides, shell everywhere else */}
       <mesh position={[0, 3.3, -1]} castShadow>
         <boxGeometry args={[4.2, 4.4, 9.2]} />
@@ -731,11 +757,14 @@ function TownPin({
   space,
   selected,
   onSelect,
+  detail,
 }: {
   town: Town;
   space: MapSpace;
   selected: boolean;
   onSelect: (t: Town) => void;
+  /** Marker scale for the active view; see DETAIL_SCALE. */
+  detail: number;
 }) {
   const dotRef = useRef<THREE.Group>(null);
   const pinRef = useRef<THREE.Group>(null);
@@ -743,9 +772,9 @@ function TownPin({
   const headR = town.hub ? 2.3 : 1.9;
   const stemH = headR * 2.7;
   // A slim needle rather than a bead, so towns read as pinpoints.
-  const needleH = town.hub ? 3.4 : 2.7;
-  const needleR = town.hub ? 0.22 : 0.18;
-  const tipR = town.hub ? 0.5 : 0.42;
+  const needleH = (town.hub ? 1.5 : 1.2) * detail;
+  const needleR = (town.hub ? 0.1 : 0.08) * detail;
+  const tipR = (town.hub ? 0.22 : 0.18) * detail;
   const pointColor = selected ? PIN_SEL : PIN_RED;
   const pos = toWorld(space, town.ll[1], town.ll[0], TOP_Y);
 
@@ -785,7 +814,7 @@ function TownPin({
             onSelect(town);
           }}
         >
-          <sphereGeometry args={[2.6, 10, 8]} />
+          <sphereGeometry args={[1.15 * detail, 10, 8]} />
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
 
@@ -869,7 +898,7 @@ function HeronBeacon({ space }: { space: MapSpace }) {
     const pulse = (offset: number, mesh: THREE.Mesh | null) => {
       if (!mesh) return;
       const p = ((t + offset) % 2.4) / 2.4;
-      mesh.scale.setScalar(0.5 + p * 2.1);
+      mesh.scale.setScalar(0.22 + p * 0.95);
       (mesh.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - p);
     };
     pulse(0, ringA.current);
@@ -956,6 +985,52 @@ function HeronBeacon({ space }: { space: MapSpace }) {
   );
 }
 
+/** County seats/centroids used to label the South Jersey counties. */
+const COUNTIES: { n: string; ll: [number, number]; core?: boolean }[] = [
+  { n: "Cape May", ll: [39.08, -74.82], core: true },
+  { n: "Atlantic", ll: [39.47, -74.63], core: true },
+  { n: "Cumberland", ll: [39.38, -75.12] },
+  { n: "Salem", ll: [39.58, -75.36] },
+  { n: "Gloucester", ll: [39.72, -75.14] },
+  { n: "Camden", ll: [39.8, -74.96] },
+  { n: "Burlington", ll: [39.87, -74.66] },
+  { n: "Ocean", ll: [39.86, -74.26] },
+  { n: "Monmouth", ll: [40.28, -74.24] },
+  { n: "Mercer", ll: [40.28, -74.7] },
+];
+
+/**
+ * County name labels. Cape May and Atlantic — the counties the network
+ * actually serves — stay in brand navy; the rest sit back in a muted tone
+ * so the service area still reads first.
+ */
+function CountyLabels({
+  space,
+  visible,
+}: { space: MapSpace; visible: boolean }) {
+  if (!visible) return null;
+  return (
+    <group>
+      {COUNTIES.map((c) => (
+        <Html
+          key={c.n}
+          center
+          position={toWorld(space, c.ll[1], c.ll[0], TOP_Y)}
+          zIndexRange={[18, 0]}
+        >
+          <span
+            className={`pointer-events-none whitespace-nowrap font-body text-[0.6rem] font-bold uppercase tracking-[0.2em] ${
+              c.core ? "text-navy/80" : "text-lagoon-soft/70"
+            }`}
+          >
+            {c.n}
+          </span>
+        </Html>
+      ))}
+    </group>
+  );
+}
+
 function WaterLabels({ space }: { space: MapSpace }) {
   return (
     <group>
@@ -979,6 +1054,7 @@ function WaterLabels({ space }: { space: MapSpace }) {
 /* Camera: orthographic with eased fly-to on selection                  */
 /* ------------------------------------------------------------------ */
 
+/** Half-height of the statewide framing; the camera zooms in from here. */
 const VIEW = 72;
 
 interface Flight {
@@ -1031,11 +1107,12 @@ function CameraRig({
 /* ------------------------------------------------------------------ */
 
 const TRUCK_RUNS = [
-  { route: "A", offset: 0.0, speed: 0.03 },
-  { route: "A", offset: 0.38, speed: 0.03 },
-  { route: "A", offset: 0.72, speed: 0.03 },
-  { route: "B", offset: 0.2, speed: 0.02 },
+  { route: "A", offset: 0.0, speed: 0.028 },
+  { route: "A", offset: 0.55, speed: 0.028 },
+  { route: "B", offset: 0.2, speed: 0.022 },
+  { route: "B", offset: 0.68, speed: 0.022 },
   { route: "C", offset: 0.5, speed: 0.025 },
+  { route: "D", offset: 0.15, speed: 0.02 },
 ] as const;
 
 function MapScene({
@@ -1046,7 +1123,9 @@ function MapScene({
   onSelect,
   controlsRef,
   flightRef,
+  detail,
 }: {
+  detail: number;
   geo: GeoData;
   space: MapSpace;
   selected: Town | null;
@@ -1055,13 +1134,15 @@ function MapScene({
   controlsRef: React.RefObject<OrbitControlsImpl | null>;
   flightRef: React.MutableRefObject<Flight | null>;
 }) {
-  const routeA = useRoute(space, ROUTE_LL, 0.55, 120, 0.055);
-  const routeB = useRoute(space, SPUR_LL, 0.38, 60, 0.03);
-  const routeC = useRoute(space, SOUTH_LL, 0.42, 52, 0.04);
+  const routeA = useRoute(space, ROUTE_LL, 0.24, 70, 0.055);
+  const routeB = useRoute(space, SPUR_LL, 0.17, 42, 0.03);
+  const routeC = useRoute(space, SOUTH_LL, 0.18, 40, 0.04);
+  const routeD = useRoute(space, BAY_LL, 0.16, 36, 0.032);
   const curves = {
     A: routeA.handle.curve,
     B: routeB.handle.curve,
     C: routeC.handle.curve,
+    D: routeD.handle.curve,
   };
 
   return (
@@ -1099,12 +1180,14 @@ function MapScene({
       <RouteMesh handle={routeA.handle} geometry={routeA.geometry} />
       <RouteMesh handle={routeB.handle} geometry={routeB.geometry} />
       <RouteMesh handle={routeC.handle} geometry={routeC.geometry} />
+      <RouteMesh handle={routeD.handle} geometry={routeD.geometry} />
       {TRUCK_RUNS.map((run, i) => (
         <Truck
           key={`truck-${i.toString()}`}
           curve={curves[run.route]}
           offset={run.offset}
           speed={run.speed}
+          detail={detail}
         />
       ))}
 
@@ -1115,6 +1198,7 @@ function MapScene({
           space={space}
           selected={selected?.n === town.n}
           onSelect={onSelect}
+          detail={detail}
         />
       ))}
 
@@ -1122,6 +1206,7 @@ function MapScene({
         <HeronBeacon space={space} />
       </Suspense>
       <WaterLabels space={space} />
+      <CountyLabels space={space} visible={showCounties} />
 
       <OrbitControls
         ref={controlsRef}
@@ -1152,6 +1237,9 @@ function MapScene({
 export default function NJDeliveryMap() {
   const [geo, setGeo] = useState<GeoData | null>(null);
   const [selected, setSelected] = useState<Town | null>(null);
+  /** "south" frames the Cape May County service area; "state" pulls back
+      to the whole of New Jersey for context. */
+  const [view, setView] = useState<"south" | "state">("south");
   const [showCounties, setShowCounties] = useState(true);
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const flightRef = useRef<Flight | null>(null);
@@ -1200,23 +1288,59 @@ export default function NJDeliveryMap() {
     setSelected(town);
     flyTo(
       toWorld(space, town.ll[1], town.ll[0], TOP_Y),
-      town.origin ? 1.8 : town.hub ? 1.9 : 2.2,
+      town.origin ? 1.15 : town.hub ? 1.25 : 1.4,
     );
   };
 
+  /** Camera target + zoom for a view. */
+  const frameFor = (v: "south" | "state") =>
+    v === "south" && space
+      ? {
+          target: toWorld(
+            space,
+            SOUTH_FOCUS_LL[1],
+            SOUTH_FOCUS_LL[0],
+            TOP_Y,
+          ),
+          zoom: SOUTH_ZOOM,
+        }
+      : { target: new THREE.Vector3(0, 0, 0), zoom: STATE_ZOOM };
+
   const handleReset = () => {
     setSelected(null);
-    flyTo(new THREE.Vector3(0, 0, 0), 1);
+    const { target, zoom } = frameFor(view);
+    flyTo(target, zoom);
   };
+
+  const handleView = (next: "south" | "state") => {
+    setView(next);
+    setSelected(null);
+    const { target, zoom } = frameFor(next);
+    flyTo(target, zoom);
+  };
+
+  // Open on the service area rather than the whole state.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once the projection exists
+  useEffect(() => {
+    if (!space) return;
+    const { target, zoom } = frameFor("south");
+    flyTo(target, zoom);
+  }, [space]);
 
   const groups = [
     { label: "Origin", towns: TOWNS.filter((t) => t.origin) },
     {
-      label: "Delivery hubs",
-      towns: TOWNS.filter((t) => t.hub && !t.origin && !t.inland),
+      label: "Cape May County hubs",
+      towns: TOWNS.filter((t) => t.hub && !t.origin && !t.secondary),
     },
-    { label: "Shore towns", towns: TOWNS.filter((t) => !t.hub) },
-    { label: "Inland hubs", towns: TOWNS.filter((t) => t.inland) },
+    {
+      label: "Cape May County towns",
+      towns: TOWNS.filter((t) => !t.hub && !t.secondary),
+    },
+    {
+      label: "Atlantic County & coastal",
+      towns: TOWNS.filter((t) => t.secondary),
+    },
   ];
 
   return (
@@ -1238,6 +1362,7 @@ export default function NJDeliveryMap() {
         >
           <color attach="background" args={[CREAM]} />
           <MapScene
+            detail={DETAIL_SCALE[view]}
             geo={geo}
             space={space}
             selected={selected}
@@ -1283,6 +1408,20 @@ export default function NJDeliveryMap() {
             )}
           </SelectContent>
         </Select>
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => handleView(view === "south" ? "state" : "south")}
+          data-ocid="network.view_toggle"
+          aria-pressed={view === "state"}
+          className={`h-12 rounded-full border-2 border-navy font-body text-xs font-bold uppercase tracking-wider shadow-[0_4px_0_#A3CCD1] hover:bg-navy hover:text-cream-bright ${
+            view === "state"
+              ? "bg-navy text-cream-bright"
+              : "bg-gradient-ice-card text-navy"
+          }`}
+        >
+          {view === "south" ? "Full NJ map" : "Service area"}
+        </Button>
         <Button
           type="button"
           size="sm"
