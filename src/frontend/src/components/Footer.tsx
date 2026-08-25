@@ -20,7 +20,7 @@ export default function Footer() {
             />
             <span className="flex items-baseline gap-2 leading-none">
               <span className="font-script text-3xl text-navy">Avalon</span>
-              <span className="text-block-ice text-2xl leading-none">Ice</span>
+              <span className="text-block-ice text-2xl leading-none">ICE</span>
             </span>
           </div>
 

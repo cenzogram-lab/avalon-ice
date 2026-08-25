@@ -61,7 +61,7 @@ export default function Navbar() {
               Avalon
             </span>
             <span className="text-block-ice text-lg leading-none lg:text-xl">
-              Ice
+              ICE
             </span>
           </span>
         </a>

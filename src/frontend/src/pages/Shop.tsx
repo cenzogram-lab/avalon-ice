@@ -1,3 +1,4 @@
+import ContactSection from "@/components/ContactSection";
 import ComingSoonRibbon from "@/components/home/ComingSoonRibbon";
 import VideoBackdrop from "@/components/home/VideoBackdrop";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { Truck } from "lucide-react";
  */
 export default function Shop() {
   return (
+    <>
     <section
       id="shop"
       data-ocid="shop"
@@ -51,5 +53,7 @@ export default function Shop() {
 
       </div>
     </section>
+      <ContactSection />
+    </>
   );
 }

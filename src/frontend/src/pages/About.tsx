@@ -1,3 +1,4 @@
+import ContactSection from "@/components/ContactSection";
 import BrandVideo from "@/components/home/BrandVideo";
 import FrostOverlay from "@/components/home/FrostOverlay";
 import IceFrame from "@/components/home/IceFrame";
@@ -147,6 +148,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      <ContactSection />
     </>
   );
 }
