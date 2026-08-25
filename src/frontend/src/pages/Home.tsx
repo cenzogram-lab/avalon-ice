@@ -104,7 +104,7 @@ function Hero() {
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32">
         <span className="chip chip-solid mb-6" data-ocid="hero.badge">
           <MapPin className="size-3.5" />
-          Avalon, N.J. · Cape May County
+          Cape May County
         </span>
 
         <h1 className="script-heading max-w-3xl text-5xl sm:text-6xl md:text-7xl">
@@ -210,50 +210,46 @@ interface Product {
 
 const PRODUCTS: Product[] = [
   {
-    title: "Commercial Ice Delivery",
+    title: "Fresh Ice. Made at the Shore.",
     description:
-      "Standing orders and on-demand drops kept cold on arrival, every route, every run.",
+      "Clean, fresh ice produced locally in South Jersey and delivered throughout the shore.",
     chips: [
-      { label: "7lb Bags" },
-      { label: "16lb Bags" },
-      { label: "20lb Bags" },
-      { label: "Restaurants" },
-      { label: "Bars" },
+      { label: "7 LB BAGS", solid: true },
+      { label: "LOCALLY MADE" },
+      { label: "FRESH & CLEAN" },
     ],
     clip: "a",
   },
   {
-    title: "Event & Festival Bulk Supply",
+    title: "Commercial Ice Delivery",
     description:
-      "Pallet-scale bagged and block ice, scheduled to your run-of-show and restocked on cue.",
+      "Standing orders and on-demand drops kept cold on arrival, every route, every run.",
     chips: [
-      { label: "Pallets" },
-      { label: "Bulk Bags" },
-      { label: "Festivals" },
-      { label: "Weddings" },
+      { label: "RETAILERS" },
+      { label: "MARINAS" },
+      { label: "BARS/RESTAURANTS" },
     ],
     clip: "b",
+  },
+  {
+    title: "Event & Festival Bulk Supply",
+    description:
+      "Pallet-scale bagged ice, scheduled to your run-of-show and restocked on cue.",
+    chips: [
+      { label: "FESTIVALS" },
+      { label: "EVENTS" },
+      { label: "CATERERS" },
+    ],
+    clip: "c",
   },
   {
     title: "Emergency & Same-Day Shore Run",
     description:
       "Freezer down? Crowd surge? Same-day shore runs across Cape May County and up the coast.",
     chips: [
-      { label: "Same-Day", solid: true },
-      { label: "7 Days a Week" },
-      { label: "Marinas" },
-    ],
-    clip: "c",
-  },
-  {
-    title: "Premium Bagged & Block Ice",
-    description:
-      "Crystal-clear cubed, crushed, and block ice — cleanly bagged and consistently sized.",
-    chips: [
-      { label: "Cubed" },
-      { label: "Crushed" },
-      { label: "Block Ice" },
-      { label: "300lb Blocks" },
+      { label: "SAME-DAY", solid: true },
+      { label: "7 DAYS A WEEK" },
+      { label: "MARINAS" },
     ],
     clip: "d",
   },
@@ -1133,7 +1129,7 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Total Bags / Ice Type" error={errors.totalBags}>
+        <Field label="Total Bags" error={errors.totalBags}>
           <Input
             data-ocid="order.event.bags"
             value={values.totalBags}
@@ -1141,21 +1137,17 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
             placeholder="e.g. 60 bags"
           />
         </Field>
-        <Field label="Ice Type" error={errors.iceType}>
+        <Field label="Bag Type" error={errors.iceType}>
           <Select
             value={values.iceType}
             onValueChange={(v) => set("iceType", v)}
           >
             <SelectTrigger data-ocid="order.event.ice_type" className="w-full">
-              <SelectValue placeholder="Select ice type" />
+              <SelectValue placeholder="Select bag type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Cubed 10lb">Cubed 10lb</SelectItem>
-              <SelectItem value="Cubed 20lb">Cubed 20lb</SelectItem>
-              <SelectItem value="Crushed">Crushed</SelectItem>
-              <SelectItem value="300lb Carving/Cocktail Block">
-                300lb Carving / Cocktail Block
-              </SelectItem>
+              {/* Single launch product: standard 7 lb bags. */}
+              <SelectItem value="7 lb">7 lb</SelectItem>
             </SelectContent>
           </Select>
         </Field>

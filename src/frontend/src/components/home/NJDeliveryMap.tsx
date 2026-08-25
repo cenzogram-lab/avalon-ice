@@ -44,6 +44,8 @@ interface Town {
   origin?: boolean;
   /** Atlantic County / coastal expansion network, drawn a touch softer. */
   secondary?: boolean;
+  /** Cumberland County — the western bayshore branch. */
+  cumberland?: boolean;
 }
 
 const TOWNS: Town[] = [
@@ -85,6 +87,15 @@ const TOWNS: Town[] = [
   { n: "Brigantine", ll: [39.4101, -74.3646], secondary: true },
   { n: "Egg Harbor Township", ll: [39.3871, -74.6063], secondary: true },
   { n: "Mays Landing", ll: [39.4526, -74.7279], secondary: true },
+
+  /* --- Western branch: Cumberland County --------------------------- */
+  { n: "Vineland", ll: [39.4864, -75.0257], hub: true, cumberland: true },
+  { n: "Millville", ll: [39.4021, -75.0393], hub: true, cumberland: true },
+  { n: "Bridgeton", ll: [39.4273, -75.2341], hub: true, cumberland: true },
+  { n: "Port Norris", ll: [39.2529, -75.0427], cumberland: true },
+  { n: "Mauricetown", ll: [39.2848, -74.9946], cumberland: true },
+  { n: "Leesburg", ll: [39.2429, -74.996], cumberland: true },
+  { n: "Heislerville", ll: [39.2223, -74.9899], cumberland: true },
 ];
 
 /** Woodbine HQ — every route starts here. */
@@ -138,6 +149,18 @@ const SOUTH_LL = routeOf(
   "Cape May",
 );
 
+/** Western run out to the Cumberland County bayshore and up to Vineland. */
+const CUMBERLAND_LL = routeOf(
+  "Woodbine",
+  "Mauricetown",
+  "Leesburg",
+  "Heislerville",
+  "Port Norris",
+  "Millville",
+  "Vineland",
+  "Bridgeton",
+);
+
 /** Bayshore run down the Delaware Bay side. */
 const BAY_LL = routeOf(
   "Woodbine",
@@ -157,6 +180,8 @@ const WATER: { n: string; ll: [number, number] }[] = [
 function blurb(t: Town): string {
   if (t.origin)
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
+  if (t.cumberland)
+    return "On the western Cumberland County run — bayshore and inland.";
   if (t.secondary)
     return "On the Atlantic County expansion run — coastal South Jersey.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
@@ -486,11 +511,12 @@ const SOUTH_FOCUS_LL: [number, number] = [
   // the extruded surface up the screen, so targeting the true centre
   // pushes the Woodbine beacon off the top edge.
   (SOUTH_BBOX.minLat + SOUTH_BBOX.maxLat) / 2 + 0.62,
-  (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2,
+  // Nudged west so the Cumberland branch sits inside the default frame.
+  (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2 - 0.1,
 ];
 
 /** Camera zoom for each view, as a multiple of the statewide framing. */
-const SOUTH_ZOOM = 2.6;
+const SOUTH_ZOOM = 2.25;
 /* Below 1 because the isometric angle spreads the state's diagonal wider
    than the flat projection height, so a 1:1 framing clips North Jersey. */
 const STATE_ZOOM = 0.82;
@@ -1253,6 +1279,7 @@ const TRUCK_RUNS = [
   { route: "B", offset: 0.68, speed: 0.022 },
   { route: "C", offset: 0.5, speed: 0.025 },
   { route: "D", offset: 0.15, speed: 0.02 },
+  { route: "E", offset: 0.35, speed: 0.024 },
 ] as const;
 
 function MapScene({
@@ -1280,11 +1307,13 @@ function MapScene({
   const routeB = useRoute(space, SPUR_LL, 0.17, 42, 0.03);
   const routeC = useRoute(space, SOUTH_LL, 0.18, 40, 0.04);
   const routeD = useRoute(space, BAY_LL, 0.16, 36, 0.032);
+  const routeE = useRoute(space, CUMBERLAND_LL, 0.18, 44, 0.036);
   const curves = {
     A: routeA.handle.curve,
     B: routeB.handle.curve,
     C: routeC.handle.curve,
     D: routeD.handle.curve,
+    E: routeE.handle.curve,
   };
 
   return (
@@ -1323,6 +1352,7 @@ function MapScene({
       <RouteMesh handle={routeB.handle} geometry={routeB.geometry} />
       <RouteMesh handle={routeC.handle} geometry={routeC.geometry} />
       <RouteMesh handle={routeD.handle} geometry={routeD.geometry} />
+      <RouteMesh handle={routeE.handle} geometry={routeE.geometry} />
       {TRUCK_RUNS.map((run, i) => (
         <Truck
           key={`truck-${i.toString()}`}
@@ -1481,15 +1511,21 @@ export default function NJDeliveryMap() {
     { label: "Origin", towns: TOWNS.filter((t) => t.origin) },
     {
       label: "Cape May County hubs",
-      towns: TOWNS.filter((t) => t.hub && !t.origin && !t.secondary),
+      towns: TOWNS.filter(
+        (t) => t.hub && !t.origin && !t.secondary && !t.cumberland,
+      ),
     },
     {
       label: "Cape May County towns",
-      towns: TOWNS.filter((t) => !t.hub && !t.secondary),
+      towns: TOWNS.filter((t) => !t.hub && !t.secondary && !t.cumberland),
     },
     {
       label: "Atlantic County & coastal",
       towns: TOWNS.filter((t) => t.secondary),
+    },
+    {
+      label: "Cumberland County",
+      towns: TOWNS.filter((t) => t.cumberland),
     },
   ];
 
