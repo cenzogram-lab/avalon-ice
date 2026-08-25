@@ -670,7 +670,7 @@ function Network() {
             directly to retailers, marinas, restaurants, bars, and businesses.
           </p>
           <p>
-            Explore the map to see the communities we're building our routes
+            Explore the map to see the communities we’re building our routes
             around.
           </p>
         </div>
