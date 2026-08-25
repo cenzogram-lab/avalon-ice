@@ -51,7 +51,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 2rem;
+        gap: 1.75rem;
         overflow: hidden;
         background: linear-gradient(to bottom, #fdfcf8, #f7f2ea 55%, #e4f1f0);
         font-family: "Work Sans", system-ui, sans-serif;
@@ -62,38 +62,70 @@
         visibility: hidden;
         pointer-events: none;
       }
-      .boot-wordmark {
-        font-family: "Bevan", Georgia, serif;
-        font-size: clamp(1.5rem, 5vw, 2.25rem);
-        letter-spacing: 0.02em;
-        color: #0c3552;
-        text-align: center;
-        margin: 0;
-      }
-      .boot-tagline {
-        margin: 0.6rem 0 0;
-        font-size: clamp(0.65rem, 2.2vw, 0.8rem);
-        font-weight: 600;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: #4d7c8a;
-        text-align: center;
-      }
-      /* Full-bleed: the road has to reach both screen edges, or the truck
-         drives off the end of it while entering and leaving. */
-      .boot-scene {
+
+      /* Truck stage: the truck holds centre and large; the road and mist
+         stream past it, which reads as motion without shrinking the mark. */
+      .boot-stage {
         position: relative;
-        width: 100vw;
-        height: 7.5rem;
+        width: min(92vw, 34rem);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      .boot-road {
+      .boot-truck {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        animation: boot-suspension 0.85s ease-in-out infinite;
+      }
+      .boot-truck svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 10px 0 rgba(163, 204, 209, 0.55));
+      }
+      .boot-wheel {
+        transform-box: view-box;
+        animation: boot-roll 0.75s linear infinite;
+      }
+      .boot-wheel-1 { transform-origin: 34px 72px; }
+      .boot-wheel-2 { transform-origin: 86px 72px; }
+      .boot-wheel-3 { transform-origin: 146px 72px; }
+
+      /* Icy mist trailing off the back of the truck */
+      .boot-mist {
         position: absolute;
         left: 0;
-        right: 0;
+        bottom: 14%;
+        width: 55%;
+        height: 26%;
+        z-index: 1;
+        pointer-events: none;
+      }
+      .boot-puff {
+        position: absolute;
         bottom: 0;
-        height: 2.25rem;
+        width: 34%;
+        aspect-ratio: 2 / 1;
+        border-radius: 999px;
+        background: radial-gradient(
+          circle at 50% 60%,
+          rgba(205, 231, 233, 0.95),
+          rgba(205, 231, 233, 0) 70%
+        );
+        animation: boot-mist 2.1s ease-out infinite;
+      }
+      .boot-puff:nth-child(2) { animation-delay: 0.7s; }
+      .boot-puff:nth-child(3) { animation-delay: 1.4s; }
+
+      .boot-road {
+        position: relative;
+        z-index: 0;
+        margin-top: -2%;
+        width: 100%;
+        height: 1.5rem;
+        border-radius: 2px;
         background: #0c3552;
-        border-top: 3px solid #0c3552;
         overflow: hidden;
       }
       .boot-stripes {
@@ -102,107 +134,121 @@
         top: 50%;
         transform: translateY(-50%);
         width: 200%;
-        height: 4px;
+        height: 3px;
         background: repeating-linear-gradient(
           to right,
-          #f7f2ea 0 28px,
-          transparent 28px 56px
+          #f7f2ea 0 26px,
+          transparent 26px 52px
         );
-        opacity: 0.75;
-        animation: boot-stripes 0.75s linear infinite;
+        opacity: 0.8;
+        animation: boot-stripes 0.6s linear infinite;
       }
-      .boot-truck {
-        position: absolute;
-        /* Tuned so the wheels meet the asphalt: the SVG carries a little
-           empty space below the tyres, so this is not the road height. */
-        bottom: 0.85rem;
-        width: 9.5rem;
-        height: auto;
-        animation: boot-drive 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+
+      .boot-caption {
+        margin: 0;
+        font-family: "Bevan", Georgia, serif;
+        font-size: clamp(1.05rem, 4.2vw, 1.6rem);
+        letter-spacing: 0.01em;
+        color: #0c3552;
+        text-align: center;
       }
-      .boot-bounce {
-        animation: boot-bounce 0.5s ease-in-out infinite;
+      .boot-sub {
+        margin: 0.5rem 0 0;
+        font-size: clamp(0.6rem, 2.2vw, 0.75rem);
+        font-weight: 600;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #4d7c8a;
+        text-align: center;
+      }
+
+      @keyframes boot-roll {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes boot-suspension {
+        0%, 100% { transform: translateY(0) rotate(-0.2deg); }
+        50% { transform: translateY(-4px) rotate(0.2deg); }
       }
       @keyframes boot-stripes {
-        to {
-          transform: translate(-56px, -50%);
-        }
+        to { transform: translate(-52px, -50%); }
       }
-      @keyframes boot-drive {
-        0% {
-          left: -11rem;
-        }
-        100% {
-          left: 100%;
-        }
+      @keyframes boot-mist {
+        0% { opacity: 0; transform: translateX(30%) scale(0.5); }
+        25% { opacity: 0.85; }
+        100% { opacity: 0; transform: translateX(-70%) scale(1.5); }
       }
-      @keyframes boot-bounce {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-2px);
-        }
-      }
+
       @media (prefers-reduced-motion: reduce) {
-        .boot-stripes,
         .boot-truck,
-        .boot-bounce {
+        .boot-wheel,
+        .boot-stripes,
+        .boot-puff {
           animation: none;
         }
-        .boot-truck {
-          left: 50%;
-          margin-left: -4.75rem;
-        }
+        .boot-puff { opacity: 0.5; }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BrlRhtRi.js"></script>
+    <script type="module" crossorigin src="/assets/index-C07tefOy.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-B9YVDtju.js">
     <link rel="modulepreload" crossorigin href="/assets/tanstack-C4EZNDgT.js">
     <link rel="modulepreload" crossorigin href="/assets/icp-DN9EvJH3.js">
     <link rel="modulepreload" crossorigin href="/assets/motion-CcCTRGyd.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CqbdBaTb.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-EaNNQsxq.css">
   </head>
   <body>
     <div id="root"></div>
 
     <div id="boot" role="status" aria-live="polite">
-      <p class="sr-only-boot" style="position: absolute; left: -9999px">
-        Loading Avalon Ice
-      </p>
-      <div>
-        <p class="boot-wordmark">Avalon Ice</p>
-        <p class="boot-tagline">The Shore's Coldest Delivery</p>
+      <p style="position: absolute; left: -9999px">Loading Avalon Ice</p>
+
+      <div class="boot-stage">
+        <div class="boot-mist">
+          <div class="boot-puff" style="left: 4%"></div>
+          <div class="boot-puff" style="left: 26%"></div>
+          <div class="boot-puff" style="left: 48%"></div>
+        </div>
+
+        <div class="boot-truck">
+          <svg viewBox="0 0 180 92" aria-hidden="true">
+            <rect x="4" y="8" width="112" height="58" rx="6" fill="#FDFCF8" stroke="#0C3552" stroke-width="4" />
+            <circle cx="27" cy="37" r="17" fill="#F7F2EA" stroke="#0C3552" stroke-width="2.5" />
+            <clipPath id="boot-heron"><circle cx="27" cy="37" r="15.5" /></clipPath>
+            <image href="/assets/images/avalon-heron.webp" x="11.5" y="21.5" width="31" height="31" clip-path="url(#boot-heron)" preserveAspectRatio="xMidYMid slice" />
+            <text x="79" y="26" text-anchor="middle" font-family="Lobster, cursive" font-size="16" fill="#0C3552">Avalon</text>
+            <rect x="55" y="31" width="48" height="18" rx="3" fill="#CDE7E9" stroke="#0C3552" stroke-width="2.5" />
+            <text x="79" y="45" text-anchor="middle" font-family="Bevan, Georgia, serif" font-size="13" letter-spacing="1.5" fill="#0C3552">ICE</text>
+            <g fill="#CDE7E9" stroke="#0C3552" stroke-width="2">
+              <rect x="57" y="53" width="9" height="9" rx="2" />
+              <rect x="69" y="53" width="9" height="9" rx="2" />
+            </g>
+            <path d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z" fill="#0C3552" />
+            <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
+
+            <!-- Wheels: spokes make the rotation legible -->
+            <g class="boot-wheel boot-wheel-1">
+              <circle cx="34" cy="72" r="13" fill="#061F33" />
+              <circle cx="34" cy="72" r="5.5" fill="#F7F2EA" />
+              <path d="M34 61.5v21M23.5 72h21" stroke="#F7F2EA" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
+            </g>
+            <g class="boot-wheel boot-wheel-2">
+              <circle cx="86" cy="72" r="13" fill="#061F33" />
+              <circle cx="86" cy="72" r="5.5" fill="#F7F2EA" />
+              <path d="M86 61.5v21M75.5 72h21" stroke="#F7F2EA" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
+            </g>
+            <g class="boot-wheel boot-wheel-3">
+              <circle cx="146" cy="72" r="13" fill="#061F33" />
+              <circle cx="146" cy="72" r="5.5" fill="#F7F2EA" />
+              <path d="M146 61.5v21M135.5 72h21" stroke="#F7F2EA" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="boot-road"><div class="boot-stripes"></div></div>
       </div>
 
-      <div class="boot-scene">
-        <div class="boot-road"><div class="boot-stripes"></div></div>
-        <div class="boot-truck">
-          <div class="boot-bounce">
-            <svg viewBox="0 0 180 92" width="100%" height="100%" aria-hidden="true">
-              <rect x="4" y="8" width="112" height="58" rx="6" fill="#FDFCF8" stroke="#0C3552" stroke-width="4" />
-              <circle cx="27" cy="37" r="17" fill="#F7F2EA" stroke="#0C3552" stroke-width="2.5" />
-              <clipPath id="boot-heron"><circle cx="27" cy="37" r="15.5" /></clipPath>
-              <image href="/assets/images/avalon-heron.webp" x="11.5" y="21.5" width="31" height="31" clip-path="url(#boot-heron)" preserveAspectRatio="xMidYMid slice" />
-              <text x="79" y="26" text-anchor="middle" font-family="Lobster, cursive" font-size="16" fill="#0C3552">Avalon</text>
-              <rect x="55" y="31" width="48" height="18" rx="3" fill="#CDE7E9" stroke="#0C3552" stroke-width="2.5" />
-              <text x="79" y="45" text-anchor="middle" font-family="Bevan, Georgia, serif" font-size="13" letter-spacing="1.5" fill="#0C3552">ICE</text>
-              <g fill="#CDE7E9" stroke="#0C3552" stroke-width="2">
-                <rect x="57" y="53" width="9" height="9" rx="2" />
-                <rect x="69" y="53" width="9" height="9" rx="2" />
-              </g>
-              <path d="M116 26h34a8 8 0 0 1 6.6 3.5l14 20a8 8 0 0 1 1.4 4.5v4a8 8 0 0 1-8 8h-48V26Z" fill="#0C3552" />
-              <rect x="122" y="32" width="22" height="15" rx="3" fill="#A3CCD1" />
-              <g fill="#061F33">
-                <circle cx="34" cy="72" r="13" /><circle cx="86" cy="72" r="13" /><circle cx="146" cy="72" r="13" />
-              </g>
-              <g fill="#F7F2EA">
-                <circle cx="34" cy="72" r="5.5" /><circle cx="86" cy="72" r="5.5" /><circle cx="146" cy="72" r="5.5" />
-              </g>
-            </svg>
-          </div>
-        </div>
+      <div>
+        <p class="boot-caption">Chilling the Shore…</p>
+        <p class="boot-sub">Preparing Delivery Routes</p>
       </div>
     </div>
 

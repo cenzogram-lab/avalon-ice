@@ -44,91 +44,133 @@ interface Town {
   origin?: boolean;
   /** Atlantic County / coastal expansion network, drawn a touch softer. */
   secondary?: boolean;
+  /** Cumberland County — the western bayshore branch. */
+  cumberland?: boolean;
 }
 
 const TOWNS: Town[] = [
   /* --- Origin ------------------------------------------------------ */
-  { n: "Woodbine", ll: [39.2418, -74.8149], hub: true, origin: true },
+  { n: "Woodbine", ll: [39.2415, -74.8118], hub: true, origin: true },
 
   /* --- Core network: Cape May County ------------------------------- */
-  { n: "Avalon", ll: [39.1007, -74.7177], hub: true },
-  { n: "Stone Harbor", ll: [39.0479, -74.7649], hub: true },
-  { n: "Sea Isle City", ll: [39.1537, -74.6927], hub: true },
+  { n: "Avalon", ll: [39.1007, -74.7179], hub: true },
+  { n: "Stone Harbor", ll: [39.0526, -74.7607], hub: true },
+  { n: "Sea Isle City", ll: [39.1504, -74.6932], hub: true },
   { n: "Ocean City", ll: [39.2776, -74.5746], hub: true },
   { n: "Cape May", ll: [38.9351, -74.906], hub: true },
-  { n: "West Cape May", ll: [38.9387, -74.9418] },
-  { n: "Wildwood", ll: [38.9918, -74.8146], hub: true },
-  { n: "Wildwood Crest", ll: [38.9757, -74.8329] },
-  { n: "North Wildwood", ll: [39.0007, -74.7994] },
-  { n: "Cape May Court House", ll: [39.0827, -74.8237], hub: true },
-  { n: "Rio Grande", ll: [39.0117, -74.8807] },
-  { n: "Villas", ll: [39.029, -74.9382] },
-  { n: "North Cape May", ll: [38.982, -74.954] },
-  { n: "Town Bank", ll: [38.9668, -74.956] },
-  { n: "Marmora", ll: [39.2662, -74.6499] },
-  { n: "Tuckahoe", ll: [39.2882, -74.7532] },
-  { n: "Seaville", ll: [39.2432, -74.6721] },
-  { n: "Ocean View", ll: [39.2079, -74.7093] },
-  { n: "Dennisville", ll: [39.1873, -74.8241] },
-  { n: "South Dennis", ll: [39.1804, -74.8477] },
-  { n: "Goshen", ll: [39.1315, -74.863] },
-  { n: "Swainton", ll: [39.1201, -74.771] },
-  { n: "Clermont", ll: [39.1451, -74.7982] },
-  { n: "Upper Township", ll: [39.2704, -74.7154] },
+  { n: "West Cape May", ll: [38.9376, -74.9357] },
+  { n: "Wildwood", ll: [38.9918, -74.8149], hub: true },
+  { n: "Wildwood Crest", ll: [38.9734, -74.8324] },
+  { n: "North Wildwood", ll: [39.0007, -74.799] },
+  { n: "Cape May Court House", ll: [39.0812, -74.8249], hub: true },
+  { n: "Rio Grande", ll: [39.019, -74.8724] },
+  { n: "Villas", ll: [39.0165, -74.9377] },
+  { n: "North Cape May", ll: [38.9715, -74.9546] },
+  { n: "Town Bank", ll: [38.9868, -74.9452] },
+  { n: "Marmora", ll: [39.2551, -74.6757] },
+  { n: "Tuckahoe", ll: [39.2946, -74.8143] },
+  { n: "Seaville", ll: [39.2132, -74.6996] },
+  { n: "Ocean View", ll: [39.1837, -74.7246] },
+  { n: "Dennisville", ll: [39.1901, -74.8235] },
+  { n: "South Dennis", ll: [39.1673, -74.8468] },
+  { n: "Goshen", ll: [39.1368, -74.8877] },
+  { n: "Swainton", ll: [39.1237, -74.7877] },
+  { n: "Clermont", ll: [39.1557, -74.7649] },
+  { n: "Upper Township", ll: [39.2818, -74.721] },
 
   /* --- Secondary: Atlantic County & coastal South Jersey ----------- */
-  { n: "Somers Point", ll: [39.3187, -74.6113], secondary: true },
-  { n: "Longport", ll: [39.3129, -74.531], secondary: true },
-  { n: "Margate City", ll: [39.3279, -74.5035], secondary: true },
-  { n: "Ventnor City", ll: [39.3401, -74.4771], secondary: true },
+  { n: "Somers Point", ll: [39.319, -74.5971], secondary: true },
+  { n: "Longport", ll: [39.3148, -74.5265], secondary: true },
+  { n: "Margate City", ll: [39.3284, -74.5029], secondary: true },
+  { n: "Ventnor City", ll: [39.3404, -74.4776], secondary: true },
   { n: "Atlantic City", ll: [39.3643, -74.4229], hub: true, secondary: true },
   { n: "Brigantine", ll: [39.4101, -74.3646], secondary: true },
-  { n: "Egg Harbor Township", ll: [39.379, -74.6088], secondary: true },
-  { n: "Mays Landing", ll: [39.4526, -74.7288], secondary: true },
+  { n: "Egg Harbor Township", ll: [39.3871, -74.6063], secondary: true },
+  { n: "Mays Landing", ll: [39.4526, -74.7279], secondary: true },
+
+  /* --- Western branch: Cumberland County --------------------------- */
+  { n: "Vineland", ll: [39.4864, -75.0257], hub: true, cumberland: true },
+  { n: "Millville", ll: [39.4021, -75.0393], hub: true, cumberland: true },
+  { n: "Bridgeton", ll: [39.4273, -75.2341], hub: true, cumberland: true },
+  { n: "Port Norris", ll: [39.2529, -75.0427], cumberland: true },
+  { n: "Mauricetown", ll: [39.2848, -74.9946], cumberland: true },
+  { n: "Leesburg", ll: [39.2429, -74.996], cumberland: true },
+  { n: "Heislerville", ll: [39.2223, -74.9899], cumberland: true },
 ];
 
 /** Woodbine HQ — every route starts here. */
-const HQ_LL: [number, number] = [39.2418, -74.8149];
+const HQ_LL: [number, number] = [39.2415, -74.8118];
 
-/** Coastal run north: HQ → Tuckahoe → Marmora → Somers Point → A.C. */
-const ROUTE_LL: [number, number][] = [
-  HQ_LL,
-  [39.2882, -74.7532],
-  [39.2662, -74.6499],
-  [39.2776, -74.5746],
-  [39.3187, -74.6113],
-  [39.3279, -74.5035],
-  [39.3643, -74.4229],
-  [39.4101, -74.3646],
-];
+/**
+ * Routes are declared by town name and resolved against TOWNS, so an arc
+ * can never drift away from the pin it is supposed to connect: correcting
+ * a coordinate moves the pin and the route together.
+ */
+function routeOf(...names: string[]): [number, number][] {
+  return names.map((n) => {
+    const town = TOWNS.find((t) => t.n === n);
+    if (!town) throw new Error(`Unknown town on route: ${n}`);
+    return town.ll;
+  });
+}
 
-/** Barrier-island run: HQ → Ocean View → Sea Isle → Avalon → Stone Harbor. */
-const SPUR_LL: [number, number][] = [
-  HQ_LL,
-  [39.2079, -74.7093],
-  [39.1537, -74.6927],
-  [39.1007, -74.7177],
-  [39.0479, -74.7649],
-];
+/** Coastal run north into Atlantic County. */
+const ROUTE_LL = routeOf(
+  "Woodbine",
+  "Tuckahoe",
+  "Upper Township",
+  "Marmora",
+  "Ocean City",
+  "Somers Point",
+  "Margate City",
+  "Atlantic City",
+  "Brigantine",
+);
 
-/** Southern run: HQ → Court House → Rio Grande → Wildwood → Cape May. */
-const SOUTH_LL: [number, number][] = [
-  HQ_LL,
-  [39.1451, -74.7982],
-  [39.0827, -74.8237],
-  [39.0117, -74.8807],
-  [38.9918, -74.8146],
-  [38.9351, -74.906],
-];
+/** Barrier-island run down the shore. */
+const SPUR_LL = routeOf(
+  "Woodbine",
+  "Seaville",
+  "Ocean View",
+  "Sea Isle City",
+  "Avalon",
+  "Stone Harbor",
+);
 
-/** Bayshore run: HQ → South Dennis → Goshen → Villas → North Cape May. */
-const BAY_LL: [number, number][] = [
-  HQ_LL,
-  [39.1804, -74.8477],
-  [39.1315, -74.863],
-  [39.029, -74.9382],
-  [38.982, -74.954],
-];
+/** Southern run to the Wildwoods and Cape May. */
+const SOUTH_LL = routeOf(
+  "Woodbine",
+  "Clermont",
+  "Swainton",
+  "Cape May Court House",
+  "Rio Grande",
+  "North Wildwood",
+  "Wildwood",
+  "Cape May",
+);
+
+/** Western run out to the Cumberland County bayshore and up to Vineland. */
+const CUMBERLAND_LL = routeOf(
+  "Woodbine",
+  "Mauricetown",
+  "Leesburg",
+  "Heislerville",
+  "Port Norris",
+  "Millville",
+  "Vineland",
+  "Bridgeton",
+);
+
+/** Bayshore run down the Delaware Bay side. */
+const BAY_LL = routeOf(
+  "Woodbine",
+  "Dennisville",
+  "South Dennis",
+  "Goshen",
+  "Villas",
+  "Town Bank",
+  "North Cape May",
+);
 
 const WATER: { n: string; ll: [number, number] }[] = [
   { n: "Atlantic Ocean", ll: [39.05, -74.35] },
@@ -138,6 +180,8 @@ const WATER: { n: string; ll: [number, number] }[] = [
 function blurb(t: Town): string {
   if (t.origin)
     return "Every route starts here. Packaged and bulk ice, loaded before dawn.";
+  if (t.cumberland)
+    return "On the western Cumberland County run — bayshore and inland.";
   if (t.secondary)
     return "On the Atlantic County expansion run — coastal South Jersey.";
   if (t.hub) return "Priority same-day and scheduled commercial delivery.";
@@ -466,12 +510,13 @@ const SOUTH_FOCUS_LL: [number, number] = [
   // North of the region's centre on purpose: the isometric camera lifts
   // the extruded surface up the screen, so targeting the true centre
   // pushes the Woodbine beacon off the top edge.
-  (SOUTH_BBOX.minLat + SOUTH_BBOX.maxLat) / 2 + 0.44,
-  (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2,
+  (SOUTH_BBOX.minLat + SOUTH_BBOX.maxLat) / 2 + 0.62,
+  // Nudged west so the Cumberland branch sits inside the default frame.
+  (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2 - 0.1,
 ];
 
 /** Camera zoom for each view, as a multiple of the statewide framing. */
-const SOUTH_ZOOM = 2.6;
+const SOUTH_ZOOM = 2.25;
 /* Below 1 because the isometric angle spreads the state's diagonal wider
    than the flat projection height, so a 1:1 framing clips North Jersey. */
 const STATE_ZOOM = 0.82;
@@ -974,6 +1019,7 @@ function TownPin({
           center
           position={[0, stemH + headR * 2 + 2.5, 0]}
           zIndexRange={[30, 0]}
+          style={{ pointerEvents: "none" }}
         >
           <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-cream-bright px-3 py-1 font-body text-xs font-bold uppercase tracking-wider text-navy shadow-[0_3px_0_rgba(12,53,82,0.35)]">
             {town.n}
@@ -1085,7 +1131,12 @@ function HeronBeacon({ space }: { space: MapSpace }) {
         </Billboard>
       </group>
 
-      <Html center position={[0, 29.5, 0]} zIndexRange={[28, 0]}>
+      <Html
+        center
+        position={[0, 29.5, 0]}
+        zIndexRange={[28, 0]}
+        style={{ pointerEvents: "none" }}
+      >
         <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-4 py-1.5 font-body text-sm font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
           Woodbine HQ
         </div>
@@ -1130,6 +1181,7 @@ function CountyLabels({
           center
           position={toWorld(space, c.ll[1], c.ll[0], TOP_Y)}
           zIndexRange={[18, 0]}
+          style={{ pointerEvents: "none" }}
         >
           <span
             className={`pointer-events-none whitespace-nowrap font-body text-[0.6rem] font-bold uppercase tracking-[0.2em] ${
@@ -1153,6 +1205,7 @@ function WaterLabels({ space }: { space: MapSpace }) {
           center
           position={toWorld(space, w.ll[1], w.ll[0], -2.5)}
           zIndexRange={[20, 0]}
+          style={{ pointerEvents: "none" }}
         >
           <span className="pointer-events-none whitespace-nowrap font-body text-[0.65rem] font-semibold uppercase italic tracking-[0.28em] text-lagoon-soft/85">
             {w.n}
@@ -1226,6 +1279,7 @@ const TRUCK_RUNS = [
   { route: "B", offset: 0.68, speed: 0.022 },
   { route: "C", offset: 0.5, speed: 0.025 },
   { route: "D", offset: 0.15, speed: 0.02 },
+  { route: "E", offset: 0.35, speed: 0.024 },
 ] as const;
 
 function MapScene({
@@ -1253,11 +1307,13 @@ function MapScene({
   const routeB = useRoute(space, SPUR_LL, 0.17, 42, 0.03);
   const routeC = useRoute(space, SOUTH_LL, 0.18, 40, 0.04);
   const routeD = useRoute(space, BAY_LL, 0.16, 36, 0.032);
+  const routeE = useRoute(space, CUMBERLAND_LL, 0.18, 44, 0.036);
   const curves = {
     A: routeA.handle.curve,
     B: routeB.handle.curve,
     C: routeC.handle.curve,
     D: routeD.handle.curve,
+    E: routeE.handle.curve,
   };
 
   return (
@@ -1296,6 +1352,7 @@ function MapScene({
       <RouteMesh handle={routeB.handle} geometry={routeB.geometry} />
       <RouteMesh handle={routeC.handle} geometry={routeC.geometry} />
       <RouteMesh handle={routeD.handle} geometry={routeD.geometry} />
+      <RouteMesh handle={routeE.handle} geometry={routeE.geometry} />
       {TRUCK_RUNS.map((run, i) => (
         <Truck
           key={`truck-${i.toString()}`}
@@ -1454,15 +1511,21 @@ export default function NJDeliveryMap() {
     { label: "Origin", towns: TOWNS.filter((t) => t.origin) },
     {
       label: "Cape May County hubs",
-      towns: TOWNS.filter((t) => t.hub && !t.origin && !t.secondary),
+      towns: TOWNS.filter(
+        (t) => t.hub && !t.origin && !t.secondary && !t.cumberland,
+      ),
     },
     {
       label: "Cape May County towns",
-      towns: TOWNS.filter((t) => !t.hub && !t.secondary),
+      towns: TOWNS.filter((t) => !t.hub && !t.secondary && !t.cumberland),
     },
     {
       label: "Atlantic County & coastal",
       towns: TOWNS.filter((t) => t.secondary),
+    },
+    {
+      label: "Cumberland County",
+      towns: TOWNS.filter((t) => t.cumberland),
     },
   ];
 
@@ -1499,7 +1562,9 @@ export default function NJDeliveryMap() {
       )}
 
       {/* Overlay controls */}
-      <div className="absolute left-3 top-3 flex flex-wrap items-center gap-2 sm:left-4 sm:top-4">
+      {/* z-40 clears every in-scene Html label (max zIndexRange 30), so a
+          pin or HQ tag drifting under the controls can never swallow a click. */}
+      <div className="absolute left-3 top-3 z-40 flex flex-wrap items-center gap-2 sm:left-4 sm:top-4">
         <Select
           value={selected?.n ?? ""}
           onValueChange={(name) => {
@@ -1574,7 +1639,7 @@ export default function NJDeliveryMap() {
       {/* Stats card */}
       <div
         data-ocid="network.stats"
-        className="absolute right-3 top-3 hidden rounded-xl border-2 border-navy bg-gradient-ice-card px-4 py-3 shadow-[0_6px_0_#A3CCD1] sm:right-4 sm:top-4 sm:block"
+        className="absolute right-3 top-3 z-40 hidden rounded-xl border-2 border-navy bg-gradient-ice-card px-4 py-3 shadow-[0_6px_0_#A3CCD1] sm:right-4 sm:top-4 sm:block"
       >
         <dl className="font-body text-navy">
           {[

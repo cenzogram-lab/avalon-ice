@@ -104,7 +104,7 @@ function Hero() {
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-32">
         <span className="chip chip-solid mb-6" data-ocid="hero.badge">
           <MapPin className="size-3.5" />
-          Avalon, N.J. · Cape May County
+          Cape May County
         </span>
 
         <h1 className="script-heading max-w-3xl text-5xl sm:text-6xl md:text-7xl">
@@ -210,31 +210,47 @@ interface Product {
 
 const PRODUCTS: Product[] = [
   {
+    title: "Fresh Ice. Made at the Shore.",
+    description:
+      "Clean, fresh ice produced locally in South Jersey and delivered throughout the shore.",
+    chips: [
+      { label: "7 LB BAGS", solid: true },
+      { label: "LOCALLY MADE" },
+      { label: "FRESH & CLEAN" },
+    ],
+    clip: "a",
+  },
+  {
     title: "Commercial Ice Delivery",
     description:
       "Standing orders and on-demand drops kept cold on arrival, every route, every run.",
-    chips: [{ label: "Restaurants" }, { label: "Bars" }, { label: "Marinas" }],
-    clip: "a",
+    chips: [
+      { label: "RETAILERS" },
+      { label: "MARINAS" },
+      { label: "BARS/RESTAURANTS" },
+    ],
+    clip: "b",
   },
   {
     title: "Event & Festival Bulk Supply",
     description:
-      "Pallet-scale bagged and block ice, scheduled to your run-of-show and restocked on cue.",
-    chips: [{ label: "Festivals" }, { label: "Weddings" }, { label: "Venues" }],
-    clip: "b",
+      "Pallet-scale bagged ice, scheduled to your run-of-show and restocked on cue.",
+    chips: [
+      { label: "FESTIVALS" },
+      { label: "EVENTS" },
+      { label: "CATERERS" },
+    ],
+    clip: "c",
   },
   {
     title: "Emergency & Same-Day Shore Run",
     description:
       "Freezer down? Crowd surge? Same-day shore runs across Cape May County and up the coast.",
-    chips: [{ label: "Same-Day", solid: true }, { label: "7 Days a Week" }],
-    clip: "c",
-  },
-  {
-    title: "Premium Bagged & Block Ice",
-    description:
-      "Crystal-clear cubed, crushed, and block ice — cleanly bagged and consistently sized.",
-    chips: [{ label: "Cubed" }, { label: "Crushed" }, { label: "Block" }],
+    chips: [
+      { label: "SAME-DAY", solid: true },
+      { label: "7 DAYS A WEEK" },
+      { label: "MARINAS" },
+    ],
     clip: "d",
   },
 ];
@@ -409,13 +425,6 @@ function ProductCard({
     [start + 0.03, slideMid, end - 0.02],
     [0.25, 1, 0.2],
   );
-  // Meltwater appears once the cube has settled into place.
-  const settle = useTransform(
-    progress,
-    [end - 0.03, Math.min(end + 0.14, 1)],
-    [0, 1],
-  );
-
   return (
     <motion.div
       data-ocid={`products.card.${index + 1}`}
@@ -433,7 +442,7 @@ function ProductCard({
                 opacity: cubeOpacity,
               }
         }
-        className={`absolute -top-9 z-0 ${index % 2 === 0 ? "-right-3" : "-left-3"} ${CUBE_SIZES[index]}`}
+        className={`absolute -top-16 z-0 opacity-70 blur-[0.6px] ${index % 2 === 0 ? "-right-2" : "-left-2"} ${CUBE_SIZES[index]}`}
         aria-hidden="true"
       >
         {/* Wet slick streak dragged behind the sliding cube */}
@@ -448,75 +457,109 @@ function ProductCard({
 
         <div className="animate-bob-cube relative">
           <IceCubeSVG className="h-auto w-full drop-shadow-[0_6px_0_rgba(163,204,209,0.7)]" />
-          {/* Meltwater drips once the cube comes to rest */}
-          <motion.div
-            style={reduceMotion ? undefined : { opacity: settle }}
-            className="pointer-events-none"
-          >
-            <span
-              className="ice-drip -bottom-1 left-[30%]"
-              style={
-                {
-                  "--drip-delay": `${index * 0.7}s`,
-                } as React.CSSProperties
-              }
-            />
-            <span
-              className="ice-drip -bottom-2 left-[64%]"
-              style={
-                {
-                  "--drip-delay": `${1.6 + index * 0.5}s`,
-                  "--drip-duration": "3.9s",
-                } as React.CSSProperties
-              }
-            />
-          </motion.div>
-        </div>
-
-        {/* Melt puddle spreading beneath the settled cube */}
-        <div className="absolute -bottom-2 left-1/2 w-[92%] -translate-x-1/2">
-          <motion.div
-            style={
-              reduceMotion ? undefined : { opacity: settle, scaleX: settle }
-            }
-          >
-            <div className="ice-puddle w-full" />
-          </motion.div>
         </div>
       </motion.div>
 
-      <IceFrame
-        clip={product.clip}
-        cracks
-        className="relative z-10 h-full"
-        innerClassName="flex h-full flex-col gap-3 p-6 pb-7"
-      >
-        {/* Slow light sweep across the wet card face */}
+      {/* Deep coastal-navy card. `group` drives the hover glow and the ice
+          reflection sweep below. */}
+      <div className="group relative z-10 flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-[#0C2B48] via-[#081B2E] to-[#0D3A63] p-6 pb-7 shadow-xl shadow-slate-950/20 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-sky-400/40 hover:shadow-2xl hover:shadow-sky-950/40">
+        {/* Soft inner glow, revealed on hover */}
         <span
-          className="ice-sheen"
-          style={{ "--sheen-delay": `${index * 1.4}s` } as React.CSSProperties}
           aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(120%_80%_at_50%_0%,rgba(56,189,248,0.18),transparent_60%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         />
-        <h3 className="text-block-navy text-lg leading-snug sm:text-xl">
+        {/* Delicate ice reflection sweeping the card face */}
+        <span
+          aria-hidden="true"
+          className="card-ice-reflection pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+
+        <h3 className="relative text-xl font-bold tracking-tight text-white md:text-2xl">
           {product.title}
         </h3>
-        <p className="font-body text-sm leading-relaxed text-lagoon">
+        <p className="relative font-body text-sm leading-relaxed text-slate-300">
           {product.description}
         </p>
-        <div className="mt-auto flex flex-wrap gap-2 pt-2">
+        <div className="relative mt-auto flex flex-wrap gap-2 pt-3">
           {product.chips.map((chip) => (
             <span
               key={chip.label}
-              className={chip.solid ? "chip chip-solid" : "chip"}
+              className={
+                chip.solid
+                  ? "rounded-full border border-sky-300/50 bg-sky-400/25 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-100"
+                  : "rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-300"
+              }
             >
               {chip.label}
             </span>
           ))}
         </div>
-      </IceFrame>
+      </div>
     </motion.div>
   );
 }
+
+/**
+ * Staggered word-pop headline: each segment springs up and fades in as the
+ * heading scrolls into view. Segments are declared explicitly rather than
+ * split on whitespace so a multi-word accent ("every cooler") animates and
+ * gradients as one unit. All motion is skipped under reduced-motion.
+ */
+function WordPop({
+  segments,
+  className,
+  as: Tag = "h2",
+  delay = 0,
+}: {
+  segments: { t: string; accent?: boolean }[];
+  className?: string;
+  as?: "h2" | "span";
+  delay?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const ACCENT =
+    "bg-gradient-to-r from-sky-200 via-white to-sky-400 bg-clip-text text-transparent";
+
+  return (
+    <Tag className={className}>
+      {segments.map((seg, i) => (
+        <motion.span
+          key={seg.t}
+          // Inline-block keeps each segment on the text baseline while still
+          // allowing it to be transformed independently.
+          className={`inline-block ${seg.accent ? ACCENT : "text-white"}`}
+          initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{
+            type: "spring",
+            stiffness: 220,
+            damping: 20,
+            delay: delay + i * 0.08,
+          }}
+        >
+          {seg.t}
+          {i < segments.length - 1 ? "\u00A0" : ""}
+        </motion.span>
+      ))}
+    </Tag>
+  );
+}
+
+const EYEBROW_SEGMENTS = [
+  { t: "What" },
+  { t: "We'll" },
+  { t: "Be" },
+  { t: "Running", accent: true },
+];
+
+const HEADLINE_SEGMENTS = [
+  { t: "Cold", accent: true },
+  { t: "for" },
+  { t: "every cooler", accent: true },
+  { t: "on" },
+  { t: "the coast.", accent: true },
+];
 
 function Products() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -538,41 +581,56 @@ function Products() {
       ref={sectionRef}
       id="services"
       data-ocid="products"
-      className="texture-paper overflow-x-clip bg-cream py-16 md:py-24"
+      className="relative overflow-x-clip bg-gradient-to-b from-[#081B2E] via-[#0C2B48] to-[#081B2E] py-16 md:py-24"
     >
-      {/* Drifting background ice, behind the cards */}
+      {/* Soft edges: the band is bracketed by cream sections, so both ends
+          fade into that rather than cutting off on a hard rectangle. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-cream to-transparent md:h-28"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-cream to-transparent md:h-28"
+      />
+
+      {/* Ambient glass ice drifting behind the cards. Blurred and held at
+          low opacity so it never competes with the card copy. */}
       <div
         className="pointer-events-none absolute inset-0 hidden md:block"
         aria-hidden="true"
       >
         <motion.div
           style={reduceMotion ? undefined : { y: bgY1, rotate: bgRot1 }}
-          className="absolute left-[3%] top-28 w-12 opacity-50"
+          className="ice-float absolute left-[3%] top-28 w-14 opacity-25 blur-[1px]"
         >
           <IceCubeSVG className="h-auto w-full" />
         </motion.div>
         <motion.div
           style={reduceMotion ? undefined : { y: bgY2, rotate: bgRot2 }}
-          className="absolute right-[3%] top-1/2 w-10 opacity-40"
+          className="ice-float absolute right-[4%] top-1/2 w-12 opacity-20 blur-[1.5px]"
+          
         >
           <IceCubeSVG className="h-auto w-full" />
         </motion.div>
         <motion.div
           style={reduceMotion ? undefined : { y: bgY3, rotate: bgRot1 }}
-          className="absolute bottom-8 left-[9%] w-14 opacity-45"
+          className="ice-float absolute bottom-10 left-[9%] w-16 opacity-25 blur-[1px]"
         >
           <IceCubeSVG className="h-auto w-full" />
         </motion.div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <span className="eyebrow inline-flex items-center gap-2">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+        <span className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-[0.22em] text-sky-300">
           <Snowflake className="size-4" />
-          What We'll Be Running
+          <WordPop as="span" segments={EYEBROW_SEGMENTS} />
         </span>
-        <h2 className="script-heading mt-3 max-w-2xl text-4xl sm:text-5xl md:text-6xl">
-          Cold for every cooler on the coast.
-        </h2>
+        <WordPop
+          segments={HEADLINE_SEGMENTS}
+          delay={0.1}
+          className="script-heading mt-3 max-w-3xl text-4xl text-white sm:text-5xl md:text-6xl"
+        />
 
         <div className="mt-14 grid gap-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCTS.map((product, i) => (
@@ -1071,7 +1129,7 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Total Bags / Ice Type" error={errors.totalBags}>
+        <Field label="Total Bags" error={errors.totalBags}>
           <Input
             data-ocid="order.event.bags"
             value={values.totalBags}
@@ -1079,21 +1137,17 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
             placeholder="e.g. 60 bags"
           />
         </Field>
-        <Field label="Ice Type" error={errors.iceType}>
+        <Field label="Bag Type" error={errors.iceType}>
           <Select
             value={values.iceType}
             onValueChange={(v) => set("iceType", v)}
           >
             <SelectTrigger data-ocid="order.event.ice_type" className="w-full">
-              <SelectValue placeholder="Select ice type" />
+              <SelectValue placeholder="Select bag type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Cubed 10lb">Cubed 10lb</SelectItem>
-              <SelectItem value="Cubed 20lb">Cubed 20lb</SelectItem>
-              <SelectItem value="Crushed">Crushed</SelectItem>
-              <SelectItem value="300lb Carving/Cocktail Block">
-                300lb Carving / Cocktail Block
-              </SelectItem>
+              {/* Single launch product: standard 7 lb bags. */}
+              <SelectItem value="7 lb">7 lb</SelectItem>
             </SelectContent>
           </Select>
         </Field>
