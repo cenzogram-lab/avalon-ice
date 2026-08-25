@@ -677,28 +677,23 @@ function Network() {
 
         {/* Narrower than the section so the frame reads as a widget rather
             than a full-width panel. */}
-        <div ref={mapRef} className="mt-10 max-w-4xl">
-          <IceFrame
-            clip="b"
-            fill="cream"
-            shadow="ice"
-            innerClassName="p-1 sm:p-1.5"
-          >
-            <ErrorBoundary label="the delivery map">
-              <Suspense
-                fallback={
-                  <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 sm:h-[27rem] lg:h-[30rem]">
-                    <Loader2 className="size-8 animate-spin text-lagoon" />
-                    <p className="font-body text-sm font-medium text-lagoon">
-                      Charting the shore…
-                    </p>
-                  </div>
-                }
-              >
-                {nearMap && <NJDeliveryMap />}
-              </Suspense>
-            </ErrorBoundary>
-          </IceFrame>
+        {/* No frame: the canvas sits straight on the section background so
+            the landmass reads as part of the page rather than a panel. */}
+        <div ref={mapRef} className="mt-8">
+          <ErrorBoundary label="the delivery map">
+            <Suspense
+              fallback={
+                <div className="flex h-[24rem] w-full flex-col items-center justify-center gap-3 sm:h-[30rem] lg:h-[34rem]">
+                  <Loader2 className="size-8 animate-spin text-lagoon" />
+                  <p className="font-body text-sm font-medium text-lagoon">
+                    Charting the shore…
+                  </p>
+                </div>
+              }
+            >
+              {nearMap && <NJDeliveryMap />}
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </div>
     </section>

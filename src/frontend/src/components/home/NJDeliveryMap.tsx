@@ -359,10 +359,10 @@ type Projection = (lonLat: [number, number]) => [number, number];
  * barrier islands, so Cape May County fills the frame with Atlantic County
  * reaching in from the north.
  */
-const SOUTH_FOCUS_LL: [number, number] = [39.6, -75.02];
+const SOUTH_FOCUS_LL: [number, number] = [39.66, -75.32];
 
 /** Camera zoom for each view, as a multiple of the statewide framing. */
-const SOUTH_ZOOM = 2.18;
+const SOUTH_ZOOM = 2.6;
 /* Below 1 because the isometric angle spreads the state's diagonal wider
    than the flat projection height, so a 1:1 framing clips North Jersey. */
 const STATE_ZOOM = 0.82;
@@ -989,7 +989,7 @@ function HeronBeacon({ space }: { space: MapSpace }) {
 const COUNTIES: { n: string; ll: [number, number]; core?: boolean }[] = [
   { n: "Cape May", ll: [39.08, -74.82], core: true },
   { n: "Atlantic", ll: [39.47, -74.63], core: true },
-  { n: "Cumberland", ll: [39.38, -75.12] },
+  { n: "Cumberland", ll: [39.38, -75.12], core: true },
   { n: "Salem", ll: [39.58, -75.36] },
   { n: "Gloucester", ll: [39.72, -75.14] },
   { n: "Camden", ll: [39.8, -74.96] },
@@ -1000,18 +1000,22 @@ const COUNTIES: { n: string; ll: [number, number]; core?: boolean }[] = [
 ];
 
 /**
- * County name labels. Cape May and Atlantic — the counties the network
- * actually serves — stay in brand navy; the rest sit back in a muted tone
- * so the service area still reads first.
+ * County name labels. The counties the network actually serves stay in
+ * brand navy; the rest sit back in a muted tone so the service area reads
+ * first, and are dropped entirely from the focused view.
  */
 function CountyLabels({
   space,
   visible,
-}: { space: MapSpace; visible: boolean }) {
+  view,
+}: { space: MapSpace; visible: boolean; view: "south" | "state" }) {
   if (!visible) return null;
+  // The focused view names only the counties we actually serve; the
+  // northern ones would just be clutter over a frame they sit outside of.
+  const shown = view === "south" ? COUNTIES.filter((c) => c.core) : COUNTIES;
   return (
     <group>
-      {COUNTIES.map((c) => (
+      {shown.map((c) => (
         <Html
           key={c.n}
           center
@@ -1124,8 +1128,10 @@ function MapScene({
   controlsRef,
   flightRef,
   detail,
+  view,
 }: {
   detail: number;
+  view: "south" | "state";
   geo: GeoData;
   space: MapSpace;
   selected: Town | null;
@@ -1206,7 +1212,7 @@ function MapScene({
         <HeronBeacon space={space} />
       </Suspense>
       <WaterLabels space={space} />
-      <CountyLabels space={space} visible={showCounties} />
+      <CountyLabels space={space} visible={showCounties} view={view} />
 
       <OrbitControls
         ref={controlsRef}
@@ -1344,7 +1350,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="map-touch-surface relative h-[22rem] w-full touch-none overflow-hidden sm:h-[27rem] lg:h-[30rem]">
+    <div className="map-touch-surface relative h-[24rem] w-full touch-none overflow-hidden sm:h-[30rem] lg:h-[34rem]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />
@@ -1363,6 +1369,7 @@ export default function NJDeliveryMap() {
           <color attach="background" args={[CREAM]} />
           <MapScene
             detail={DETAIL_SCALE[view]}
+            view={view}
             geo={geo}
             space={space}
             selected={selected}
