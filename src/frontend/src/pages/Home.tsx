@@ -247,11 +247,7 @@ const PRODUCTS: Product[] = [
     title: "Emergency & Same-Day Shore Run",
     description:
       "Freezer down? Crowd surge? Same-day shore runs across Cape May County and up the coast.",
-    chips: [
-      { label: "SAME-DAY", solid: true },
-      { label: "7 DAYS A WEEK" },
-      { label: "MARINAS" },
-    ],
+    chips: [{ label: "SAME-DAY", solid: true }, { label: "7 DAYS A WEEK" }],
     clip: "d",
   },
 ];
