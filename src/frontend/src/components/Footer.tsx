@@ -63,7 +63,7 @@ export default function Footer() {
               data-ocid="footer.phone"
               className="inline-flex min-h-12 items-center hover:text-navy"
             >
-              Cell: (856) 308-9986
+              (856) 308-9986
             </a>
           </p>
 

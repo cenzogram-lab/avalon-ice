@@ -151,7 +151,7 @@ function Hero() {
             Sales@AvalonIce.co
           </a>
           <span className="text-ice-deep">|</span>
-          <span>Cell: 856-308-9986</span>
+          <span>(856) 308-9986</span>
         </div>
       </div>
     </section>
@@ -205,7 +205,7 @@ function ShowcaseVideo() {
 interface Product {
   title: string;
   description: string;
-  chips: { label: string; solid?: boolean }[];
+  chips: { label: string }[];
   clip: "a" | "b" | "c" | "d";
 }
 
@@ -215,7 +215,7 @@ const PRODUCTS: Product[] = [
     description:
       "Clean, fresh ice produced locally in South Jersey and delivered throughout the shore.",
     chips: [
-      { label: "7 LB BAGS", solid: true },
+      { label: "7 LB BAGS" },
       { label: "LOCALLY MADE" },
       { label: "FRESH & CLEAN" },
     ],
@@ -235,7 +235,7 @@ const PRODUCTS: Product[] = [
   {
     title: "Event & Festival Bulk Supply",
     description:
-      "Pallet-scale bagged ice, scheduled to your run-of-show and restocked on cue.",
+      "Pallet-scale bagged ice, scheduled around your event and restocked as needed.",
     chips: [
       { label: "FESTIVALS" },
       { label: "EVENTS" },
@@ -247,7 +247,7 @@ const PRODUCTS: Product[] = [
     title: "Emergency & Same-Day Shore Run",
     description:
       "Freezer down? Crowd surge? Same-day shore runs across Cape May County and up the coast.",
-    chips: [{ label: "SAME-DAY", solid: true }, { label: "7 DAYS A WEEK" }],
+    chips: [{ label: "SAME-DAY" }, { label: "7 DAYS A WEEK" }],
     clip: "d",
   },
 ];
@@ -481,11 +481,7 @@ function ProductCard({
           {product.chips.map((chip) => (
             <span
               key={chip.label}
-              className={
-                chip.solid
-                  ? "rounded-full border border-sky-300/50 bg-sky-400/25 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-100"
-                  : "rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-300"
-              }
+              className="rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-300"
             >
               {chip.label}
             </span>
@@ -739,7 +735,7 @@ function Network() {
         <ErrorBoundary label="the delivery map">
           <Suspense
             fallback={
-              <div className="flex h-[500px] w-full flex-col items-center justify-center gap-3 md:h-[650px]">
+              <div className="flex h-[340px] w-full flex-col items-center justify-center gap-3 sm:h-[420px] md:h-[500px]">
                 <Loader2 className="size-8 animate-spin text-lagoon" />
                 <p className="font-body text-sm font-medium text-lagoon">
                   Charting the shore…
