@@ -349,17 +349,126 @@ function fallbackGeoData(): GeoData {
 }
 
 /* ------------------------------------------------------------------ */
+/* Region clipping: slice the state mesh down to the service area      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Lat/lon box around the active service region — Cape May and Atlantic
+ * counties plus the immediate Cumberland border. The focused view clips
+ * the real geometry to this, so North and Central Jersey do not exist in
+ * the scene at all rather than merely sitting off-camera.
+ */
+const SOUTH_BBOX = {
+  minLat: 38.82,
+  maxLat: 39.72,
+  minLon: -75.38,
+  maxLon: -74.24,
+} as const;
+
+type Box = typeof SOUTH_BBOX;
+type LL = [number, number]; // [lon, lat]
+
+/**
+ * Sutherland–Hodgman clip of a ring against the box. The box is convex,
+ * which is the algorithm's requirement; the subject ring may be concave.
+ */
+function clipRingToBox(ring: LL[], box: Box): LL[] {
+  const lerpX = (a: LL, b: LL, x: number): LL => [
+    x,
+    a[1] + ((b[1] - a[1]) * (x - a[0])) / (b[0] - a[0]),
+  ];
+  const lerpY = (a: LL, b: LL, y: number): LL => [
+    a[0] + ((b[0] - a[0]) * (y - a[1])) / (b[1] - a[1]),
+    y,
+  ];
+  const clipEdge = (
+    pts: LL[],
+    inside: (p: LL) => boolean,
+    cut: (a: LL, b: LL) => LL,
+  ): LL[] => {
+    const res: LL[] = [];
+    for (let i = 0; i < pts.length; i++) {
+      const cur = pts[i];
+      const prev = pts[(i + pts.length - 1) % pts.length];
+      const curIn = inside(cur);
+      const prevIn = inside(prev);
+      if (curIn) {
+        if (!prevIn) res.push(cut(prev, cur));
+        res.push(cur);
+      } else if (prevIn) {
+        res.push(cut(prev, cur));
+      }
+    }
+    return res;
+  };
+
+  let pts = ring;
+  pts = clipEdge(pts, (p) => p[0] >= box.minLon, (a, b) => lerpX(a, b, box.minLon));
+  if (pts.length < 3) return [];
+  pts = clipEdge(pts, (p) => p[0] <= box.maxLon, (a, b) => lerpX(a, b, box.maxLon));
+  if (pts.length < 3) return [];
+  pts = clipEdge(pts, (p) => p[1] >= box.minLat, (a, b) => lerpY(a, b, box.minLat));
+  if (pts.length < 3) return [];
+  pts = clipEdge(pts, (p) => p[1] <= box.maxLat, (a, b) => lerpY(a, b, box.maxLat));
+  return pts.length < 3 ? [] : pts;
+}
+
+/** Keep only the runs of a polyline that fall inside the box. */
+function clipPolylineToBox(line: LL[], box: Box): LL[][] {
+  const inside = (p: LL) =>
+    p[0] >= box.minLon &&
+    p[0] <= box.maxLon &&
+    p[1] >= box.minLat &&
+    p[1] <= box.maxLat;
+  const out: LL[][] = [];
+  let run: LL[] = [];
+  for (const p of line) {
+    if (inside(p)) {
+      run.push(p);
+    } else if (run.length) {
+      out.push(run);
+      run = [];
+    }
+  }
+  if (run.length) out.push(run);
+  return out.filter((l) => l.length >= 2);
+}
+
+/** The state geometry sliced down to the service region. */
+function clipGeoToBox(geo: GeoData, box: Box): GeoData {
+  const polygons: [number, number][][][] = [];
+  for (const rings of geo.polygons) {
+    const outer = clipRingToBox(rings[0] as LL[], box);
+    if (outer.length < 3) continue;
+    const holes = rings
+      .slice(1)
+      .map((r) => clipRingToBox(r as LL[], box))
+      .filter((r) => r.length >= 3);
+    polygons.push([outer, ...holes]);
+  }
+  const counties = geo.counties.flatMap((l) =>
+    clipPolylineToBox(l as LL[], box),
+  );
+  return { polygons, counties };
+}
+
+/* ------------------------------------------------------------------ */
 /* Mercator projection fitted to the NJ geometry (≈ d3.fitExtent)      */
 /* ------------------------------------------------------------------ */
 
 type Projection = (lonLat: [number, number]) => [number, number];
 
 /**
- * Centre of the South Jersey service view — between Woodbine and the
- * barrier islands, so Cape May County fills the frame with Atlantic County
- * reaching in from the north.
+ * Centre of the South Jersey service view — the middle of the clipped
+ * region, so the cropped landmass sits centred in the frame.
  */
-const SOUTH_FOCUS_LL: [number, number] = [39.66, -75.32];
+const SOUTH_FOCUS_LL: [number, number] = [
+  // North of the region's centre on purpose: the isometric camera lifts
+  // the extruded surface up the screen, so targeting the true centre
+  // pushes the Woodbine beacon off the top edge.
+  (SOUTH_BBOX.minLat + SOUTH_BBOX.maxLat) / 2 + 0.44,
+  (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2,
+];
 
 /** Camera zoom for each view, as a multiple of the statewide framing. */
 const SOUTH_ZOOM = 2.6;
@@ -1264,6 +1373,14 @@ export default function NJDeliveryMap() {
     };
   }, []);
 
+  /** Service-region mesh. Derived from the full geometry but the
+      projection below still fits the whole state, so pins, routes and
+      trucks land in exactly the same world positions in either view. */
+  const southGeo = useMemo(
+    () => (geo ? clipGeoToBox(geo, SOUTH_BBOX) : null),
+    [geo],
+  );
+
   const space = useMemo<MapSpace | null>(() => {
     if (!geo) return null;
     const { proj, cx, cy } = buildProjection(geo.polygons);
@@ -1350,7 +1467,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="map-touch-surface relative h-[24rem] w-full touch-none overflow-hidden sm:h-[30rem] lg:h-[34rem]">
+    <div className="map-touch-surface relative h-[500px] min-h-[500px] w-full touch-none overflow-hidden md:h-[650px] md:min-h-[650px]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />
@@ -1370,7 +1487,7 @@ export default function NJDeliveryMap() {
           <MapScene
             detail={DETAIL_SCALE[view]}
             view={view}
-            geo={geo}
+            geo={view === "south" && southGeo ? southGeo : geo}
             space={space}
             selected={selected}
             showCounties={showCounties}

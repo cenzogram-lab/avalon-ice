@@ -675,26 +675,26 @@ function Network() {
           </p>
         </div>
 
-        {/* Narrower than the section so the frame reads as a widget rather
-            than a full-width panel. */}
-        {/* No frame: the canvas sits straight on the section background so
-            the landmass reads as part of the page rather than a panel. */}
-        <div ref={mapRef} className="mt-8">
-          <ErrorBoundary label="the delivery map">
-            <Suspense
-              fallback={
-                <div className="flex h-[24rem] w-full flex-col items-center justify-center gap-3 sm:h-[30rem] lg:h-[34rem]">
-                  <Loader2 className="size-8 animate-spin text-lagoon" />
-                  <p className="font-body text-sm font-medium text-lagoon">
-                    Charting the shore…
-                  </p>
-                </div>
-              }
-            >
-              {nearMap && <NJDeliveryMap />}
-            </Suspense>
-          </ErrorBoundary>
-        </div>
+      </div>
+
+      {/* Full-bleed and unframed: the canvas breaks out of the text column
+          and sits straight on the section background, so the region reads
+          as a landmass on the page rather than a widget in a panel. */}
+      <div ref={mapRef} className="mt-8 w-full">
+        <ErrorBoundary label="the delivery map">
+          <Suspense
+            fallback={
+              <div className="flex h-[500px] w-full flex-col items-center justify-center gap-3 md:h-[650px]">
+                <Loader2 className="size-8 animate-spin text-lagoon" />
+                <p className="font-body text-sm font-medium text-lagoon">
+                  Charting the shore…
+                </p>
+              </div>
+            }
+          >
+            {nearMap && <NJDeliveryMap />}
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </section>
   );
