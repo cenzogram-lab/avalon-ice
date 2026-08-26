@@ -1385,16 +1385,19 @@ function MapScene({
         enableDamping
         dampingFactor={0.085}
         enablePan={false}
-        enableZoom
+        // Wheel zoom is off on purpose. three's OrbitControls calls
+        // preventDefault on wheel while zoom is enabled, which swallows the
+        // page scroll and traps the reader inside the canvas. The view
+        // toggle and Reset View cover what zoom was for.
+        enableZoom={false}
         enableRotate
         minPolarAngle={0.18}
         maxPolarAngle={Math.PI * 0.46}
-        minZoom={3}
-        maxZoom={40}
         rotateSpeed={0.85}
-        zoomSpeed={0.9}
-        // Touch: one finger orbits the state, two fingers pinch-zoom.
-        touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
+        // Touch: one finger is left to the browser so a swipe scrolls the
+        // page (ONE maps to PAN, which is disabled above, so it is inert);
+        // two fingers orbit.
+        touches={{ ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.ROTATE }}
         mouseButtons={{
           LEFT: THREE.MOUSE.ROTATE,
           MIDDLE: THREE.MOUSE.DOLLY,
@@ -1530,7 +1533,7 @@ export default function NJDeliveryMap() {
   ];
 
   return (
-    <div className="map-touch-surface relative h-[500px] min-h-[500px] w-full touch-none overflow-hidden md:h-[650px] md:min-h-[650px]">
+    <div className="map-touch-surface relative h-[340px] w-full overflow-hidden sm:h-[420px] md:h-[500px] md:max-h-[500px]">
       {!geo || !space ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream">
           <Loader2 className="size-8 animate-spin text-lagoon" />
@@ -1665,7 +1668,7 @@ export default function NJDeliveryMap() {
 
       {/* Hint */}
       <div className="pointer-events-none absolute bottom-3 right-3 hidden rounded-full border-2 border-navy bg-gradient-ice-card px-4 py-2 font-body text-[0.7rem] font-semibold text-lagoon shadow-[0_4px_0_#A3CCD1] sm:block">
-        Pick a town above, or tap a town point · drag to orbit
+        Pick a town above, or tap a town point · drag (two fingers on touch) to orbit
       </div>
 
       {/* Detail card */}

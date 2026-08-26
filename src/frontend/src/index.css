@@ -734,9 +734,12 @@
   /* The 3D map canvas must claim touch gestures so a finger drag orbits
      the state instead of scrolling the page past it. */
   .map-touch-surface canvas {
-    /* react-three-fiber writes touch-action:auto inline on the canvas, so
-       this has to win over an inline style. */
-    touch-action: none !important;
+    /* react-three-fiber writes touch-action inline on the canvas, so this
+       has to win over an inline style. `pan-y` hands vertical swipes back
+       to the browser — with `none` the canvas ate them and the reader got
+       stuck on the map, unable to scroll past it. Multi-touch still
+       reaches the canvas, so two-finger orbit keeps working. */
+    touch-action: pan-y !important;
   }
 }
 
