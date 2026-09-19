@@ -11,17 +11,27 @@ import About from "@/pages/About";
 import { renderWithRouter } from "@/test/renderWithRouter";
 
 describe("About", () => {
-  it("names the heritage chapter's headquarters as Ocean View", async () => {
+  it("renders the rewritten origin, local-advantage and mascot chapters", async () => {
     renderWithRouter(<About />);
 
-    expect(await screen.findByText(/our Ocean View HQ/)).toBeInTheDocument();
+    expect(
+      await screen.findByText("Born in Cape May County."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Built for the Shore, by people who know it."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Why the Egret Carries the Bag"),
+    ).toBeInTheDocument();
   });
 
-  it("renders no user-visible 'Woodbine' reference", async () => {
+  it("renders no user-visible 'Woodbine' or 'heron' reference", async () => {
     const { container } = renderWithRouter(<About />);
 
     // Wait for the page to mount before scanning its text.
-    await screen.findByText(/our Ocean View HQ/);
-    expect(container.textContent ?? "").not.toMatch(/Woodbine/i);
+    await screen.findByText("Born in Cape May County.");
+    const text = container.textContent ?? "";
+    expect(text).not.toMatch(/Woodbine/i);
+    expect(text).not.toMatch(/heron/i);
   });
 });

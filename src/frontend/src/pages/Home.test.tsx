@@ -63,6 +63,18 @@ describe("Home", () => {
     ).toBeInTheDocument();
   });
 
+  it("headlines the network as born in the Pines", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("offline"))),
+    );
+    renderWithRouter(<Home />);
+
+    expect(
+      await screen.findByText("Born in the Pines. Bound for the Shore."),
+    ).toBeInTheDocument();
+  });
+
   it("renders no user-visible 'Woodbine' reference", async () => {
     vi.stubGlobal(
       "fetch",
