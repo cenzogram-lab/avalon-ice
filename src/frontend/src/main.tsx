@@ -48,6 +48,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 // truck gives way to a drawn page rather than an empty one.
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
-    window.setTimeout(hideBootScreen, Math.max(0, MIN_BOOT_MS - performance.now()));
+    window.setTimeout(
+      hideBootScreen,
+      Math.max(0, MIN_BOOT_MS - performance.now()),
+    );
   });
 });

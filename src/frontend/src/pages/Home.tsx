@@ -1,6 +1,6 @@
+import ContactSection from "@/components/ContactSection";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import BrandVideo from "@/components/home/BrandVideo";
-import ContactSection from "@/components/ContactSection";
 import ComingSoonRibbon from "@/components/home/ComingSoonRibbon";
 import IceFrame from "@/components/home/IceFrame";
 import RoadParade from "@/components/home/RoadParade";
@@ -236,11 +236,7 @@ const PRODUCTS: Product[] = [
     title: "Event & Festival Bulk Supply",
     description:
       "Pallet-scale bagged ice, scheduled around your event and restocked as needed.",
-    chips: [
-      { label: "FESTIVALS" },
-      { label: "EVENTS" },
-      { label: "CATERERS" },
-    ],
+    chips: [{ label: "FESTIVALS" }, { label: "EVENTS" }, { label: "CATERERS" }],
     clip: "c",
   },
   {
@@ -602,7 +598,6 @@ function Products() {
         <motion.div
           style={reduceMotion ? undefined : { y: bgY2, rotate: bgRot2 }}
           className="ice-float absolute right-[4%] top-1/2 w-12 opacity-20 blur-[1.5px]"
-          
         >
           <IceCubeSVG className="h-auto w-full" />
         </motion.div>
@@ -715,17 +710,16 @@ function Network() {
         </h2>
         <div className="mt-5 max-w-2xl space-y-4 font-body text-base leading-relaxed text-lagoon">
           <p>
-            Based in Woodbine, Avalon Ice is built to serve the shore. Our
+            Based in Ocean View, Avalon Ice is built to serve the shore. Our
             routes connect Cape May County and surrounding South Jersey
-            communities with reliable, locally produced ice — delivered
-            directly to retailers, marinas, restaurants, bars, and businesses.
+            communities with reliable, locally produced ice — delivered directly
+            to retailers, marinas, restaurants, bars, and businesses.
           </p>
           <p>
             Explore the map to see the communities we’re building our routes
             around.
           </p>
         </div>
-
       </div>
 
       {/* Full-bleed and unframed: the canvas breaks out of the text column

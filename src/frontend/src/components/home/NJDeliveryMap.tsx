@@ -34,7 +34,7 @@ const CREAM = "#F7F2EA";
 const SHELL = "#FDFCF8";
 
 /* ------------------------------------------------------------------ */
-/* Towns, routes (lat/lon) — South Jersey + shore, origin Woodbine HQ  */
+/* Towns, routes (lat/lon) — South Jersey + shore, origin Ocean View HQ  */
 /* ------------------------------------------------------------------ */
 
 interface Town {
@@ -50,7 +50,7 @@ interface Town {
 
 const TOWNS: Town[] = [
   /* --- Origin ------------------------------------------------------ */
-  { n: "Woodbine", ll: [39.2415, -74.8118], hub: true, origin: true },
+  { n: "Ocean View", ll: [39.2415, -74.8118], hub: true, origin: true },
 
   /* --- Core network: Cape May County ------------------------------- */
   { n: "Avalon", ll: [39.1007, -74.7179], hub: true },
@@ -70,7 +70,6 @@ const TOWNS: Town[] = [
   { n: "Marmora", ll: [39.2551, -74.6757] },
   { n: "Tuckahoe", ll: [39.2946, -74.8143] },
   { n: "Seaville", ll: [39.2132, -74.6996] },
-  { n: "Ocean View", ll: [39.1837, -74.7246] },
   { n: "Dennisville", ll: [39.1901, -74.8235] },
   { n: "South Dennis", ll: [39.1673, -74.8468] },
   { n: "Goshen", ll: [39.1368, -74.8877] },
@@ -98,7 +97,7 @@ const TOWNS: Town[] = [
   { n: "Heislerville", ll: [39.2223, -74.9899], cumberland: true },
 ];
 
-/** Woodbine HQ — every route starts here. */
+/** Ocean View HQ — every route starts here. */
 const HQ_LL: [number, number] = [39.2415, -74.8118];
 
 /**
@@ -116,7 +115,7 @@ function routeOf(...names: string[]): [number, number][] {
 
 /** Coastal run north into Atlantic County. */
 const ROUTE_LL = routeOf(
-  "Woodbine",
+  "Ocean View",
   "Tuckahoe",
   "Upper Township",
   "Marmora",
@@ -129,9 +128,8 @@ const ROUTE_LL = routeOf(
 
 /** Barrier-island run down the shore. */
 const SPUR_LL = routeOf(
-  "Woodbine",
-  "Seaville",
   "Ocean View",
+  "Seaville",
   "Sea Isle City",
   "Avalon",
   "Stone Harbor",
@@ -139,7 +137,7 @@ const SPUR_LL = routeOf(
 
 /** Southern run to the Wildwoods and Cape May. */
 const SOUTH_LL = routeOf(
-  "Woodbine",
+  "Ocean View",
   "Clermont",
   "Swainton",
   "Cape May Court House",
@@ -151,7 +149,7 @@ const SOUTH_LL = routeOf(
 
 /** Western run out to the Cumberland County bayshore and up to Vineland. */
 const CUMBERLAND_LL = routeOf(
-  "Woodbine",
+  "Ocean View",
   "Mauricetown",
   "Leesburg",
   "Heislerville",
@@ -163,7 +161,7 @@ const CUMBERLAND_LL = routeOf(
 
 /** Bayshore run down the Delaware Bay side. */
 const BAY_LL = routeOf(
-  "Woodbine",
+  "Ocean View",
   "Dennisville",
   "South Dennis",
   "Goshen",
@@ -447,13 +445,29 @@ function clipRingToBox(ring: LL[], box: Box): LL[] {
   };
 
   let pts = ring;
-  pts = clipEdge(pts, (p) => p[0] >= box.minLon, (a, b) => lerpX(a, b, box.minLon));
+  pts = clipEdge(
+    pts,
+    (p) => p[0] >= box.minLon,
+    (a, b) => lerpX(a, b, box.minLon),
+  );
   if (pts.length < 3) return [];
-  pts = clipEdge(pts, (p) => p[0] <= box.maxLon, (a, b) => lerpX(a, b, box.maxLon));
+  pts = clipEdge(
+    pts,
+    (p) => p[0] <= box.maxLon,
+    (a, b) => lerpX(a, b, box.maxLon),
+  );
   if (pts.length < 3) return [];
-  pts = clipEdge(pts, (p) => p[1] >= box.minLat, (a, b) => lerpY(a, b, box.minLat));
+  pts = clipEdge(
+    pts,
+    (p) => p[1] >= box.minLat,
+    (a, b) => lerpY(a, b, box.minLat),
+  );
   if (pts.length < 3) return [];
-  pts = clipEdge(pts, (p) => p[1] <= box.maxLat, (a, b) => lerpY(a, b, box.maxLat));
+  pts = clipEdge(
+    pts,
+    (p) => p[1] <= box.maxLat,
+    (a, b) => lerpY(a, b, box.maxLat),
+  );
   return pts.length < 3 ? [] : pts;
 }
 
@@ -509,7 +523,7 @@ type Projection = (lonLat: [number, number]) => [number, number];
 const SOUTH_FOCUS_LL: [number, number] = [
   // North of the region's centre on purpose: the isometric camera lifts
   // the extruded surface up the screen, so targeting the true centre
-  // pushes the Woodbine beacon off the top edge.
+  // pushes the Ocean View beacon off the top edge.
   (SOUTH_BBOX.minLat + SOUTH_BBOX.maxLat) / 2 + 0.62,
   // Nudged west so the Cumberland branch sits inside the default frame.
   (SOUTH_BBOX.minLon + SOUTH_BBOX.maxLon) / 2 - 0.1,
@@ -903,7 +917,7 @@ function Truck({
 /**
  * Towns render as skinny red pinpoints stuck in the ice (like the county
  * map art). Selecting one turns its point brand navy and drops the pin
- * tag above it — the Woodbine HQ beacon stays the one prominent marker
+ * tag above it — the Ocean View HQ beacon stays the one prominent marker
  * otherwise.
  */
 function TownPin({
@@ -1032,7 +1046,7 @@ function TownPin({
 
 /**
  * The one prominent marker on the map: a Great Blue Heron teardrop pin
- * hovering over the Woodbine HQ warehouse, with pulsing dispatch rings —
+ * hovering over the Ocean View HQ warehouse, with pulsing dispatch rings —
  * mirroring the brand county-map artwork.
  */
 function HeronBeacon({ space }: { space: MapSpace }) {
@@ -1138,7 +1152,7 @@ function HeronBeacon({ space }: { space: MapSpace }) {
         style={{ pointerEvents: "none" }}
       >
         <div className="pointer-events-none whitespace-nowrap rounded-full border-2 border-navy bg-navy px-4 py-1.5 font-body text-sm font-bold uppercase tracking-wider text-cream-bright shadow-[0_3px_0_#061F33]">
-          Woodbine HQ
+          Ocean View HQ
         </div>
       </Html>
     </group>
@@ -1479,12 +1493,7 @@ export default function NJDeliveryMap() {
   const frameFor = (v: "south" | "state") =>
     v === "south" && space
       ? {
-          target: toWorld(
-            space,
-            SOUTH_FOCUS_LL[1],
-            SOUTH_FOCUS_LL[0],
-            TOP_Y,
-          ),
+          target: toWorld(space, SOUTH_FOCUS_LL[1], SOUTH_FOCUS_LL[0], TOP_Y),
           zoom: SOUTH_ZOOM,
         }
       : { target: new THREE.Vector3(0, 0, 0), zoom: STATE_ZOOM };
@@ -1646,7 +1655,7 @@ export default function NJDeliveryMap() {
       >
         <dl className="font-body text-navy">
           {[
-            { value: "1", label: "origin · Woodbine HQ" },
+            { value: "1", label: "origin · Ocean View HQ" },
             {
               value: String(TOWNS.filter((t) => t.hub).length),
               label: "delivery hubs",
@@ -1668,7 +1677,8 @@ export default function NJDeliveryMap() {
 
       {/* Hint */}
       <div className="pointer-events-none absolute bottom-3 right-3 hidden rounded-full border-2 border-navy bg-gradient-ice-card px-4 py-2 font-body text-[0.7rem] font-semibold text-lagoon shadow-[0_4px_0_#A3CCD1] sm:block">
-        Pick a town above, or tap a town point · drag (two fingers on touch) to orbit
+        Pick a town above, or tap a town point · drag (two fingers on touch) to
+        orbit
       </div>
 
       {/* Detail card */}

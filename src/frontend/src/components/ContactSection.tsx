@@ -19,7 +19,14 @@ import type {
   GeneralFormValues,
   WholesaleFormValues,
 } from "@/lib/types";
-import { AlertTriangle, Check, Loader2, Mail, Phone, Truck } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  Loader2,
+  Mail,
+  Phone,
+  Truck,
+} from "lucide-react";
 import { useState } from "react";
 
 /* ------------------------------------------------------------------ */

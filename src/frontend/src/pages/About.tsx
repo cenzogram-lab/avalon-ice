@@ -21,7 +21,7 @@ const CHAPTERS = [
     icon: Truck,
     eyebrow: "The Heritage",
     title: "A shore route, run by shore people.",
-    body: "Every route still starts at our Woodbine HQ and runs the same coast our families have worked for generations — Cape May and the Wildwoods, Stone Harbor and Sea Isle, Ocean City and up the Parkway to North Jersey. We know which kitchens need a second drop on a holiday weekend, which festivals blow through a pallet before noon, and which marina gate is easier at low tide. That is not a logistics network you buy. It is one you grow up in.",
+    body: "Every route still starts at our Ocean View HQ and runs the same coast our families have worked for generations — Cape May and the Wildwoods, Stone Harbor and Sea Isle, Ocean City and up the Parkway to North Jersey. We know which kitchens need a second drop on a holiday weekend, which festivals blow through a pallet before noon, and which marina gate is easier at low tide. That is not a logistics network you buy. It is one you grow up in.",
     clip: "b" as const,
   },
   {
