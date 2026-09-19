@@ -654,7 +654,7 @@ function ShopTeaser() {
       />
 
       {/* No ribbon here — the band leans on the merch footage itself, so the
-          heron stays visible. The "Coming Soon" mark lives on /shop.
+          egret stays visible. The "Coming Soon" mark lives on /shop.
           w-full matters: the section is a flex container from md up, so
           without it this wrapper shrinks to fit and mx-auto re-centers the
           card instead of holding it to the left. */}
@@ -665,7 +665,7 @@ function ShopTeaser() {
             Shore Gear, Straight From the Ice House
           </h3>
           <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-relaxed text-lagoon sm:text-base">
-            Tees, hoodies, hats, and cooler gear stamped with the heron —
+            Tees, hoodies, hats, and cooler gear stamped with the egret —
             alongside packaged and bulk ice, ready to order the moment the doors
             open.
           </p>
@@ -706,7 +706,7 @@ function Network() {
           The Network
         </span>
         <h2 className="script-heading mt-3 text-4xl sm:text-5xl md:text-6xl">
-          From Avalon to the whole shore.
+          Born in the Pines. Bound for the Shore.
         </h2>
         <div className="mt-5 max-w-2xl space-y-4 font-body text-base leading-relaxed text-lagoon">
           <p>

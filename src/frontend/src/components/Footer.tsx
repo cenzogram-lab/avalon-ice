@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <img
               src="/assets/images/avalon-heron.webp"
-              alt="Avalon Ice heron mascot"
+              alt="Avalon Ice egret mascot"
               className="size-12 rounded-full border-2 border-navy bg-cream-bright"
             />
             <span className="flex items-baseline gap-2 leading-none">

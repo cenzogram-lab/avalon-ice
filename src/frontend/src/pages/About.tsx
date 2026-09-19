@@ -8,34 +8,57 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MASCOT_LOGO_VIDEO } from "@/lib/media";
 import { Link } from "@tanstack/react-router";
 import { Anchor, Feather, MapPin, Truck } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const CHAPTERS = [
+type Chapter = {
+  icon: LucideIcon;
+  eyebrow: string;
+  title: string;
+  /** Optional bold lead line set above the body paragraphs. */
+  lead?: string;
+  body: string[];
+  clip: "a" | "b" | "c";
+};
+
+const CHAPTERS: Chapter[] = [
   {
     icon: MapPin,
     eyebrow: "The Origin",
-    title: "Born in Avalon, Cape May County.",
-    body: "Avalon Ice started where the Parkway runs out and the barrier islands begin. Seven miles of beach, a working harbor, and a summer that triples the population overnight — a town that runs on ice and never had a supplier of its own. So we built one here, on the island, instead of trucking it down from somewhere that has never had to restock a marina at 6 a.m. on the Fourth of July.",
-    clip: "a" as const,
+    title: "Born in Cape May County.",
+    body: [
+      "Avalon Ice started where the Parkway runs out and the barrier islands begin. Seven miles of beach, working harbors, and summers that triple the population overnight — a place where ice is essential and reliable service matters.",
+      "For too long, the Shore has been just another stop on somebody else’s delivery route. We built Avalon Ice to change that. Local production, local people, and a company built around the businesses that keep the Shore running — especially when they need us most.",
+      "Because at 6 a.m. on the Fourth of July, being local matters.",
+    ],
+    clip: "a",
   },
   {
     icon: Truck,
-    eyebrow: "The Heritage",
-    title: "A shore route, run by shore people.",
-    body: "Every route still starts at our Ocean View HQ and runs the same coast our families have worked for generations — Cape May and the Wildwoods, Stone Harbor and Sea Isle, Ocean City and up the Parkway to North Jersey. We know which kitchens need a second drop on a holiday weekend, which festivals blow through a pallet before noon, and which marina gate is easier at low tide. That is not a logistics network you buy. It is one you grow up in.",
-    clip: "b" as const,
+    eyebrow: "The Local Advantage",
+    title: "Built for the Shore, by people who know it.",
+    body: [
+      "The Shore is a different kind of market. A normal summer weekend can turn into a rush without warning, and a holiday weekend can change everything. When a business runs low on ice, waiting until the next scheduled delivery isn’t always an option.",
+      "That’s why we’re building Avalon Ice around the needs of South Jersey businesses. Based in Cape May County, our goal is simple: dependable scheduled deliveries, responsive service when demand spikes, and relationships with the businesses we serve.",
+      "We’re not trying to be another name on a delivery truck. We want to be the local ice company our customers know they can call when they need us.",
+    ],
+    clip: "b",
   },
   {
     icon: Feather,
     eyebrow: "The Mascot",
-    title: "Why a heron carries our ice.",
-    body: "Stand on any back bay marsh in Cape May County at dawn and you will find a Great Blue Heron working the shallows — patient, unhurried, and there before anyone else is awake. It is the bird of these wetlands, and it keeps the same hours we do. Ours carries a bag of ice up the coast because that is the job: show up early, move quietly, deliver cold. He has been on the truck, the bag, and the door ever since.",
-    clip: "c" as const,
+    title: "Why the Egret Carries the Bag",
+    lead: "A familiar sight along the Shore.",
+    body: [
+      "Egrets are a familiar sight around the bays, marshes, and waterways of Cape May County. They’re part of the coastal landscape that surrounds the communities Avalon Ice was built to serve.",
+      "Known for their patience, adaptability, and persistence, egrets are well suited to an environment that is always changing. Those qualities made the egret a natural fit for Avalon Ice — a company built around being dependable, responsive, and ready when our customers need us.",
+    ],
+    clip: "c",
   },
 ];
 
 /**
  * /about — the Avalon Ice origin story, delivery heritage, and the story
- * behind the heron mascot, over the animated brand logo loop.
+ * behind the egret mascot, over the animated brand logo loop.
  */
 export default function About() {
   // One video element per breakpoint: full-bleed backdrop on larger
@@ -111,9 +134,19 @@ export default function About() {
               <h2 className="text-block-navy text-lg leading-snug sm:text-xl">
                 {chapter.title}
               </h2>
-              <p className="font-body text-sm leading-relaxed text-lagoon">
-                {chapter.body}
-              </p>
+              {chapter.lead && (
+                <p className="font-body text-sm font-semibold leading-relaxed text-navy">
+                  {chapter.lead}
+                </p>
+              )}
+              {chapter.body.map((para) => (
+                <p
+                  key={para}
+                  className="font-body text-sm leading-relaxed text-lagoon"
+                >
+                  {para}
+                </p>
+              ))}
             </IceFrame>
           ))}
         </div>

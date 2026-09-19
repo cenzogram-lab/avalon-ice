@@ -50,7 +50,7 @@ interface Town {
 
 const TOWNS: Town[] = [
   /* --- Origin ------------------------------------------------------ */
-  { n: "Ocean View", ll: [39.2415, -74.8118], hub: true, origin: true },
+  { n: "Ocean View", ll: [39.1837, -74.7246], hub: true, origin: true },
 
   /* --- Core network: Cape May County ------------------------------- */
   { n: "Avalon", ll: [39.1007, -74.7179], hub: true },
@@ -97,8 +97,14 @@ const TOWNS: Town[] = [
   { n: "Heislerville", ll: [39.2223, -74.9899], cumberland: true },
 ];
 
-/** Ocean View HQ — every route starts here. */
-const HQ_LL: [number, number] = [39.2415, -74.8118];
+/**
+ * Every route starts at the origin town. Derived rather than declared, so
+ * the beacon can never drift from the pin: renaming or moving the origin in
+ * TOWNS moves the HQ with it.
+ */
+const ORIGIN = TOWNS.find((t) => t.origin);
+if (!ORIGIN) throw new Error("TOWNS must declare one origin town");
+const HQ_LL: [number, number] = ORIGIN.ll;
 
 /**
  * Routes are declared by town name and resolved against TOWNS, so an arc
@@ -116,7 +122,7 @@ function routeOf(...names: string[]): [number, number][] {
 /** Coastal run north into Atlantic County. */
 const ROUTE_LL = routeOf(
   "Ocean View",
-  "Tuckahoe",
+  "Seaville",
   "Upper Township",
   "Marmora",
   "Ocean City",
@@ -129,7 +135,6 @@ const ROUTE_LL = routeOf(
 /** Barrier-island run down the shore. */
 const SPUR_LL = routeOf(
   "Ocean View",
-  "Seaville",
   "Sea Isle City",
   "Avalon",
   "Stone Harbor",
@@ -150,6 +155,7 @@ const SOUTH_LL = routeOf(
 /** Western run out to the Cumberland County bayshore and up to Vineland. */
 const CUMBERLAND_LL = routeOf(
   "Ocean View",
+  "Tuckahoe",
   "Mauricetown",
   "Leesburg",
   "Heislerville",
@@ -1045,7 +1051,7 @@ function TownPin({
 }
 
 /**
- * The one prominent marker on the map: a Great Blue Heron teardrop pin
+ * The one prominent marker on the map: an egret teardrop pin
  * hovering over the Ocean View HQ warehouse, with pulsing dispatch rings —
  * mirroring the brand county-map artwork.
  */
@@ -1116,7 +1122,7 @@ function HeronBeacon({ space }: { space: MapSpace }) {
         </mesh>
       </group>
 
-      {/* Teardrop heron pin floating above the warehouse, wrapped in a
+      {/* Teardrop egret pin floating above the warehouse, wrapped in a
           breathing ice-blue halo so the HQ reads from any zoom level */}
       <group ref={bobRef}>
         <Billboard position={[0, 18, 0]}>
