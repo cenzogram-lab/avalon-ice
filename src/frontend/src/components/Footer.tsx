@@ -88,8 +88,36 @@ export default function Footer() {
       <RoadParade />
 
       <div className="border-t border-navy/25">
-        <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 font-body text-xs font-bold uppercase tracking-[0.14em] text-lagoon sm:px-6">
-          <span>© 2026 Avalon Ice · Cape May County, N.J.</span>
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-x-5 gap-y-1 px-4 pt-4 font-body text-xs font-bold uppercase tracking-[0.14em] text-lagoon sm:flex-row sm:flex-wrap sm:px-6 md:py-4">
+          <span className="py-1 text-center">
+            © 2026 Avalon Ice · Cape May County, N.J.
+          </span>
+          <nav
+            aria-label="Legal"
+            className="flex items-center gap-1"
+            data-ocid="footer.legal"
+          >
+            <span aria-hidden="true" className="hidden text-navy/30 sm:inline">
+              ·
+            </span>
+            <Link
+              to="/privacy"
+              data-ocid="footer.privacy_link"
+              className="inline-flex min-h-11 items-center px-2 underline-offset-4 transition-colors hover:text-navy hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            <span aria-hidden="true" className="text-navy/30">
+              ·
+            </span>
+            <Link
+              to="/terms"
+              data-ocid="footer.terms_link"
+              className="inline-flex min-h-11 items-center px-2 underline-offset-4 transition-colors hover:text-navy hover:underline"
+            >
+              Terms of Service
+            </Link>
+          </nav>
         </div>
         {/* Extra bottom padding on mobile keeps the fixed contact CTA clear */}
         <div className="flex items-center justify-center pb-24 text-center md:pb-4">
