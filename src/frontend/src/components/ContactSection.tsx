@@ -105,6 +105,7 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
       <Field label="Message" error={errors.message}>
         <Textarea
           data-ocid="order.general.message"
+          maxLength={5000}
           value={values.message}
           onChange={(e) => set("message", e.target.value)}
           placeholder="Tell us what you need…"

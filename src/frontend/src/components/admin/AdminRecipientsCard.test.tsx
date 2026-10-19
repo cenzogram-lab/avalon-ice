@@ -149,6 +149,40 @@ describe("AdminRecipientsCard", () => {
     ).toBeInTheDocument();
   });
 
+  it("re-sends a setup code to a pending admin", async () => {
+    const user = userEvent.setup();
+    actor.addAdminEmail.mockResolvedValue({
+      __kind__: "ok",
+      ok: {
+        email: "dispatcher@avalonice.co",
+        setupCode: "NEWCO-DE234",
+        expiresAt: 1_900_000_000_000_000_000n,
+        emailed: true,
+      },
+    });
+    renderCard();
+
+    expect(
+      screen.queryByRole("button", {
+        name: "Send a new setup code to Sales@AvalonIce.co",
+      }),
+    ).not.toBeInTheDocument();
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Send a new setup code to dispatcher@avalonice.co",
+      }),
+    );
+    await waitFor(() =>
+      expect(actor.addAdminEmail).toHaveBeenCalledWith(
+        TOKEN,
+        "dispatcher@avalonice.co",
+      ),
+    );
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByText("NEWCO-DE234")).toBeInTheDocument();
+    expect(within(dialog).getByText(/We emailed them/)).toBeInTheDocument();
+  });
+
   it("rejects an invalid address without calling the backend", async () => {
     const user = userEvent.setup();
     renderCard();

@@ -39,12 +39,23 @@ mixin (inquiries : List.List<Types.Inquiry>, admins : AdminTypes.AdminState) {
   // stored before any notification is attempted, so a mail failure can
   // never lose a lead.
   public shared func submitInquiry(inquiry : Types.Inquiry) : async Nat {
+    switch (InquiriesLib.validate(inquiry)) {
+      case (?problem) Runtime.trap("Inquiry rejected: " # problem);
+      case null {};
+    };
     let id = InquiriesLib.submit(inquiries, inquiry);
     switch (InquiriesLib.get(inquiries, id)) {
       case (?stored) ignore notifyAdmins(stored);
       case null {};
     };
     id;
+  };
+
+  // How many inquiries exist. The dashboard polls this cheap call and only
+  // re-reads the full list when the number changes.
+  public query func getInquiryCount(token : Text) : async Nat {
+    requireAdmin(token);
+    InquiriesLib.count(inquiries);
   };
 
   // All inquiries, for the dashboard and its CSV/JSON export.

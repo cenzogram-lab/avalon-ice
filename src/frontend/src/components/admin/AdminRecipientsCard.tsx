@@ -41,6 +41,7 @@ import {
   Copy,
   Loader2,
   MailCheck,
+  RotateCw,
   Send,
   TriangleAlert,
   UserPlus,
@@ -92,6 +93,15 @@ export default function AdminRecipientsCard({
         setInvite(result);
       },
       onError: (err) => toast.error(err.message || "Could not add admin."),
+    });
+  };
+
+  // Adding a pending admin again issues a fresh code and voids the old one.
+  const resendCode = (email: string) => {
+    addAdmin.mutate(email, {
+      onSuccess: (result) => setInvite(result),
+      onError: (err) =>
+        toast.error(err.message || "Could not send a new code."),
     });
   };
 
@@ -167,6 +177,21 @@ export default function AdminRecipientsCard({
                     </Badge>
                   )}
                   {isYou && <Badge variant="secondary">You</Badge>}
+                  {pending && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-primary"
+                      aria-label={`Send a new setup code to ${admin.email}`}
+                      title="Send a new setup code"
+                      disabled={addAdmin.isPending}
+                      data-ocid="admin.recipient_resend"
+                      onClick={() => resendCode(admin.email)}
+                    >
+                      <RotateCw className="size-4" />
+                    </Button>
+                  )}
                   {admin.isPrimary ? (
                     <span className="w-1" aria-hidden="true" />
                   ) : (

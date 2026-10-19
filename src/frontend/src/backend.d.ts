@@ -194,12 +194,14 @@ export interface backendInterface {
     getAdminSession(token: string): Promise<AdminSessionInfo | null>;
     getCallerUserRole(): Promise<UserRole>;
     getInquiry(id: bigint): Promise<Inquiry | null>;
+    getInquiryCount(token: string): Promise<bigint>;
     getNotificationStatus(token: string): Promise<Result_1>;
     isAuthenticated(token: string): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     listInquiries(token: string): Promise<Array<Inquiry>>;
     login(email: string, password: string): Promise<string | null>;
     logout(token: string): Promise<void>;
+    needsInitialSetup(): Promise<boolean>;
     removeAdminEmail(token: string, targetEmail: string): Promise<Result>;
     schema(): Promise<string>;
     sendTestNotification(token: string): Promise<Result>;

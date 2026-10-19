@@ -76,6 +76,15 @@ mixin (admins : Types.AdminState) {
     ?{ email = account.email; isPrimary = account.isPrimary };
   };
 
+  // Whether the primary account still needs its first password, so the
+  // sign-in screen only offers setup while it can actually succeed.
+  public query func needsInitialSetup() : async Bool {
+    switch (admins.accounts.get(Admins.normalizeEmail(Admins.PRIMARY_EMAIL))) {
+      case (?account) account.passwordHash == null;
+      case null false;
+    };
+  };
+
   // First-run setup for the primary account. Only works while that
   // account has no password; added admins activate with a setup code.
   public shared func setupPassword(password : Text) : async Bool {

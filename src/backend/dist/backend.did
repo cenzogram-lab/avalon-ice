@@ -159,12 +159,14 @@ service : {
   getAdminSession: (token: text) -> (opt AdminSessionInfo) query;
   getCallerUserRole: () -> (UserRole) query;
   getInquiry: (id: nat) -> (opt Inquiry) query;
+  getInquiryCount: (token: text) -> (nat) query;
   getNotificationStatus: (token: text) -> (Result_1) query;
   isAuthenticated: (token: text) -> (bool) query;
   isCallerAdmin: () -> (bool) query;
   listInquiries: (token: text) -> (vec Inquiry) query;
   login: (email: text, password: text) -> (opt text);
   logout: (token: text) -> ();
+  needsInitialSetup: () -> (bool) query;
   removeAdminEmail: (token: text, targetEmail: text) -> (Result);
   schema: () -> (text) query;
   sendTestNotification: (token: text) -> (Result);

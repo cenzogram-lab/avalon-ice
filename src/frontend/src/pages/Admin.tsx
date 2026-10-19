@@ -48,6 +48,7 @@ import {
   useIsAuthenticated,
   useLogin,
   useLogout,
+  useNeedsInitialSetup,
   useSetupPassword,
   useUpdateInquiryStatus,
   useVerifyAdminAccess,
@@ -73,13 +74,37 @@ import {
   ShieldCheck,
   Snowflake,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 /** The primary (owner) admin account; additional admins are added in the dashboard. */
 const ADMIN_EMAIL = "Sales@AvalonIce.co";
 
 type AuthMode = "login" | "activate" | "setup";
+
+/**
+ * The session token survives a reload of this tab (so an admin can leave
+ * the dashboard open for alerts) but not the tab itself: sessionStorage is
+ * per tab and cleared when it closes.
+ */
+const SESSION_KEY = "avalon-ice:admin-session";
+
+function readStoredToken(): string | null {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function storeToken(token: string | null) {
+  try {
+    if (token) window.sessionStorage.setItem(SESSION_KEY, token);
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // Storage blocked: the session simply won't survive a reload.
+  }
+}
 
 function formatDate(ts: bigint): string {
   const ms = Number(ts / 1_000_000n);
@@ -145,9 +170,22 @@ export default function Admin() {
 }
 
 function AdminContent() {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setTokenState] = useState<string | null>(readStoredToken);
+  const setToken = useCallback((next: string | null) => {
+    storeToken(next);
+    setTokenState(next);
+  }, []);
   const { data: isAuthenticated, isLoading: authLoading } =
     useIsAuthenticated(token);
+
+  // A session that stopped being valid (expired, or this admin was removed)
+  // is forgotten, which returns to the sign-in screen.
+  useEffect(() => {
+    if (token && isAuthenticated === false) {
+      setToken(null);
+      toast.info("Your admin session ended. Sign in again to continue.");
+    }
+  }, [token, isAuthenticated, setToken]);
 
   if (!token) {
     return <AuthGate onToken={setToken} />;
@@ -176,6 +214,9 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
   // Login is the everyday case — setup runs once, on the first deploy —
   // so a returning admin lands straight on the form they actually need.
   const [mode, setMode] = useState<AuthMode>("login");
+  // First-time setup only works until the primary password exists, so the
+  // tab is only offered while it can succeed.
+  const { data: needsSetup = false } = useNeedsInitialSetup();
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-4 py-16">
@@ -209,16 +250,20 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
         </CardHeader>
         <CardContent>
           <Tabs value={mode} onValueChange={(v) => setMode(v as AuthMode)}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList
+              className={`grid w-full ${needsSetup ? "grid-cols-3" : "grid-cols-2"}`}
+            >
               <TabsTrigger value="login" data-ocid="admin.login_tab">
                 Login
               </TabsTrigger>
               <TabsTrigger value="activate" data-ocid="admin.activate_tab">
                 Activate invite
               </TabsTrigger>
-              <TabsTrigger value="setup" data-ocid="admin.setup_tab">
-                Set up
-              </TabsTrigger>
+              {needsSetup && (
+                <TabsTrigger value="setup" data-ocid="admin.setup_tab">
+                  Set up
+                </TabsTrigger>
+              )}
             </TabsList>
             <TabsContent value="login">
               <LoginForm onToken={onToken} />
@@ -226,9 +271,11 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
             <TabsContent value="activate">
               <ActivateInviteForm onDone={() => setMode("login")} />
             </TabsContent>
-            <TabsContent value="setup">
-              <SetupPasswordForm onDone={() => setMode("login")} />
-            </TabsContent>
+            {needsSetup && (
+              <TabsContent value="setup">
+                <SetupPasswordForm onDone={() => setMode("login")} />
+              </TabsContent>
+            )}
           </Tabs>
         </CardContent>
       </Card>
@@ -522,14 +569,12 @@ function Dashboard({
   }, [inquiries, filter, search]);
 
   const handleLogout = () => {
+    // Sign out locally either way; the server session also expires on its own.
     logout.mutate(token, {
-      onSuccess: () => {
-        toast.success("Signed out.");
-        onLogout();
-      },
-      onError: () => {
-        toast.error("Could not sign out.");
-      },
+      onSuccess: () => toast.success("Signed out."),
+      onError: () =>
+        toast.error("Signed out here, but the server didn't confirm it."),
+      onSettled: () => onLogout(),
     });
   };
 

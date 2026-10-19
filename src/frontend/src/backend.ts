@@ -243,12 +243,14 @@ export interface backendInterface {
     getAdminSession(token: string): Promise<AdminSessionInfo | null>;
     getCallerUserRole(): Promise<UserRole>;
     getInquiry(id: bigint): Promise<Inquiry | null>;
+    getInquiryCount(token: string): Promise<bigint>;
     getNotificationStatus(token: string): Promise<Result_1>;
     isAuthenticated(token: string): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     listInquiries(token: string): Promise<Array<Inquiry>>;
     login(email: string, password: string): Promise<string | null>;
     logout(token: string): Promise<void>;
+    needsInitialSetup(): Promise<boolean>;
     removeAdminEmail(token: string, targetEmail: string): Promise<Result>;
     schema(): Promise<string>;
     sendTestNotification(token: string): Promise<Result>;
@@ -429,6 +431,20 @@ export class Backend implements backendInterface {
             return from_candid_opt_n37(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getInquiryCount(arg0: string): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getInquiryCount(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getInquiryCount(arg0);
+            return result;
+        }
+    }
     async getNotificationStatus(arg0: string): Promise<Result_1> {
         if (this.processError) {
             try {
@@ -510,6 +526,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.logout(arg0);
+            return result;
+        }
+    }
+    async needsInitialSetup(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.needsInitialSetup();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.needsInitialSetup();
             return result;
         }
     }
