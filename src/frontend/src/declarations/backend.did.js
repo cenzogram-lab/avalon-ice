@@ -29,7 +29,19 @@ export const Error = IDL.Variant({
     'expected' : IDL.Vec(IDL.Text),
   }),
 });
-export const Result__1 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+export const Result_4 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+export const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
+export const AdminInviteResult = IDL.Record({
+  'emailed' : IDL.Bool,
+  'expiresAt' : IDL.Int,
+  'email' : IDL.Text,
+  'setupCode' : IDL.Text,
+  'emailError' : IDL.Opt(IDL.Text),
+});
+export const Result_3 = IDL.Variant({
+  'ok' : AdminInviteResult,
+  'err' : IDL.Text,
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
@@ -44,7 +56,7 @@ export const Value = IDL.Variant({
   'text' : IDL.Text,
 });
 export const Cell = IDL.Record({ 'value' : Value, 'name' : IDL.Text });
-export const Result = IDL.Record({
+export const Result__1 = IDL.Record({
   'hasMore' : IDL.Bool,
   'rows' : IDL.Vec(IDL.Vec(Cell)),
 });
@@ -86,28 +98,79 @@ export const Inquiry = IDL.Record({
   'timestamp' : IDL.Int,
   'phone' : IDL.Text,
 });
+export const AdminStatus = IDL.Variant({
+  'active' : IDL.Null,
+  'pending' : IDL.Null,
+});
+export const AdminEmailInfo = IDL.Record({
+  'status' : AdminStatus,
+  'email' : IDL.Text,
+  'isPrimary' : IDL.Bool,
+  'addedAt' : IDL.Int,
+  'addedBy' : IDL.Text,
+});
+export const Result_2 = IDL.Variant({
+  'ok' : IDL.Vec(AdminEmailInfo),
+  'err' : IDL.Text,
+});
+export const AdminSessionInfo = IDL.Record({
+  'email' : IDL.Text,
+  'isPrimary' : IDL.Bool,
+});
+export const NotificationStatus = IDL.Record({
+  'lastSuccessAt' : IDL.Opt(IDL.Int),
+  'lastAttemptAt' : IDL.Opt(IDL.Int),
+  'recipients' : IDL.Vec(IDL.Text),
+  'lastError' : IDL.Opt(IDL.Text),
+});
+export const Result_1 = IDL.Variant({
+  'ok' : NotificationStatus,
+  'err' : IDL.Text,
+});
 
 export const idlService = IDL.Service({
   '_initialize_access_control' : IDL.Func([], [], []),
-  '_internet_identity_sign_in_finish' : IDL.Func([], [Result__1], []),
+  '_internet_identity_sign_in_finish' : IDL.Func([], [Result_4], []),
   '_internet_identity_sign_in_start' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
+  'activateAdminAccount' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text],
+      [Result],
+      [],
+    ),
+  'addAdminEmail' : IDL.Func([IDL.Text, IDL.Text], [Result_3], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'execute' : IDL.Func([IDL.Text], [Result], ['query']),
+  'execute' : IDL.Func([IDL.Text], [Result__1], ['query']),
   'exportInquiries' : IDL.Func([], [IDL.Vec(Inquiry)], ['query']),
+  'getAdminEmails' : IDL.Func([IDL.Text], [Result_2], ['query']),
+  'getAdminSession' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(AdminSessionInfo)],
+      ['query'],
+    ),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getInquiry' : IDL.Func([IDL.Nat], [IDL.Opt(Inquiry)], ['query']),
+  'getNotificationStatus' : IDL.Func([IDL.Text], [Result_1], ['query']),
   'isAuthenticated' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'listInquiries' : IDL.Func([IDL.Text], [IDL.Vec(Inquiry)], ['query']),
   'login' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
   'logout' : IDL.Func([IDL.Text], [], []),
+  'removeAdminEmail' : IDL.Func([IDL.Text, IDL.Text], [Result], []),
   'schema' : IDL.Func([], [IDL.Text], ['query']),
+  'sendTestNotification' : IDL.Func([IDL.Text], [Result], []),
   'setupPassword' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'submitInquiry' : IDL.Func([Inquiry], [IDL.Nat], []),
+  'updateInquiry' : IDL.Func(
+      [IDL.Text, IDL.Nat, InquiryStatus, IDL.Opt(IDL.Text)],
+      [IDL.Opt(Inquiry)],
+      [],
+    ),
   'updateInquiryStatus' : IDL.Func(
       [IDL.Nat, InquiryStatus, IDL.Opt(IDL.Text)],
       [IDL.Opt(Inquiry)],
       [],
     ),
+  'verifyAdminAccess' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
 });
 
 export const idlInitArgs = [];
@@ -134,7 +197,16 @@ export const idlFactory = ({ IDL }) => {
       'expected' : IDL.Vec(IDL.Text),
     }),
   });
-  const Result__1 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+  const Result_4 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
+  const AdminInviteResult = IDL.Record({
+    'emailed' : IDL.Bool,
+    'expiresAt' : IDL.Int,
+    'email' : IDL.Text,
+    'setupCode' : IDL.Text,
+    'emailError' : IDL.Opt(IDL.Text),
+  });
+  const Result_3 = IDL.Variant({ 'ok' : AdminInviteResult, 'err' : IDL.Text });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
@@ -149,7 +221,7 @@ export const idlFactory = ({ IDL }) => {
     'text' : IDL.Text,
   });
   const Cell = IDL.Record({ 'value' : Value, 'name' : IDL.Text });
-  const Result = IDL.Record({
+  const Result__1 = IDL.Record({
     'hasMore' : IDL.Bool,
     'rows' : IDL.Vec(IDL.Vec(Cell)),
   });
@@ -191,28 +263,76 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : IDL.Int,
     'phone' : IDL.Text,
   });
+  const AdminStatus = IDL.Variant({
+    'active' : IDL.Null,
+    'pending' : IDL.Null,
+  });
+  const AdminEmailInfo = IDL.Record({
+    'status' : AdminStatus,
+    'email' : IDL.Text,
+    'isPrimary' : IDL.Bool,
+    'addedAt' : IDL.Int,
+    'addedBy' : IDL.Text,
+  });
+  const Result_2 = IDL.Variant({
+    'ok' : IDL.Vec(AdminEmailInfo),
+    'err' : IDL.Text,
+  });
+  const AdminSessionInfo = IDL.Record({
+    'email' : IDL.Text,
+    'isPrimary' : IDL.Bool,
+  });
+  const NotificationStatus = IDL.Record({
+    'lastSuccessAt' : IDL.Opt(IDL.Int),
+    'lastAttemptAt' : IDL.Opt(IDL.Int),
+    'recipients' : IDL.Vec(IDL.Text),
+    'lastError' : IDL.Opt(IDL.Text),
+  });
+  const Result_1 = IDL.Variant({ 'ok' : NotificationStatus, 'err' : IDL.Text });
   
   return IDL.Service({
     '_initialize_access_control' : IDL.Func([], [], []),
-    '_internet_identity_sign_in_finish' : IDL.Func([], [Result__1], []),
+    '_internet_identity_sign_in_finish' : IDL.Func([], [Result_4], []),
     '_internet_identity_sign_in_start' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
+    'activateAdminAccount' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text],
+        [Result],
+        [],
+      ),
+    'addAdminEmail' : IDL.Func([IDL.Text, IDL.Text], [Result_3], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'execute' : IDL.Func([IDL.Text], [Result], ['query']),
+    'execute' : IDL.Func([IDL.Text], [Result__1], ['query']),
     'exportInquiries' : IDL.Func([], [IDL.Vec(Inquiry)], ['query']),
+    'getAdminEmails' : IDL.Func([IDL.Text], [Result_2], ['query']),
+    'getAdminSession' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(AdminSessionInfo)],
+        ['query'],
+      ),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getInquiry' : IDL.Func([IDL.Nat], [IDL.Opt(Inquiry)], ['query']),
+    'getNotificationStatus' : IDL.Func([IDL.Text], [Result_1], ['query']),
     'isAuthenticated' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'listInquiries' : IDL.Func([IDL.Text], [IDL.Vec(Inquiry)], ['query']),
     'login' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
     'logout' : IDL.Func([IDL.Text], [], []),
+    'removeAdminEmail' : IDL.Func([IDL.Text, IDL.Text], [Result], []),
     'schema' : IDL.Func([], [IDL.Text], ['query']),
+    'sendTestNotification' : IDL.Func([IDL.Text], [Result], []),
     'setupPassword' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'submitInquiry' : IDL.Func([Inquiry], [IDL.Nat], []),
+    'updateInquiry' : IDL.Func(
+        [IDL.Text, IDL.Nat, InquiryStatus, IDL.Opt(IDL.Text)],
+        [IDL.Opt(Inquiry)],
+        [],
+      ),
     'updateInquiryStatus' : IDL.Func(
         [IDL.Nat, InquiryStatus, IDL.Opt(IDL.Text)],
         [IDL.Opt(Inquiry)],
         [],
       ),
+    'verifyAdminAccess' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
   });
 };
 

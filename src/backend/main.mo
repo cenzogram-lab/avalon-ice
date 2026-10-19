@@ -3,7 +3,9 @@ import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import Expose "mo:caffeineai-oql/Expose";
 import List "mo:core/List";
 import Types "types/inquiries";
+import AdminTypes "types/admins";
 import InquiriesApi "mixins/inquiries-api";
+import AdminsApi "mixins/admins-api";
 import ListEntity "mo:caffeineai-oql/ListEntity";
 import Entity "mo:caffeineai-oql/Entity";
 import NatValue "mo:caffeineai-oql/NatValue";
@@ -14,10 +16,12 @@ import BoolValue "mo:caffeineai-oql/BoolValue";
 actor {
   let accessControlState : AccessControl.AccessControlState;
   let inquiries : List.List<Types.Inquiry>;
-  let auth : Types.AuthState;
+  // Admin accounts, sessions, invitations and notification bookkeeping.
+  let admins : AdminTypes.AdminState;
 
   include MixinAuthorization(accessControlState, null);
-  include InquiriesApi(inquiries, auth);
+  include AdminsApi(admins);
+  include InquiriesApi(inquiries, admins);
   include Expose({
     entities = [
       // Inquiry data is admin-only: the controller (Sales@AvalonIce.co) reads

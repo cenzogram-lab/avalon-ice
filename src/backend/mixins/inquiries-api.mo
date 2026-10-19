@@ -2,150 +2,75 @@ import List "mo:core/List";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
 import Time "mo:core/Time";
-import Int "mo:core/Int";
-import Text "mo:core/Text";
-import Sha256 "mo:sha2/Sha256";
-import Blob "mo:core/Blob";
+import AdminTypes "../types/admins";
 import Types "../types/inquiries";
+import Admins "../lib/admins";
 import InquiriesLib "../lib/inquiries";
+import Notifications "../lib/notifications";
 
-mixin (inquiries : List.List<Types.Inquiry>, auth : Types.AuthState) {
-  // SHA-256 hash of a password, hex-encoded.
-  private func hashPassword(password : Text) : Text {
-    let digest = Sha256.fromBlob(password.encodeUtf8());
-    toHex(digest.toArray())
-  };
-
-  // Hex-encode a byte array.
-  private func toHex(bytes : [Nat8]) : Text {
-    let hexChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
-    var out = "";
-    for (byte in bytes.values()) {
-      let hi = byte / 16;
-      let lo = byte % 16;
-      out #= hexChars[Nat8.toNat(hi)] # hexChars[Nat8.toNat(lo)];
-    };
-    out
-  };
-
-  // Generate a SHA-256 session token from the caller principal and current time.
-  private func generateToken(caller : Principal) : Text {
-    let seed = caller.toText() # ":" # Time.now().toText();
-    let digest = Sha256.fromBlob(seed.encodeUtf8());
-    toHex(digest.toArray())
-  };
-
-  // Whether any unexpired admin session exists.
-  private func hasActiveSession() : Bool {
-    let now = Time.now();
-    for ((_, expiry) in auth.sessions.entries()) {
-      if (now < expiry) {
-        return true;
-      };
-    };
-    false
-  };
-
-  // Drop expired session tokens so the session map cannot grow unboundedly.
-  private func purgeExpiredSessions() {
-    let now = Time.now();
-    let expired = List.empty<Text>();
-    for ((token, expiry) in auth.sessions.entries()) {
-      if (expiry <= now) {
-        expired.add(token);
-      };
-    };
-    for (token in expired.values()) {
-      auth.sessions.remove(token);
+mixin (inquiries : List.List<Types.Inquiry>, admins : AdminTypes.AdminState) {
+  // Session-checked admin access. The anonymous frontend has no meaningful
+  // caller principal, so authority comes from the session token alone.
+  func requireAdmin(token : Text) {
+    if (Admins.sessionEmail(admins, token, Time.now()) == null) {
+      Runtime.trap("Unauthorized");
     };
   };
 
-  // Whether the given caller is the authenticated admin. Requires both the
-  // recorded admin principal and a live (unexpired) session, so admin access
-  // lapses together with the 24h token expiry instead of persisting forever.
-  private func isAdmin(caller : Principal) : Bool {
-    switch (auth.adminPrincipal) {
-      case (?admin) { admin.equal(caller) and hasActiveSession() };
-      case null { false };
-    }
+  // The retired token-less endpoints stay callable by canister controllers
+  // (platform tooling) but no longer by the public.
+  func requireController(caller : Principal) {
+    if (not caller.isController()) {
+      Runtime.trap("Unauthorized: sign in at /admin");
+    };
   };
 
-  // Submit a new inquiry; returns the assigned reference id.
-  public shared ({ caller }) func submitInquiry(inquiry : Types.Inquiry) : async Nat {
-    ignore caller;
-    InquiriesLib.submit(inquiries, inquiry)
+  // Email every active admin about a new inquiry. Runs as its own message,
+  // so the visitor's submission returns without waiting on the mail outcall.
+  func notifyAdmins(inquiry : Types.Inquiry) : async () {
+    ignore await Notifications.sendToAdmins(
+      admins,
+      Notifications.inquirySubject(inquiry),
+      Notifications.inquiryBody(inquiry),
+    );
   };
 
-  // Fetch a single inquiry by id.
+  // Submit a new inquiry; returns the assigned reference id. The record is
+  // stored before any notification is attempted, so a mail failure can
+  // never lose a lead.
+  public shared func submitInquiry(inquiry : Types.Inquiry) : async Nat {
+    let id = InquiriesLib.submit(inquiries, inquiry);
+    switch (InquiriesLib.get(inquiries, id)) {
+      case (?stored) ignore notifyAdmins(stored);
+      case null {};
+    };
+    id;
+  };
+
+  // All inquiries, for the dashboard and its CSV/JSON export.
+  public query func listInquiries(token : Text) : async [Types.Inquiry] {
+    requireAdmin(token);
+    InquiriesLib.export(inquiries);
+  };
+
+  public shared func updateInquiry(token : Text, id : Nat, status : Types.InquiryStatus, notes : ?Text) : async ?Types.Inquiry {
+    requireAdmin(token);
+    InquiriesLib.update(inquiries, id, status, notes);
+  };
+
+  // Retired: superseded by the token-checked endpoints above.
   public query ({ caller }) func getInquiry(id : Nat) : async ?Types.Inquiry {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized");
-    };
-    InquiriesLib.get(inquiries, id)
+    requireController(caller);
+    InquiriesLib.get(inquiries, id);
   };
 
-  // Update an inquiry's status and notes.
   public shared ({ caller }) func updateInquiryStatus(id : Nat, status : Types.InquiryStatus, notes : ?Text) : async ?Types.Inquiry {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized");
-    };
-    InquiriesLib.update(inquiries, id, status, notes)
+    requireController(caller);
+    InquiriesLib.update(inquiries, id, status, notes);
   };
 
-  // Export all inquiries (for CSV/JSON export).
   public query ({ caller }) func exportInquiries() : async [Types.Inquiry] {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized");
-    };
-    InquiriesLib.export(inquiries)
-  };
-
-  // Admin auth: set the master password on first deploy.
-  public shared ({ caller }) func setupPassword(password : Text) : async Bool {
-    ignore caller;
-    switch (auth.passwordHash) {
-      case (?_) { false };
-      case null {
-        auth.passwordHash := ?hashPassword(password);
-        auth.adminPrincipal := ?caller;
-        true
-      };
-    }
-  };
-
-  // Admin auth: authenticate email + password, returning a session token.
-  public shared ({ caller }) func login(email : Text, password : Text) : async ?Text {
-    ignore caller;
-    if (email != "Sales@AvalonIce.co") {
-      return null;
-    };
-    switch (auth.passwordHash) {
-      case (?stored) {
-        if (stored != hashPassword(password)) {
-          return null;
-        };
-        purgeExpiredSessions();
-        let token = generateToken(caller);
-        auth.sessions.add(token, Time.now() + 24 * 3600 * 1000000000);
-        auth.adminPrincipal := ?caller;
-        ?token
-      };
-      case null { null };
-    }
-  };
-
-  // Admin auth: invalidate a session token.
-  public shared ({ caller }) func logout(token : Text) : async () {
-    ignore caller;
-    auth.sessions.remove(token);
-    auth.adminPrincipal := null;
-  };
-
-  // Admin auth: check whether a session token is valid.
-  public query func isAuthenticated(token : Text) : async Bool {
-    switch (auth.sessions.get(token)) {
-      case (?expiry) { Time.now() < expiry };
-      case null { false };
-    }
+    requireController(caller);
+    InquiriesLib.export(inquiries);
   };
 };
