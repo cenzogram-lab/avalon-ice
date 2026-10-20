@@ -31,9 +31,9 @@ async function expectTocMatchesSections(container: HTMLElement) {
 }
 
 describe.each([
-  ["Privacy Policy", PrivacyPolicy, "Privacy Policy · Avalon Ice"],
-  ["Terms of Service", TermsOfService, "Terms of Service · Avalon Ice"],
-] as const)("%s page", (_name, Page, tabTitle) => {
+  ["Privacy Policy", PrivacyPolicy],
+  ["Terms of Service", TermsOfService],
+] as const)("%s page", (_name, Page) => {
   it("opens at the top of the page on mount", async () => {
     const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
     renderWithRouter(<Page />);
@@ -47,7 +47,7 @@ describe.each([
     await expectTocMatchesSections(container);
   });
 
-  it("names the entity, contact channels, and sets the tab title", async () => {
+  it("names the entity and contact channels", async () => {
     vi.spyOn(window, "scrollTo").mockImplementation(() => {});
     const { container } = renderWithRouter(<Page />);
     await screen.findByRole("heading", { level: 1 });
@@ -58,7 +58,6 @@ describe.each([
     expect(
       container.querySelector('a[href="mailto:Sales@AvalonIce.co"]'),
     ).not.toBeNull();
-    expect(document.title).toBe(tabTitle);
   });
 });
 

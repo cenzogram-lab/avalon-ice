@@ -3,13 +3,20 @@ import { SOCIALS } from "@/lib/socials";
 import { Link } from "@tanstack/react-router";
 import { Mail, MapPin } from "lucide-react";
 
+const FOOTER_LINKS = [
+  { key: "home", to: "/", label: "Home" },
+  { key: "shop", to: "/shop", label: "Shop & Pricing" },
+  { key: "about", to: "/about", label: "About Us" },
+  { key: "contact", to: "/contact", label: "Contact Us" },
+] as const;
+
 export default function Footer() {
   return (
     <footer
       data-ocid="footer"
       className="texture-paper border-t-[3px] border-navy bg-cream text-navy"
     >
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 md:grid-cols-2">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 md:grid-cols-[1.2fr_0.8fr_1.2fr] md:gap-10">
         {/* Brand block */}
         <div>
           <div className="flex items-center gap-3">
@@ -41,6 +48,24 @@ export default function Footer() {
             shore.
           </p>
         </div>
+
+        {/* Site navigation: the same primary pages as the navbar */}
+        <nav aria-label="Footer" data-ocid="footer.nav">
+          <h3 className="eyebrow">Explore</h3>
+          <ul className="mt-3 grid gap-0.5">
+            {FOOTER_LINKS.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  data-ocid={`footer.link.${link.key}`}
+                  className="inline-flex min-h-11 items-center font-body text-sm font-semibold text-lagoon underline-offset-4 transition-colors hover:text-navy hover:underline"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         {/* Wholesale & partnerships */}
         <div className="md:justify-self-end">

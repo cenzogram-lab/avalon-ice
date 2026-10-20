@@ -12,7 +12,7 @@ module {
   public let FROM_USERNAME = "notifications";
 
   // Where the "Open the dashboard" link in every notification points.
-  public let ADMIN_URL = "https://avalonice.co/admin";
+  public let ADMIN_URL = "https://www.avalonice.co/admin";
 
   // Notification emails allowed per rolling hour. Inquiries are always
   // stored; past this cap only the email is skipped, so a spam burst on the

@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import About from "@/pages/About";
 import Admin from "@/pages/Admin";
+import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import {
@@ -38,6 +39,12 @@ const shopRoute = createRoute({
   component: Shop,
 });
 
+const contactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/contact",
+  component: Contact,
+});
+
 // The legal pages are long, rarely visited text, so each loads as its own
 // chunk instead of growing the bundle every visitor downloads.
 const privacyRoute = createRoute({
@@ -62,6 +69,7 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
   shopRoute,
+  contactRoute,
   privacyRoute,
   termsRoute,
   adminRoute,

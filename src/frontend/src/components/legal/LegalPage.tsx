@@ -19,8 +19,6 @@ type LegalPageProps = {
   ocid: string;
   /** Headline words; the last is set in the ice accent. */
   title: [string, string];
-  /** Browser tab title. */
-  documentTitle: string;
   intro: ReactNode;
   effectiveDate: string;
   sections: LegalSection[];
@@ -40,11 +38,11 @@ const ACCENT =
 export default function LegalPage({
   ocid,
   title,
-  documentTitle,
   intro,
   effectiveDate,
   sections,
 }: LegalPageProps) {
+  // Title, description and canonical come from useDocumentHead (Layout).
   // Open at the top of the page. Layout's navigation hook already resets
   // scroll on route changes; this also covers a fresh load or a reload
   // part-way down. A deep link to a section (/privacy#your-rights) keeps
@@ -52,14 +50,6 @@ export default function LegalPage({
   useEffect(() => {
     if (!window.location.hash) window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    const previous = document.title;
-    document.title = documentTitle;
-    return () => {
-      document.title = previous;
-    };
-  }, [documentTitle]);
 
   const toc = (
     <ol className="grid gap-0.5">

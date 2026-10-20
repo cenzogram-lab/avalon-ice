@@ -370,7 +370,6 @@ export default function PrivacyPolicy() {
     <LegalPage
       ocid="privacy"
       title={["Privacy", "Policy"]}
-      documentTitle="Privacy Policy · Avalon Ice"
       effectiveDate={PRIVACY_EFFECTIVE_DATE}
       intro={
         <p>

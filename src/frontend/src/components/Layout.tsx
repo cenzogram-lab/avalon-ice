@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { useDocumentHead } from "@/hooks/use-document-head";
 import { useRouterState } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
 import { type ReactNode, useEffect } from "react";
@@ -96,6 +97,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const isAdmin = pathname.startsWith("/admin");
 
   useScrollOnNavigate();
+  useDocumentHead(pathname);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

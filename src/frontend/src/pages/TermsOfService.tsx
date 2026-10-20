@@ -345,7 +345,6 @@ export default function TermsOfService() {
     <LegalPage
       ocid="terms"
       title={["Terms of", "Service"]}
-      documentTitle="Terms of Service · Avalon Ice"
       effectiveDate={TERMS_EFFECTIVE_DATE}
       intro={
         <p>
