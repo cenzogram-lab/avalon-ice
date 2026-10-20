@@ -1,9 +1,15 @@
 import { createActor } from "@/backend";
-import { notifyInquiry } from "@/lib/notify";
+import type {
+  AdminEmailInfo,
+  AdminInviteResult,
+  AdminSessionInfo,
+  NotificationStatus,
+} from "@/backend";
 import type { Inquiry, InquiryFormValues, SubmissionResult } from "@/lib/types";
 import { InquiryStatus, InquiryType } from "@/lib/types";
 import { useActor } from "@caffeineai/core-infrastructure";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 /**
  * Build a backend `Inquiry` record from a typed form payload.
@@ -83,12 +89,9 @@ export function useSubmitInquiry() {
       const inquiry = buildInquiry(form);
       const id = await actor.submitInquiry(inquiry);
       const stored = { ...inquiry, id };
-      const referenceId = `AVL-${id.toString()}`;
-      // Notify Sales@AvalonIce.co. Deliberately not awaited: the lead is
-      // already persisted, so relay latency or failure must not surface as
-      // a submission error.
-      void notifyInquiry(stored, referenceId);
-      return { referenceId, inquiry: stored };
+      // The canister emails every active admin itself, after the record is
+      // stored, so there is nothing more to do here.
+      return { referenceId: `AVL-${id.toString()}`, inquiry: stored };
     },
     // One retry absorbs a transient blip without the visitor re-typing.
     retry: 1,
@@ -96,13 +99,63 @@ export function useSubmitInquiry() {
   });
 }
 
-/** Set the master admin password on first deploy. */
+/**
+ * How often the dashboard checks for new inquiries. The check is a single
+ * number (the inquiry count), so it stays cheap however many inquiries exist;
+ * the full list is only re-read when that number changes.
+ */
+export const INQUIRY_POLL_MS = 15_000;
+
+/** Pause before re-checking a session that came back invalid. */
+const SESSION_RECHECK_MS = 1_500;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+type BackendResult<T> =
+  | { __kind__: "ok"; ok: T }
+  | { __kind__: "err"; err: string };
+
+/** Unwrap a canister `Result`, turning `#err` into a thrown Error. */
+export function unwrap<T>(result: BackendResult<T>): T {
+  if (result.__kind__ === "err") throw new Error(result.err);
+  return result.ok;
+}
+
+/** Whether the primary account still needs its first password. */
+export function useNeedsInitialSetup() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery({
+    queryKey: ["needsInitialSetup"],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.needsInitialSetup();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+/** Set the primary admin password on first deploy. */
 export function useSetupPassword() {
   const { actor, isFetching } = useActor(createActor);
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (password: string) => {
       if (!actor || isFetching) throw new Error("Backend is still loading");
       return actor.setupPassword(password);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["needsInitialSetup"] });
+    },
+  });
+}
+
+/** Whether an email belongs to an admin account (activated or pending). */
+export function useVerifyAdminAccess() {
+  const { actor, isFetching } = useActor(createActor);
+  return useMutation({
+    mutationFn: async (email: string) => {
+      if (!actor || isFetching) throw new Error("Backend is still loading");
+      return actor.verifyAdminAccess(email);
     },
   });
 }
@@ -124,6 +177,25 @@ export function useLogin() {
   });
 }
 
+/** Activate an added admin account with its one-time setup code. */
+export function useActivateAdminAccount() {
+  const { actor, isFetching } = useActor(createActor);
+  return useMutation({
+    mutationFn: async ({
+      email,
+      setupCode,
+      password,
+    }: {
+      email: string;
+      setupCode: string;
+      password: string;
+    }) => {
+      if (!actor || isFetching) throw new Error("Backend is still loading");
+      unwrap(await actor.activateAdminAccount(email, setupCode, password));
+    },
+  });
+}
+
 /** Invalidate an admin session token. */
 export function useLogout() {
   const { actor, isFetching } = useActor(createActor);
@@ -135,34 +207,88 @@ export function useLogout() {
   });
 }
 
-/** Check whether a session token is still valid. */
+/**
+ * Check whether a session token is still valid. Re-checked every minute so
+ * an admin who is removed (or whose session expires) is signed out.
+ *
+ * A "no" is confirmed once before it is believed: a read can reach a
+ * replica that has not yet seen a sign-in that just completed.
+ */
 export function useIsAuthenticated(token: string | null) {
   const { actor, isFetching } = useActor(createActor);
   return useQuery({
     queryKey: ["auth", token],
     queryFn: async () => {
       if (!actor || !token) return false;
+      if (await actor.isAuthenticated(token)) return true;
+      await wait(SESSION_RECHECK_MS);
       return actor.isAuthenticated(token);
     },
     enabled: !!actor && !isFetching && !!token,
+    refetchInterval: 60_000,
   });
 }
 
-/** Fetch all inquiries for the admin portal. */
-export function useInquiries() {
+/** The signed-in admin's email and role. */
+export function useAdminSession(token: string) {
   const { actor, isFetching } = useActor(createActor);
   return useQuery({
-    queryKey: ["inquiries"],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.exportInquiries();
+    queryKey: ["adminSession", token],
+    queryFn: async (): Promise<AdminSessionInfo> => {
+      if (!actor) throw new Error("Backend is still loading");
+      const session = await actor.getAdminSession(token);
+      // Thrown so react-query retries (see useIsAuthenticated on replica lag).
+      if (!session) throw new Error("Session not found");
+      return session;
     },
     enabled: !!actor && !isFetching,
   });
 }
 
+/**
+ * All inquiries for the admin portal, kept current while the dashboard is
+ * open (a background tab included): the inquiry count is polled, and the
+ * list is re-read only when the count moves past what is loaded.
+ */
+export function useInquiries(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  const queryClient = useQueryClient();
+  const enabled = !!actor && !isFetching;
+
+  const list = useQuery({
+    queryKey: ["inquiries", token],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listInquiries(token);
+    },
+    enabled,
+  });
+
+  const count = useQuery({
+    queryKey: ["inquiryCount", token],
+    queryFn: async () => {
+      if (!actor) return 0n;
+      return actor.getInquiryCount(token);
+    },
+    enabled,
+    refetchInterval: INQUIRY_POLL_MS,
+    refetchIntervalInBackground: true,
+  });
+
+  const loaded = list.data?.length;
+  const latest = count.data;
+  useEffect(() => {
+    if (loaded === undefined || latest === undefined) return;
+    if (latest !== BigInt(loaded)) {
+      queryClient.invalidateQueries({ queryKey: ["inquiries", token] });
+    }
+  }, [loaded, latest, queryClient, token]);
+
+  return list;
+}
+
 /** Update an inquiry's status and optional notes. */
-export function useUpdateInquiryStatus() {
+export function useUpdateInquiryStatus(token: string) {
   const { actor, isFetching } = useActor(createActor);
   const queryClient = useQueryClient();
   return useMutation({
@@ -176,10 +302,84 @@ export function useUpdateInquiryStatus() {
       notes?: string;
     }) => {
       if (!actor || isFetching) throw new Error("Backend is still loading");
-      return actor.updateInquiryStatus(id, status, notes ?? null);
+      return actor.updateInquiry(token, id, status, notes ?? null);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["inquiries"] });
+    },
+  });
+}
+
+/** Every admin account, primary first. */
+export function useAdminEmails(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery({
+    queryKey: ["adminEmails", token],
+    queryFn: async (): Promise<AdminEmailInfo[]> => {
+      if (!actor) return [];
+      return unwrap(await actor.getAdminEmails(token));
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+/** Add an admin; resolves with their setup code and whether it was emailed. */
+export function useAddAdminEmail(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (email: string): Promise<AdminInviteResult> => {
+      if (!actor || isFetching) throw new Error("Backend is still loading");
+      return unwrap(await actor.addAdminEmail(token, email));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminEmails"] });
+      queryClient.invalidateQueries({ queryKey: ["notificationStatus"] });
+    },
+  });
+}
+
+/** Remove an admin and sign them out everywhere. */
+export function useRemoveAdminEmail(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (email: string) => {
+      if (!actor || isFetching) throw new Error("Backend is still loading");
+      unwrap(await actor.removeAdminEmail(token, email));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminEmails"] });
+      queryClient.invalidateQueries({ queryKey: ["notificationStatus"] });
+    },
+  });
+}
+
+/** Who gets notification emails, and how the last send went. */
+export function useNotificationStatus(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery({
+    queryKey: ["notificationStatus", token],
+    queryFn: async (): Promise<NotificationStatus | null> => {
+      if (!actor) return null;
+      return unwrap(await actor.getNotificationStatus(token));
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: INQUIRY_POLL_MS,
+  });
+}
+
+/** Email every active admin a test message. */
+export function useSendTestNotification(token: string) {
+  const { actor, isFetching } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor || isFetching) throw new Error("Backend is still loading");
+      unwrap(await actor.sendTestNotification(token));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificationStatus"] });
     },
   });
 }

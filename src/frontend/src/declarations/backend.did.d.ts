@@ -10,6 +10,23 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AdminEmailInfo {
+  'status' : AdminStatus,
+  'email' : string,
+  'isPrimary' : boolean,
+  'addedAt' : bigint,
+  'addedBy' : string,
+}
+export interface AdminInviteResult {
+  'emailed' : boolean,
+  'expiresAt' : bigint,
+  'email' : string,
+  'setupCode' : string,
+  'emailError' : [] | [string],
+}
+export interface AdminSessionInfo { 'email' : string, 'isPrimary' : boolean }
+export type AdminStatus = { 'active' : null } |
+  { 'pending' : null };
 export interface Cell { 'value' : Value, 'name' : string }
 export type Error = { 'FrontendOriginsNotConfigured' : null } |
   {
@@ -46,6 +63,12 @@ export type InquiryStatus = { 'New' : null } |
 export type InquiryType = { 'Event' : null } |
   { 'General' : null } |
   { 'Wholesale' : null };
+export interface NotificationStatus {
+  'lastSuccessAt' : [] | [bigint],
+  'lastAttemptAt' : [] | [bigint],
+  'recipients' : Array<string>,
+  'lastError' : [] | [string],
+}
 export interface OrderDetails {
   'iceType' : [] | [string],
   'deliveryAddress' : [] | [string],
@@ -60,9 +83,17 @@ export interface OrderDetails {
   'venueName' : [] | [string],
   'eventDate' : [] | [string],
 }
-export interface Result { 'hasMore' : boolean, 'rows' : Array<Array<Cell>> }
-export type Result__1 = { 'ok' : null } |
+export type Result = { 'ok' : null } |
+  { 'err' : string };
+export type Result_1 = { 'ok' : NotificationStatus } |
+  { 'err' : string };
+export type Result_2 = { 'ok' : Array<AdminEmailInfo> } |
+  { 'err' : string };
+export type Result_3 = { 'ok' : AdminInviteResult } |
+  { 'err' : string };
+export type Result_4 = { 'ok' : null } |
   { 'err' : Error };
+export interface Result__1 { 'hasMore' : boolean, 'rows' : Array<Array<Cell>> }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -74,24 +105,39 @@ export type Value = { 'int' : bigint } |
   { 'text' : string };
 export interface _SERVICE {
   '_initialize_access_control' : ActorMethod<[], undefined>,
-  '_internet_identity_sign_in_finish' : ActorMethod<[], Result__1>,
+  '_internet_identity_sign_in_finish' : ActorMethod<[], Result_4>,
   '_internet_identity_sign_in_start' : ActorMethod<[], Uint8Array>,
+  'activateAdminAccount' : ActorMethod<[string, string, string], Result>,
+  'addAdminEmail' : ActorMethod<[string, string], Result_3>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'execute' : ActorMethod<[string], Result>,
+  'execute' : ActorMethod<[string], Result__1>,
   'exportInquiries' : ActorMethod<[], Array<Inquiry>>,
+  'getAdminEmails' : ActorMethod<[string], Result_2>,
+  'getAdminSession' : ActorMethod<[string], [] | [AdminSessionInfo]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getInquiry' : ActorMethod<[bigint], [] | [Inquiry]>,
+  'getInquiryCount' : ActorMethod<[string], bigint>,
+  'getNotificationStatus' : ActorMethod<[string], Result_1>,
   'isAuthenticated' : ActorMethod<[string], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listInquiries' : ActorMethod<[string], Array<Inquiry>>,
   'login' : ActorMethod<[string, string], [] | [string]>,
   'logout' : ActorMethod<[string], undefined>,
+  'needsInitialSetup' : ActorMethod<[], boolean>,
+  'removeAdminEmail' : ActorMethod<[string, string], Result>,
   'schema' : ActorMethod<[], string>,
+  'sendTestNotification' : ActorMethod<[string], Result>,
   'setupPassword' : ActorMethod<[string], boolean>,
   'submitInquiry' : ActorMethod<[Inquiry], bigint>,
+  'updateInquiry' : ActorMethod<
+    [string, bigint, InquiryStatus, [] | [string]],
+    [] | [Inquiry]
+  >,
   'updateInquiryStatus' : ActorMethod<
     [bigint, InquiryStatus, [] | [string]],
     [] | [Inquiry]
   >,
+  'verifyAdminAccess' : ActorMethod<[string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

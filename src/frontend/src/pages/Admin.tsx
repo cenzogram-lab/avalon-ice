@@ -1,3 +1,5 @@
+import AdminRecipientsCard from "@/components/admin/AdminRecipientsCard";
+import BrowserAlertsCard from "@/components/admin/BrowserAlertsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,12 +38,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  useBrowserAlertsSetting,
+  useInquiryAlerts,
+} from "@/hooks/use-inquiry-alerts";
+import {
+  useActivateAdminAccount,
+  useAdminSession,
   useInquiries,
   useIsAuthenticated,
   useLogin,
   useLogout,
+  useNeedsInitialSetup,
   useSetupPassword,
   useUpdateInquiryStatus,
+  useVerifyAdminAccess,
 } from "@/lib/api";
 import {
   INQUIRY_STATUS_LABELS,
@@ -55,6 +65,7 @@ import {
   Download,
   FileJson,
   FileSpreadsheet,
+  KeyRound,
   Loader2,
   Lock,
   LogOut,
@@ -63,10 +74,37 @@ import {
   ShieldCheck,
   Snowflake,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+/** The primary (owner) admin account; additional admins are added in the dashboard. */
 const ADMIN_EMAIL = "Sales@AvalonIce.co";
+
+type AuthMode = "login" | "activate" | "setup";
+
+/**
+ * The session token survives a reload of this tab (so an admin can leave
+ * the dashboard open for alerts) but not the tab itself: sessionStorage is
+ * per tab and cleared when it closes.
+ */
+const SESSION_KEY = "avalon-ice:admin-session";
+
+function readStoredToken(): string | null {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function storeToken(token: string | null) {
+  try {
+    if (token) window.sessionStorage.setItem(SESSION_KEY, token);
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // Storage blocked: the session simply won't survive a reload.
+  }
+}
 
 function formatDate(ts: bigint): string {
   const ms = Number(ts / 1_000_000n);
@@ -121,9 +159,33 @@ function toCsv(rows: Inquiry[]): string {
 }
 
 export default function Admin() {
-  const [token, setToken] = useState<string | null>(null);
+  // One toast container for every admin state: sign-in errors, invite
+  // activation and dashboard alerts all report through it.
+  return (
+    <>
+      <Toaster position="top-right" />
+      <AdminContent />
+    </>
+  );
+}
+
+function AdminContent() {
+  const [token, setTokenState] = useState<string | null>(readStoredToken);
+  const setToken = useCallback((next: string | null) => {
+    storeToken(next);
+    setTokenState(next);
+  }, []);
   const { data: isAuthenticated, isLoading: authLoading } =
     useIsAuthenticated(token);
+
+  // A session that stopped being valid (expired, or this admin was removed)
+  // is forgotten, which returns to the sign-in screen.
+  useEffect(() => {
+    if (token && isAuthenticated === false) {
+      setToken(null);
+      toast.info("Your admin session ended. Sign in again to continue.");
+    }
+  }, [token, isAuthenticated, setToken]);
 
   if (!token) {
     return <AuthGate onToken={setToken} />;
@@ -151,7 +213,10 @@ export default function Admin() {
 function AuthGate({ onToken }: { onToken: (t: string) => void }) {
   // Login is the everyday case — setup runs once, on the first deploy —
   // so a returning admin lands straight on the form they actually need.
-  const [mode, setMode] = useState<"setup" | "login">("login");
+  const [mode, setMode] = useState<AuthMode>("login");
+  // First-time setup only works until the primary password exists, so the
+  // tab is only offered while it can succeed.
+  const { data: needsSetup = false } = useNeedsInitialSetup();
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-4 py-16">
@@ -162,40 +227,55 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
         <h1 className="font-display text-3xl text-primary">Avalon Ice Admin</h1>
         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <ShieldCheck className="size-4" />
-          Restricted to {ADMIN_EMAIL}
+          Restricted to authorized admins
         </p>
       </div>
 
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="font-display text-xl text-primary">
-            {mode === "setup" ? "Set up master password" : "Admin login"}
+            {mode === "setup"
+              ? "Set up primary password"
+              : mode === "activate"
+                ? "Activate your invite"
+                : "Admin login"}
           </CardTitle>
           <CardDescription>
             {mode === "setup"
-              ? "First deploy — create the master password for the admin portal."
-              : "Sign in with your admin email and password."}
+              ? `First deploy only — create the password for ${ADMIN_EMAIL}.`
+              : mode === "activate"
+                ? "Added as an admin? Enter the setup code from your invitation and choose a password."
+                : "Sign in with your admin email and password."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs
-            value={mode}
-            onValueChange={(v) => setMode(v as "setup" | "login")}
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="setup" data-ocid="admin.setup_tab">
-                Set up
-              </TabsTrigger>
+          <Tabs value={mode} onValueChange={(v) => setMode(v as AuthMode)}>
+            <TabsList
+              className={`grid w-full ${needsSetup ? "grid-cols-3" : "grid-cols-2"}`}
+            >
               <TabsTrigger value="login" data-ocid="admin.login_tab">
                 Login
               </TabsTrigger>
+              <TabsTrigger value="activate" data-ocid="admin.activate_tab">
+                Activate invite
+              </TabsTrigger>
+              {needsSetup && (
+                <TabsTrigger value="setup" data-ocid="admin.setup_tab">
+                  Set up
+                </TabsTrigger>
+              )}
             </TabsList>
-            <TabsContent value="setup">
-              <SetupPasswordForm onDone={() => setMode("login")} />
-            </TabsContent>
             <TabsContent value="login">
               <LoginForm onToken={onToken} />
             </TabsContent>
+            <TabsContent value="activate">
+              <ActivateInviteForm onDone={() => setMode("login")} />
+            </TabsContent>
+            {needsSetup && (
+              <TabsContent value="setup">
+                <SetupPasswordForm onDone={() => setMode("login")} />
+              </TabsContent>
+            )}
           </Tabs>
         </CardContent>
       </Card>
@@ -225,7 +305,7 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
     setupPassword.mutate(password, {
       onSuccess: (ok) => {
         if (ok) {
-          toast.success("Master password set. You can now log in.");
+          toast.success("Primary password set. You can now log in.");
           onDone();
         } else {
           toast.error("Password setup failed. It may already be configured.");
@@ -248,7 +328,7 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="setup-password">Master password</Label>
+        <Label htmlFor="setup-password">Password</Label>
         <Input
           id="setup-password"
           type="password"
@@ -286,25 +366,37 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
 }
 
 function LoginForm({ onToken }: { onToken: (t: string) => void }) {
+  const verifyAccess = useVerifyAdminAccess();
   const login = useLogin();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const busy = verifyAccess.isPending || login.isPending;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login.mutate(
-      { email: ADMIN_EMAIL, password },
-      {
-        onSuccess: (token) => {
-          if (token) {
-            toast.success("Welcome back, Avalon Ice admin.");
-            onToken(token);
-          } else {
-            toast.error("Invalid email or password.");
-          }
-        },
-        onError: () => toast.error("Login failed. Try again."),
-      },
-    );
+    const address = email.trim();
+    if (!address || !password) {
+      toast.error("Enter your admin email and password.");
+      return;
+    }
+    try {
+      const authorized = await verifyAccess.mutateAsync(address);
+      if (!authorized) {
+        toast.error("That email isn't an authorized Avalon Ice admin.");
+        return;
+      }
+      const token = await login.mutateAsync({ email: address, password });
+      if (token) {
+        toast.success("Welcome back, Avalon Ice admin.");
+        onToken(token);
+      } else {
+        toast.error(
+          "Incorrect password, or the account isn't activated yet. Five wrong attempts lock sign-in for 15 minutes.",
+        );
+      }
+    } catch {
+      toast.error("Login failed. Try again.");
+    }
   };
 
   return (
@@ -313,9 +405,12 @@ function LoginForm({ onToken }: { onToken: (t: string) => void }) {
         <Label htmlFor="login-email">Admin email</Label>
         <Input
           id="login-email"
-          value={ADMIN_EMAIL}
-          readOnly
-          disabled
+          type="email"
+          inputMode="email"
+          autoComplete="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={ADMIN_EMAIL}
           data-ocid="admin.login_email"
         />
       </div>
@@ -324,23 +419,121 @@ function LoginForm({ onToken }: { onToken: (t: string) => void }) {
         <Input
           id="login-password"
           type="password"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
           data-ocid="admin.login_password"
         />
       </div>
-      <Button
-        type="submit"
-        disabled={login.isPending}
-        data-ocid="admin.login_submit"
-      >
-        {login.isPending ? (
+      <Button type="submit" disabled={busy} data-ocid="admin.login_submit">
+        {busy ? (
           <Loader2 className="mr-2 size-4 animate-spin" />
         ) : (
           <Lock className="mr-2 size-4" />
         )}
-        {login.isPending ? "Signing in…" : "Sign in"}
+        {busy ? "Signing in…" : "Sign in"}
+      </Button>
+    </form>
+  );
+}
+
+function ActivateInviteForm({ onDone }: { onDone: () => void }) {
+  const activate = useActivateAdminAccount();
+  const [email, setEmail] = useState("");
+  const [setupCode, setSetupCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !setupCode.trim()) {
+      toast.error("Enter your email and setup code.");
+      return;
+    }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    if (password !== confirm) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    activate.mutate(
+      { email: email.trim(), setupCode: setupCode.trim(), password },
+      {
+        onSuccess: () => {
+          toast.success("Account activated. You can now log in.");
+          onDone();
+        },
+        onError: (err) =>
+          toast.error(err.message || "Could not activate. Try again."),
+      },
+    );
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="activate-email">Your email</Label>
+        <Input
+          id="activate-email"
+          type="email"
+          inputMode="email"
+          autoComplete="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@avalonice.co"
+          data-ocid="admin.activate_email"
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="activate-code">Setup code</Label>
+        <Input
+          id="activate-code"
+          autoComplete="one-time-code"
+          value={setupCode}
+          onChange={(e) => setSetupCode(e.target.value)}
+          placeholder="XXXXX-XXXXX"
+          className="font-mono uppercase tracking-widest"
+          data-ocid="admin.activate_code"
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="activate-password">Choose a password</Label>
+        <Input
+          id="activate-password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="At least 8 characters"
+          data-ocid="admin.activate_password"
+        />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="activate-confirm">Confirm password</Label>
+        <Input
+          id="activate-confirm"
+          type="password"
+          autoComplete="new-password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          placeholder="Repeat password"
+          data-ocid="admin.activate_confirm"
+        />
+      </div>
+      <Button
+        type="submit"
+        disabled={activate.isPending}
+        data-ocid="admin.activate_submit"
+      >
+        {activate.isPending ? (
+          <Loader2 className="mr-2 size-4 animate-spin" />
+        ) : (
+          <KeyRound className="mr-2 size-4" />
+        )}
+        {activate.isPending ? "Activating…" : "Activate account"}
       </Button>
     </form>
   );
@@ -353,7 +546,11 @@ function Dashboard({
   token: string;
   onLogout: () => void;
 }) {
-  const { data: inquiries = [], isLoading, isError } = useInquiries();
+  const { data, isLoading, isError } = useInquiries(token);
+  const inquiries = data ?? [];
+  const { data: session } = useAdminSession(token);
+  const alerts = useBrowserAlertsSetting();
+  useInquiryAlerts(data, alerts.enabled);
   const logout = useLogout();
   const [filter, setFilter] = useState<InquiryType | "All">("All");
   const [search, setSearch] = useState("");
@@ -372,14 +569,12 @@ function Dashboard({
   }, [inquiries, filter, search]);
 
   const handleLogout = () => {
+    // Sign out locally either way; the server session also expires on its own.
     logout.mutate(token, {
-      onSuccess: () => {
-        toast.success("Signed out.");
-        onLogout();
-      },
-      onError: () => {
-        toast.error("Could not sign out.");
-      },
+      onSuccess: () => toast.success("Signed out."),
+      onError: () =>
+        toast.error("Signed out here, but the server didn't confirm it."),
+      onSettled: () => onLogout(),
     });
   };
 
@@ -405,8 +600,6 @@ function Dashboard({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <Toaster position="top-right" />
-
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-3xl text-primary">
@@ -415,6 +608,12 @@ function Dashboard({
           <p className="mt-1 text-sm text-muted-foreground">
             {inquiries.length} total submission
             {inquiries.length === 1 ? "" : "s"}
+            {session && (
+              <span className="break-all" data-ocid="admin.signed_in_as">
+                {" "}
+                · Signed in as {session.email}
+              </span>
+            )}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -576,7 +775,32 @@ function Dashboard({
         </div>
       )}
 
-      <InquiryModal inquiry={selected} onClose={() => setSelected(null)} />
+      <section
+        aria-labelledby="admin-settings-heading"
+        className="mt-12 flex flex-col gap-4"
+        data-ocid="admin.settings"
+      >
+        <h2
+          id="admin-settings-heading"
+          className="font-display text-2xl text-primary"
+        >
+          Team &amp; notifications
+        </h2>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          <AdminRecipientsCard token={token} currentEmail={session?.email} />
+          <BrowserAlertsCard
+            enabled={alerts.enabled}
+            permission={alerts.permission}
+            onChange={(next) => void alerts.setEnabled(next)}
+          />
+        </div>
+      </section>
+
+      <InquiryModal
+        token={token}
+        inquiry={selected}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }
@@ -594,13 +818,15 @@ function StatusBadge({ status }: { status: InquiryStatus }) {
 }
 
 function InquiryModal({
+  token,
   inquiry,
   onClose,
 }: {
+  token: string;
   inquiry: Inquiry | null;
   onClose: () => void;
 }) {
-  const updateStatus = useUpdateInquiryStatus();
+  const updateStatus = useUpdateInquiryStatus(token);
   const [status, setStatus] = useState<InquiryStatus>(InquiryStatus.New);
   const [notes, setNotes] = useState("");
 

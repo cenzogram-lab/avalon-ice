@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import About from "@/pages/About";
 import Admin from "@/pages/Admin";
+import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import {
@@ -9,6 +10,7 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  lazyRouteComponent,
 } from "@tanstack/react-router";
 
 const rootRoute = createRootRoute({
@@ -37,6 +39,26 @@ const shopRoute = createRoute({
   component: Shop,
 });
 
+const contactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/contact",
+  component: Contact,
+});
+
+// The legal pages are long, rarely visited text, so each loads as its own
+// chunk instead of growing the bundle every visitor downloads.
+const privacyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/privacy",
+  component: lazyRouteComponent(() => import("@/pages/PrivacyPolicy")),
+});
+
+const termsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/terms",
+  component: lazyRouteComponent(() => import("@/pages/TermsOfService")),
+});
+
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/admin",
@@ -47,6 +69,9 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
   shopRoute,
+  contactRoute,
+  privacyRoute,
+  termsRoute,
   adminRoute,
 ]);
 

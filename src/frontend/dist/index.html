@@ -3,21 +3,131 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Avalon Ice</title>
+    <title>Avalon Ice | Bulk &amp; Packaged Ice Distribution · Cape May County, NJ</title>
     <meta
       name="description"
-      content="Avalon Ice — the Shore's coldest delivery. Cape May County & Beyond · Jersey Shore ice distribution. Commercial wholesale, event & festival supply, and same-day GSP corridor delivery."
+      content="Packaged ice delivery across Cape May County: 7 lb bags, bulk ice pallets for events and emergency shore drops in Avalon, Stone Harbor and Sea Isle City."
     />
-    <meta property="og:title" content="Avalon Ice" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://www.avalonice.co/" />
+    <meta property="og:site_name" content="Avalon Ice" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Avalon Ice | Bulk &amp; Packaged Ice Distribution · Cape May County, NJ" />
     <meta
       property="og:description"
-      content="Avalon Ice — the Shore's coldest delivery. Cape May County & Beyond · Jersey Shore ice distribution. Commercial wholesale, event & festival supply, and same-day GSP corridor delivery."
+      content="Packaged ice delivery across Cape May County: 7 lb bags, bulk ice pallets for events and emergency shore drops in Avalon, Stone Harbor and Sea Isle City."
     />
+    <meta property="og:url" content="https://www.avalonice.co/" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://caffeine.ai/imgs/share-logo.jpeg" />
     <meta property="og:image:alt" content="Avalon Ice — the Shore's coldest delivery" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Avalon Ice | Bulk &amp; Packaged Ice Distribution · Cape May County, NJ" />
+    <meta
+      name="twitter:description"
+      content="Packaged ice delivery across Cape May County: 7 lb bags, bulk ice pallets for events and emergency shore drops in Avalon, Stone Harbor and Sea Isle City."
+    />
     <meta name="twitter:image" content="https://caffeine.ai/imgs/share-logo.jpeg" />
+    <meta name="twitter:image:alt" content="Avalon Ice — the Shore's coldest delivery" />
+    <!--
+      Site-wide structured data (LocalBusiness/WholesaleStore, WebSite and
+      the primary SiteNavigationElement links), generated from
+      src/lib/seo.ts; seo.test.ts fails if the two drift apart. Per-page
+      tags and the BreadcrumbList are set by useDocumentHead and baked into
+      the per-route pages at build time (see vite.config.js).
+    -->
+    <script type="application/ld+json" id="ld-site">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": [
+              "LocalBusiness",
+              "WholesaleStore"
+            ],
+            "@id": "https://www.avalonice.co/#business",
+            "name": "Avalon Ice",
+            "legalName": "Avalon Ice, LLC",
+            "url": "https://www.avalonice.co/",
+            "logo": "https://www.avalonice.co/assets/images/avalon-heron.webp",
+            "image": "https://www.avalonice.co/assets/images/avalon-heron.webp",
+            "telephone": "+1-856-308-9986",
+            "email": "Sales@AvalonIce.co",
+            "priceRange": "$$",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Cape May County",
+              "addressRegion": "NJ",
+              "addressCountry": "US"
+            },
+            "areaServed": [
+              {
+                "@type": "AdministrativeArea",
+                "name": "Cape May County, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Avalon, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Stone Harbor, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Sea Isle City, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Ocean City, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Wildwood, NJ"
+              },
+              {
+                "@type": "City",
+                "name": "Cape May, NJ"
+              },
+              {
+                "@type": "Place",
+                "name": "South Jersey Shore"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.avalonice.co/#website",
+            "name": "Avalon Ice",
+            "url": "https://www.avalonice.co/",
+            "publisher": {
+              "@id": "https://www.avalonice.co/#business"
+            },
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Home",
+            "url": "https://www.avalonice.co/"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Shop & Bulk Ice",
+            "url": "https://www.avalonice.co/shop"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "About & Story",
+            "url": "https://www.avalonice.co/about"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Contact & Emergency Drops",
+            "url": "https://www.avalonice.co/contact"
+          }
+        ]
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://file.garden" />
@@ -54,7 +164,7 @@
         gap: 1.75rem;
         overflow: hidden;
         background: linear-gradient(to bottom, #fdfcf8, #f7f2ea 55%, #e4f1f0);
-        font-family: "Work Sans", system-ui, sans-serif;
+        font-family: "Work Sans", "Work Sans Fallback", "Work Sans Fallback Android", system-ui, sans-serif;
         transition: opacity 0.45s ease, visibility 0.45s ease;
       }
       #boot[data-hidden="true"] {
@@ -146,7 +256,7 @@
 
       .boot-caption {
         margin: 0;
-        font-family: "Bevan", Georgia, serif;
+        font-family: "Bevan", "Bevan Fallback", "Bevan Fallback Android", Georgia, serif;
         font-size: clamp(1.05rem, 4.2vw, 1.6rem);
         letter-spacing: 0.01em;
         color: #0c3552;
@@ -188,12 +298,12 @@
         .boot-puff { opacity: 0.5; }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DvIJq-dl.js"></script>
+    <script type="module" crossorigin src="/assets/index-D_1b-Bq_.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-B9YVDtju.js">
-    <link rel="modulepreload" crossorigin href="/assets/tanstack-C4EZNDgT.js">
-    <link rel="modulepreload" crossorigin href="/assets/icp-BtxEzfuH.js">
+    <link rel="modulepreload" crossorigin href="/assets/tanstack-BOEcohFD.js">
+    <link rel="modulepreload" crossorigin href="/assets/icp-D64ejokb.js">
     <link rel="modulepreload" crossorigin href="/assets/motion-CcCTRGyd.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-D_kIUQbK.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-BNt1I7er.css">
   </head>
   <body>
     <div id="root"></div>
@@ -214,9 +324,9 @@
             <circle cx="27" cy="37" r="17" fill="#F7F2EA" stroke="#0C3552" stroke-width="2.5" />
             <clipPath id="boot-heron"><circle cx="27" cy="37" r="15.5" /></clipPath>
             <image href="/assets/images/avalon-heron.webp" x="11.5" y="21.5" width="31" height="31" clip-path="url(#boot-heron)" preserveAspectRatio="xMidYMid slice" />
-            <text x="79" y="26" text-anchor="middle" font-family="Lobster, cursive" font-size="16" fill="#0C3552">Avalon</text>
+            <text x="79" y="26" text-anchor="middle" font-family="Lobster, 'Lobster Fallback', 'Lobster Fallback Android', cursive" font-size="16" fill="#0C3552">Avalon</text>
             <rect x="55" y="31" width="48" height="18" rx="3" fill="#CDE7E9" stroke="#0C3552" stroke-width="2.5" />
-            <text x="79" y="45" text-anchor="middle" font-family="Bevan, Georgia, serif" font-size="13" letter-spacing="1.5" fill="#0C3552">ICE</text>
+            <text x="79" y="45" text-anchor="middle" font-family="Bevan, 'Bevan Fallback', 'Bevan Fallback Android', Georgia, serif" font-size="13" letter-spacing="1.5" fill="#0C3552">ICE</text>
             <g fill="#CDE7E9" stroke="#0C3552" stroke-width="2">
               <rect x="57" y="53" width="9" height="9" rx="2" />
               <rect x="69" y="53" width="9" height="9" rx="2" />

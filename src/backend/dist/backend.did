@@ -14,14 +14,34 @@ type UserRole =
    user;
  };
 type Result__1 = 
+ record {
+   hasMore: bool;
+   rows: vec vec Cell;
+ };
+type Result_4 = 
  variant {
    err: Error;
    ok;
  };
+type Result_3 = 
+ variant {
+   err: text;
+   ok: AdminInviteResult;
+ };
+type Result_2 = 
+ variant {
+   err: text;
+   ok: vec AdminEmailInfo;
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok: NotificationStatus;
+ };
 type Result = 
- record {
-   hasMore: bool;
-   rows: vec vec Cell;
+ variant {
+   err: text;
+   ok;
  };
 type OrderDetails = 
  record {
@@ -37,6 +57,13 @@ type OrderDetails =
    onSiteFreezer: opt bool;
    totalBags: opt text;
    venueName: opt text;
+ };
+type NotificationStatus = 
+ record {
+   lastAttemptAt: opt int;
+   lastError: opt text;
+   lastSuccessAt: opt int;
+   recipients: vec text;
  };
 type InquiryType = 
  variant {
@@ -92,22 +119,62 @@ type Cell =
    name: text;
    value: Value;
  };
+type AdminStatus = 
+ variant {
+   active;
+   pending;
+ };
+type AdminSessionInfo = 
+ record {
+   email: text;
+   isPrimary: bool;
+ };
+type AdminInviteResult = 
+ record {
+   email: text;
+   emailError: opt text;
+   emailed: bool;
+   expiresAt: int;
+   setupCode: text;
+ };
+type AdminEmailInfo = 
+ record {
+   addedAt: int;
+   addedBy: text;
+   email: text;
+   isPrimary: bool;
+   status: AdminStatus;
+ };
 service : {
   _initialize_access_control: () -> ();
-  _internet_identity_sign_in_finish: () -> (Result__1);
+  _internet_identity_sign_in_finish: () -> (Result_4);
   _internet_identity_sign_in_start: () -> (blob);
+  activateAdminAccount: (email: text, setupCode: text, password: text) ->
+   (Result);
+  addAdminEmail: (token: text, newEmail: text) -> (Result_3);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
-  execute: (qJson: text) -> (Result) query;
+  execute: (qJson: text) -> (Result__1) query;
   exportInquiries: () -> (vec Inquiry) query;
+  getAdminEmails: (token: text) -> (Result_2) query;
+  getAdminSession: (token: text) -> (opt AdminSessionInfo) query;
   getCallerUserRole: () -> (UserRole) query;
   getInquiry: (id: nat) -> (opt Inquiry) query;
+  getInquiryCount: (token: text) -> (nat) query;
+  getNotificationStatus: (token: text) -> (Result_1) query;
   isAuthenticated: (token: text) -> (bool) query;
   isCallerAdmin: () -> (bool) query;
+  listInquiries: (token: text) -> (vec Inquiry) query;
   login: (email: text, password: text) -> (opt text);
   logout: (token: text) -> ();
+  needsInitialSetup: () -> (bool) query;
+  removeAdminEmail: (token: text, targetEmail: text) -> (Result);
   schema: () -> (text) query;
+  sendTestNotification: (token: text) -> (Result);
   setupPassword: (password: text) -> (bool);
   submitInquiry: (inquiry: Inquiry) -> (nat);
+  updateInquiry: (token: text, id: nat, status: InquiryStatus, notes:
+   opt text) -> (opt Inquiry);
   updateInquiryStatus: (id: nat, status: InquiryStatus, notes: opt text) ->
    (opt Inquiry);
+  verifyAdminAccess: (email: text) -> (bool) query;
 }

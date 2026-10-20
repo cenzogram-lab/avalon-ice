@@ -1,6 +1,3 @@
-import Map "mo:core/Map";
-import Principal "mo:core/Principal";
-
 module {
   public type InquiryType = { #General; #Wholesale; #Event };
 
@@ -35,13 +32,5 @@ module {
     orderDetails : OrderDetails;
     status : InquiryStatus;
     notes : ?Text;
-  };
-
-  // Admin authentication state: hashed master password plus active session
-  // tokens mapped to their expiry timestamp.
-  public type AuthState = {
-    var passwordHash : ?Text;
-    var sessions : Map.Map<Text, Int>;
-    var adminPrincipal : ?Principal;
   };
 };

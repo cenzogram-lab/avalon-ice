@@ -4,13 +4,17 @@ import { Link } from "@tanstack/react-router";
 import { Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 
-const NAV_LINKS = [
-  { href: "/#services", label: "Services" },
-  { href: "/#network", label: "Network" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About" },
-  { href: "/#order-form", label: "Order" },
-  { href: "/#contact", label: "Contact" },
+/**
+ * Primary navigation. Short, specific anchor text helps visitors and search
+ * engines alike (sitelinks are derived from it); the same pages are listed
+ * in the footer and in the SiteNavigationElement schema (src/lib/seo.ts).
+ */
+export const NAV_LINKS = [
+  { key: "services", href: "/#services", label: "Services" },
+  { key: "network", href: "/#network", label: "Network" },
+  { key: "shop", href: "/shop", label: "Shop & Pricing" },
+  { key: "about", href: "/about", label: "About Us" },
+  { key: "contact", href: "/contact", label: "Contact Us" },
 ];
 
 /**
@@ -47,6 +51,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
         <a
           href="/#top"
+          aria-label="Avalon Ice home"
           data-ocid="navbar.brand"
           className="flex min-h-12 min-w-12 shrink-0 items-center gap-2.5"
         >
@@ -68,15 +73,15 @@ export default function Navbar() {
 
         {/* Large primary links, desktop */}
         <nav
-          className="hidden items-center gap-1 xl:flex 2xl:gap-2"
+          className="hidden items-center gap-0.5 xl:flex 2xl:gap-1 min-[1760px]:gap-2"
           aria-label="Primary"
         >
           {NAV_LINKS.map((link) => (
             <a
-              key={link.href}
+              key={link.key}
               href={link.href}
-              data-ocid={`navbar.link.${link.label.toLowerCase()}`}
-              className="flex min-h-12 items-center whitespace-nowrap rounded-full px-2 py-3 font-body text-sm font-bold uppercase tracking-wide text-lagoon transition-colors hover:bg-ice-mist hover:text-navy 2xl:px-4 2xl:text-lg"
+              data-ocid={`navbar.link.${link.key}`}
+              className="nav-underline flex min-h-12 items-center whitespace-nowrap rounded-full px-1.5 py-3 font-body text-sm font-bold uppercase tracking-normal text-lagoon hover:bg-ice-mist hover:text-navy min-[1440px]:px-2 min-[1440px]:tracking-wide 2xl:px-2.5 2xl:text-base min-[1760px]:px-4 min-[1760px]:text-lg"
             >
               {link.label}
             </a>
@@ -111,7 +116,7 @@ export default function Navbar() {
             </a>
           </Button>
 
-          {/* Contact CTA → inquiry forms */}
+          {/* Quote CTA → inquiry forms */}
           <Button
             asChild
             size="sm"
@@ -120,14 +125,14 @@ export default function Navbar() {
           >
             <a href="/#order-form">
               <Mail className="size-4" />
-              Contact Us
+              Get a Quote
             </a>
           </Button>
 
           <button
             type="button"
             data-ocid="navbar.menu_button"
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="btn-brutal btn-brutal-ice inline-flex size-12 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden"
@@ -142,10 +147,10 @@ export default function Navbar() {
           <nav className="flex flex-col gap-1" aria-label="Mobile">
             {NAV_LINKS.map((link) => (
               <a
-                key={link.href}
+                key={link.key}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                data-ocid={`navbar.mobile_link.${link.label.toLowerCase()}`}
+                data-ocid={`navbar.mobile_link.${link.key}`}
                 className="flex min-h-12 items-center rounded-md px-3 py-3 font-body text-lg font-bold uppercase tracking-wide text-lagoon hover:bg-ice-mist hover:text-navy"
               >
                 {link.label}

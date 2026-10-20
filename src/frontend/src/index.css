@@ -2,11 +2,741 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ */
+/* Metric-matched font fallbacks                                       */
+/*                                                                     */
+/* The Google Fonts stylesheet keeps font-display: swap, so text first */
+/* paints in a local font and then swaps. These faces reshape that     */
+/* local font (Arial / Times New Roman, or their metric-compatible     */
+/* Liberation clones on Linux; Roboto / Noto Serif on Android, below)  */
+/* to the web font's glyph widths and                                  */
+/* vertical metrics, so the swap no longer re-wraps lines or moves the */
+/* page.                                                               */
+/*                                                                     */
+/* Each fallback is split by weight (Work Sans 400/500/600/700) and by */
+/* unicode-range into space, parentheses-and-hyphen, uppercase,        */
+/* lowercase and digit faces plus a catch-all for other punctuation,   */
+/* declared first so the narrower ranges win. The catch-all covers     */
+/* only the web font's own Google Fonts "latin" range, so characters   */
+/* the web font lacks (e.g. the "←" arrow) still fall through to the   */
+/* system font exactly as before. The web fonts'           */
+/* proportions differ by class (Work Sans digits, spaces and the       */
+/* "( ) -" of every phone number are far wider than Arial's; Bevan     */
+/* lowercase far wider than Times'), so one size-adjust per font       */
+/* cannot fit them all.                                                */
+/*                                                                     */
+/* size-adjust per face was calibrated against the site's own copy:    */
+/* every character on every page, measured with kerning in both fonts */
+/* at its real weight and size. ascent/descent/line-gap are the web    */
+/* font's metrics divided by that face's size-adjust, so vertical      */
+/* metrics stay identical across faces.                                */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 92.05%;
+  ascent-override: 101.04%;
+  descent-override: 26.40%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range: U+0020;
+  size-adjust: 122.74%;
+  ascent-override: 75.77%;
+  descent-override: 19.80%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 131.41%;
+  ascent-override: 70.77%;
+  descent-override: 18.49%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range: U+0041-005A;
+  size-adjust: 98.60%;
+  ascent-override: 94.32%;
+  descent-override: 24.65%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range: U+0061-007A;
+  size-adjust: 111.21%;
+  ascent-override: 83.63%;
+  descent-override: 21.85%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 1 450;
+  unicode-range: U+0030-0039;
+  size-adjust: 98.23%;
+  ascent-override: 94.67%;
+  descent-override: 24.74%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 97.15%;
+  ascent-override: 95.73%;
+  descent-override: 25.01%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range: U+0020;
+  size-adjust: 116.98%;
+  ascent-override: 79.50%;
+  descent-override: 20.77%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 128.40%;
+  ascent-override: 72.43%;
+  descent-override: 18.93%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range: U+0041-005A;
+  size-adjust: 98.90%;
+  ascent-override: 94.03%;
+  descent-override: 24.57%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range: U+0061-007A;
+  size-adjust: 111.99%;
+  ascent-override: 83.05%;
+  descent-override: 21.70%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  font-weight: 451 550;
+  unicode-range: U+0030-0039;
+  size-adjust: 99.62%;
+  ascent-override: 93.35%;
+  descent-override: 24.39%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 93.34%;
+  ascent-override: 99.63%;
+  descent-override: 26.03%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range: U+0020;
+  size-adjust: 110.14%;
+  ascent-override: 84.44%;
+  descent-override: 22.06%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 128.75%;
+  ascent-override: 72.23%;
+  descent-override: 18.87%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range: U+0041-005A;
+  size-adjust: 97.45%;
+  ascent-override: 95.43%;
+  descent-override: 24.93%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range: U+0061-007A;
+  size-adjust: 102.74%;
+  ascent-override: 90.52%;
+  descent-override: 23.65%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 551 650;
+  unicode-range: U+0030-0039;
+  size-adjust: 108.53%;
+  ascent-override: 85.69%;
+  descent-override: 22.39%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 99.95%;
+  ascent-override: 93.04%;
+  descent-override: 24.31%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0020;
+  size-adjust: 102.94%;
+  ascent-override: 90.34%;
+  descent-override: 23.61%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 133.30%;
+  ascent-override: 69.77%;
+  descent-override: 18.23%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0041-005A;
+  size-adjust: 97.91%;
+  ascent-override: 94.98%;
+  descent-override: 24.82%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0061-007A;
+  size-adjust: 103.82%;
+  ascent-override: 89.58%;
+  descent-override: 23.41%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0030-0039;
+  size-adjust: 108.53%;
+  ascent-override: 85.69%;
+  descent-override: 22.39%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 111.83%;
+  ascent-override: 103.30%;
+  descent-override: 40.39%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0020;
+  size-adjust: 82.23%;
+  ascent-override: 140.49%;
+  descent-override: 54.93%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 141.32%;
+  ascent-override: 81.75%;
+  descent-override: 31.96%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0041-005A;
+  size-adjust: 128.39%;
+  ascent-override: 89.98%;
+  descent-override: 35.18%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0061-007A;
+  size-adjust: 143.54%;
+  ascent-override: 80.48%;
+  descent-override: 31.47%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0030-0039;
+  size-adjust: 132.15%;
+  ascent-override: 87.42%;
+  descent-override: 34.18%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 92.80%;
+  ascent-override: 107.75%;
+  descent-override: 26.94%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0020;
+  size-adjust: 86.80%;
+  ascent-override: 115.20%;
+  descent-override: 28.80%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0041-005A;
+  size-adjust: 89.39%;
+  ascent-override: 111.86%;
+  descent-override: 27.97%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"),
+    local("Liberation Serif");
+  unicode-range: U+0061-007A;
+  size-adjust: 96.11%;
+  ascent-override: 104.05%;
+  descent-override: 26.01%;
+  line-gap-override: 0.00%;
+}
+
+/* Android has neither Arial nor Times New Roman, so the faces above
+   fail to load there. These mirror them on Android's system Roboto
+   (sans-serif) and Noto Serif (serif), calibrated the same way against
+   the site's copy. They sit later in each stack, so desktops that have
+   Arial never reach them. */
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 112.43%;
+  ascent-override: 82.72%;
+  descent-override: 21.61%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range: U+0020;
+  size-adjust: 132.28%;
+  ascent-override: 70.31%;
+  descent-override: 18.37%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 147.83%;
+  ascent-override: 62.91%;
+  descent-override: 16.44%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range: U+0041-005A;
+  size-adjust: 105.93%;
+  ascent-override: 87.80%;
+  descent-override: 22.94%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range: U+0061-007A;
+  size-adjust: 111.48%;
+  ascent-override: 83.42%;
+  descent-override: 21.80%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 1 450;
+  unicode-range: U+0030-0039;
+  size-adjust: 103.35%;
+  ascent-override: 89.98%;
+  descent-override: 23.51%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 113.10%;
+  ascent-override: 82.23%;
+  descent-override: 21.49%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range: U+0020;
+  size-adjust: 130.48%;
+  ascent-override: 71.27%;
+  descent-override: 18.62%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 150.00%;
+  ascent-override: 62.00%;
+  descent-override: 16.20%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range: U+0041-005A;
+  size-adjust: 106.04%;
+  ascent-override: 87.71%;
+  descent-override: 22.92%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range: U+0061-007A;
+  size-adjust: 111.80%;
+  ascent-override: 83.18%;
+  descent-override: 21.73%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto"), local("Roboto Regular"), local("Roboto-Regular");
+  font-weight: 451 550;
+  unicode-range: U+0030-0039;
+  size-adjust: 102.84%;
+  ascent-override: 90.43%;
+  descent-override: 23.63%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 99.66%;
+  ascent-override: 93.32%;
+  descent-override: 24.38%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range: U+0020;
+  size-adjust: 131.95%;
+  ascent-override: 70.48%;
+  descent-override: 18.42%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 113.37%;
+  ascent-override: 82.03%;
+  descent-override: 21.43%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range: U+0041-005A;
+  size-adjust: 104.72%;
+  ascent-override: 88.81%;
+  descent-override: 23.20%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range: U+0061-007A;
+  size-adjust: 107.97%;
+  ascent-override: 86.14%;
+  descent-override: 22.51%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 551 650;
+  unicode-range: U+0030-0039;
+  size-adjust: 106.09%;
+  ascent-override: 87.67%;
+  descent-override: 22.91%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 100.47%;
+  ascent-override: 92.57%;
+  descent-override: 24.19%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0020;
+  size-adjust: 114.67%;
+  ascent-override: 81.10%;
+  descent-override: 21.19%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 114.31%;
+  ascent-override: 81.35%;
+  descent-override: 21.26%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0041-005A;
+  size-adjust: 105.01%;
+  ascent-override: 88.56%;
+  descent-override: 23.14%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0061-007A;
+  size-adjust: 112.28%;
+  ascent-override: 82.83%;
+  descent-override: 21.64%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Work Sans Fallback Android";
+  src: local("Roboto Bold"), local("Roboto-Bold");
+  font-weight: 651 1000;
+  unicode-range: U+0030-0039;
+  size-adjust: 105.56%;
+  ascent-override: 88.11%;
+  descent-override: 23.02%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 113.68%;
+  ascent-override: 101.63%;
+  descent-override: 39.73%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0020;
+  size-adjust: 80.65%;
+  ascent-override: 143.25%;
+  descent-override: 56.00%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0028-0029, U+002D;
+  size-adjust: 140.00%;
+  ascent-override: 82.52%;
+  descent-override: 32.26%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0041-005A;
+  size-adjust: 126.93%;
+  ascent-override: 91.01%;
+  descent-override: 35.58%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0061-007A;
+  size-adjust: 118.98%;
+  ascent-override: 97.10%;
+  descent-override: 37.96%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Bevan Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0030-0039;
+  size-adjust: 121.82%;
+  ascent-override: 94.84%;
+  descent-override: 37.08%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 90.27%;
+  ascent-override: 110.78%;
+  descent-override: 27.69%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0020;
+  size-adjust: 85.58%;
+  ascent-override: 116.85%;
+  descent-override: 29.21%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0041-005A;
+  size-adjust: 90.92%;
+  ascent-override: 109.99%;
+  descent-override: 27.50%;
+  line-gap-override: 0.00%;
+}
+@font-face {
+  font-family: "Lobster Fallback Android";
+  src: local("Noto Serif"), local("Noto Serif Regular"),
+    local("NotoSerif-Regular");
+  unicode-range: U+0061-007A;
+  size-adjust: 79.40%;
+  ascent-override: 125.94%;
+  descent-override: 31.48%;
+  line-gap-override: 0.00%;
+}
+
 @layer base {
   :root {
-    --font-display: "Bevan", serif;
-    --font-script: "Lobster", cursive;
-    --font-body: "Work Sans", sans-serif;
+    --font-display: "Bevan", "Bevan Fallback", "Bevan Fallback Android", serif;
+    --font-script: "Lobster", "Lobster Fallback", "Lobster Fallback Android",
+      cursive;
+    --font-body: "Work Sans", "Work Sans Fallback", "Work Sans Fallback Android",
+      sans-serif;
     --font-mono: monospace;
     --radius: 0.5rem;
 
@@ -212,14 +942,17 @@
 
   /* Solid ice-blue slab drop shadows (follow the clip-path silhouette) */
   .ice-shadow {
-    filter: drop-shadow(0 8px 0 #a3ccd1);
+    --ice-slab: drop-shadow(0 8px 0 #a3ccd1);
+    filter: var(--ice-slab);
   }
   .ice-shadow-deep {
-    filter: drop-shadow(0 8px 0 #8cbec5)
+    --ice-slab: drop-shadow(0 8px 0 #8cbec5)
       drop-shadow(0 2px 0 rgba(6, 31, 51, 0.18));
+    filter: var(--ice-slab);
   }
   .ice-shadow-navy {
-    filter: drop-shadow(0 6px 0 #061f33);
+    --ice-slab: drop-shadow(0 6px 0 #061f33);
+    filter: var(--ice-slab);
   }
 
   /* Hand-drawn polygonal ice-block silhouettes (jittered edges) */
@@ -417,11 +1150,13 @@
     border: 3px solid #0c3552;
     border-radius: 0.75rem;
     box-shadow: 0 5px 0 #061f33;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
+  /* Hover lifts onto a taller slab and picks up a soft ice-cyan glow; the
+     press still sinks into the slab (the brand's tactile "stamp"). */
   .btn-brutal:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 0 #061f33;
+    box-shadow: 0 7px 0 #061f33, 0 0 20px rgba(56, 189, 248, 0.25);
   }
   .btn-brutal:active {
     transform: translateY(3px);
@@ -431,7 +1166,7 @@
     box-shadow: 0 5px 0 #a3ccd1;
   }
   .btn-brutal-ice:hover {
-    box-shadow: 0 7px 0 #a3ccd1;
+    box-shadow: 0 7px 0 #a3ccd1, 0 0 20px rgba(56, 189, 248, 0.25);
   }
   .btn-brutal-ice:active {
     box-shadow: 0 2px 0 #a3ccd1;
@@ -449,11 +1184,82 @@
     background: #fdfcf8;
     color: #0c3552;
     box-shadow: 0 4px 0 #a3ccd1;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
   .social-tile:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #a3ccd1;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Micro-interactions                                                  */
+  /*                                                                     */
+  /* Everything here moves only composited properties (transform,        */
+  /* box-shadow, filter, colour) so nothing reflows; motion is dropped   */
+  /* under prefers-reduced-motion at the end of this file.               */
+  /* ------------------------------------------------------------------ */
+
+  /* Ice-frame cards. Their silhouette is a clip-path, which clips any
+     box-shadow or border, so elevation is a drop-shadow stacked on the
+     frame's own slab (--ice-slab from the .ice-shadow* classes). */
+  .ice-hover-lift,
+  .ice-hover-glow {
+    transition: transform 0.3s ease-out, filter 0.3s ease-out;
+  }
+  .ice-hover-lift:hover {
+    transform: translateY(-2px);
+    filter: var(--ice-slab,) drop-shadow(0 8px 30px rgba(11, 25, 44, 0.08));
+  }
+  /* Large wrappers that hold form fields glow without moving, so the field
+     under the pointer stays put while someone types. */
+  .ice-hover-glow:hover,
+  .ice-hover-glow:focus-within {
+    filter: var(--ice-slab,) drop-shadow(0 8px 30px rgba(11, 25, 44, 0.08));
+  }
+
+  /* Standard filled buttons (sign-in, add admin, save…): lift, press and an
+     ice-cyan glow. Brutal buttons keep their own slab treatment above. */
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal) {
+    transition-property: color, background-color, border-color, box-shadow,
+      transform;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-out;
+  }
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal):not(
+      :disabled
+    ):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+  }
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal):not(
+      :disabled
+    ):active {
+    transform: translateY(0);
+  }
+
+  /* Desktop nav: an underline that slides in from the left. Absolutely
+     positioned and scaled, so it never moves the link text or neighbours. */
+  .nav-underline {
+    position: relative;
+    transition: color 0.2s ease-out, background-color 0.2s ease-out;
+  }
+  .nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.55rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #38bdf8;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s ease-out;
+    pointer-events: none;
+  }
+  .nav-underline:hover::after,
+  .nav-underline:focus-visible::after {
+    transform: scaleX(1);
   }
 
   /* ------------------------------------------------------------------ */
@@ -759,5 +1565,30 @@
   }
   .clip-tail-right {
     clip-path: polygon(0 14%, 100% 0, 74% 50%, 100% 100%, 0 86%);
+  }
+}
+
+/* Reduced motion: hover and press feedback stays as colour/shadow only. */
+@media (prefers-reduced-motion: reduce) {
+  .btn-brutal,
+  .social-tile,
+  .ice-hover-lift,
+  .ice-hover-glow,
+  .nav-underline::after,
+  [data-slot="button"],
+  [data-slot="switch"],
+  [data-slot="switch-thumb"] {
+    transition: none !important;
+  }
+  .btn-brutal:hover,
+  .btn-brutal:active,
+  .social-tile:hover,
+  .ice-hover-lift:hover,
+  [data-slot="button"]:hover,
+  [data-slot="button"]:active {
+    transform: none !important;
+  }
+  .nav-underline::after {
+    transform-origin: center;
   }
 }

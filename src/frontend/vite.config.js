@@ -1,7 +1,44 @@
+import fs from "node:fs";
+import path from "node:path";
 import { fileURLToPath, URL } from "url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import environment from "vite-plugin-environment";
+import { ROUTES, renderRouteHtml } from "./src/lib/seo.ts";
+
+/**
+ * Emit dist/<route>/index.html for every public route, each with its own
+ * title, description, canonical, OpenGraph/Twitter tags and breadcrumb
+ * schema. The app is a single-page app, so without these every URL would
+ * serve the home page's tags to crawlers that don't run JavaScript (link
+ * previews, many SEO tools). Hosts that resolve /shop to shop.html or
+ * shop/index.html serve them; any other host still works via the SPA
+ * fallback plus the runtime head manager (useDocumentHead).
+ */
+function seoRoutePages() {
+  let outDir = "";
+  return {
+    name: "avalon-seo-route-pages",
+    apply: "build",
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      const home = fs.readFileSync(path.join(outDir, "index.html"), "utf8");
+      for (const route of ROUTES) {
+        if (route.path === "/") continue;
+        // Both shapes, since hosts differ in how /shop is resolved: some
+        // try /shop.html, others /shop/index.html. Each page's canonical
+        // points at the clean /shop URL either way.
+        const name = route.path.replace(/^\//, "");
+        const html = renderRouteHtml(home, route);
+        fs.mkdirSync(path.join(outDir, name), { recursive: true });
+        fs.writeFileSync(path.join(outDir, name, "index.html"), html);
+        fs.writeFileSync(path.join(outDir, `${name}.html`), html);
+      }
+    },
+  };
+}
 
 const ii_url =
   process.env.DFX_NETWORK === "local"
@@ -65,6 +102,7 @@ export default defineConfig({
     environment(["II_URL"]),
     environment(["STORAGE_GATEWAY_URL"]),
     react(),
+    seoRoutePages(),
   ],
   resolve: {
     alias: [
