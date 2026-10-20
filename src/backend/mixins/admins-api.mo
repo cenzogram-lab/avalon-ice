@@ -113,7 +113,7 @@ mixin (admins : Types.AdminState) {
       };
       case null {
         if (admins.accounts.size() >= Admins.MAX_ADMINS) {
-          return #err("You can have up to 25 admins. Remove one first.");
+          return #err(Admins.MAX_ADMINS_MESSAGE);
         };
       };
     };
@@ -131,6 +131,11 @@ mixin (admins : Types.AdminState) {
         if (Admins.isActive(existing)) return #err(existing.email # " is already an admin.");
       };
       case null {
+        // Re-checked after the await: concurrent calls can all pass the
+        // check above before any of them inserts.
+        if (admins.accounts.size() >= Admins.MAX_ADMINS) {
+          return #err(Admins.MAX_ADMINS_MESSAGE);
+        };
         let account : Types.AdminAccount = {
           email = key;
           isPrimary = false;

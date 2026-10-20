@@ -20,6 +20,7 @@ module {
   public let MAX_LOGIN_FAILURES : Nat = 5;
   public let MAX_CODE_ATTEMPTS : Nat = 5;
   public let MAX_ADMINS : Nat = 25;
+  public let MAX_ADMINS_MESSAGE = "You can have up to 25 admins. Remove one first.";
   public let MIN_PASSWORD_LENGTH : Nat = 8;
 
   // Trimmed and lowercased: the key every admin lookup uses.

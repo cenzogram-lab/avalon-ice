@@ -14,10 +14,11 @@ module {
   // Where the "Open the dashboard" link in every notification points.
   public let ADMIN_URL = "https://www.avalonice.co/admin";
 
-  // Notification emails allowed per rolling hour. Inquiries are always
-  // stored; past this cap only the email is skipped, so a spam burst on the
-  // public forms cannot run up sends.
-  public let MAX_SENDS_PER_HOUR : Nat = 60;
+  // Notification emails (individual deliveries, one per recipient) allowed
+  // per rolling hour. Inquiries are always stored; past this cap only the
+  // email is skipped, so a spam burst on the public forms cannot run up
+  // sends however many admins there are.
+  public let MAX_EMAILS_PER_HOUR : Nat = 200;
   let HOUR_NS : Int = 3_600_000_000_000;
 
   // Longest field echoed into an email; the full record stays in /admin.
@@ -165,12 +166,13 @@ module {
       log.windowStart := now;
       log.sentInWindow := 0;
     };
-    if (log.sentInWindow >= MAX_SENDS_PER_HOUR) {
+    // Each recipient is a separate delivery, so the whole batch counts.
+    if (log.sentInWindow + recipients.size() > MAX_EMAILS_PER_HOUR) {
       let result = #err("Hourly notification limit reached; new inquiries are still saved in the dashboard.");
       record(log, result);
       return result;
     };
-    log.sentInWindow += 1;
+    log.sentInWindow += recipients.size();
 
     let result = await EmailClient.sendServiceEmail(FROM_USERNAME, recipients, subject, htmlBody);
     record(log, result);
