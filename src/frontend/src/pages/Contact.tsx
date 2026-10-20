@@ -36,6 +36,7 @@ export default function Contact() {
             <li>
               <IceFrame
                 clip="a"
+                hover="lift"
                 className="h-full"
                 innerClassName="flex h-full flex-col gap-2 p-6"
               >
@@ -58,6 +59,7 @@ export default function Contact() {
             <li>
               <IceFrame
                 clip="b"
+                hover="lift"
                 className="h-full"
                 innerClassName="flex h-full flex-col gap-2 p-6"
               >
@@ -80,6 +82,7 @@ export default function Contact() {
             <li>
               <IceFrame
                 clip="c"
+                hover="lift"
                 className="h-full"
                 innerClassName="flex h-full flex-col gap-2 p-6"
               >

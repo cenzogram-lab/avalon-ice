@@ -124,6 +124,7 @@ export default function About() {
               key={chapter.title}
               clip={chapter.clip}
               cracks
+              hover="lift"
               className="h-full"
               innerClassName="flex h-full flex-col gap-3 p-7 pb-8"
             >

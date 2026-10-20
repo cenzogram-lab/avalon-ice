@@ -212,14 +212,17 @@
 
   /* Solid ice-blue slab drop shadows (follow the clip-path silhouette) */
   .ice-shadow {
-    filter: drop-shadow(0 8px 0 #a3ccd1);
+    --ice-slab: drop-shadow(0 8px 0 #a3ccd1);
+    filter: var(--ice-slab);
   }
   .ice-shadow-deep {
-    filter: drop-shadow(0 8px 0 #8cbec5)
+    --ice-slab: drop-shadow(0 8px 0 #8cbec5)
       drop-shadow(0 2px 0 rgba(6, 31, 51, 0.18));
+    filter: var(--ice-slab);
   }
   .ice-shadow-navy {
-    filter: drop-shadow(0 6px 0 #061f33);
+    --ice-slab: drop-shadow(0 6px 0 #061f33);
+    filter: var(--ice-slab);
   }
 
   /* Hand-drawn polygonal ice-block silhouettes (jittered edges) */
@@ -417,11 +420,13 @@
     border: 3px solid #0c3552;
     border-radius: 0.75rem;
     box-shadow: 0 5px 0 #061f33;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
+  /* Hover lifts onto a taller slab and picks up a soft ice-cyan glow; the
+     press still sinks into the slab (the brand's tactile "stamp"). */
   .btn-brutal:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 0 #061f33;
+    box-shadow: 0 7px 0 #061f33, 0 0 20px rgba(56, 189, 248, 0.25);
   }
   .btn-brutal:active {
     transform: translateY(3px);
@@ -431,7 +436,7 @@
     box-shadow: 0 5px 0 #a3ccd1;
   }
   .btn-brutal-ice:hover {
-    box-shadow: 0 7px 0 #a3ccd1;
+    box-shadow: 0 7px 0 #a3ccd1, 0 0 20px rgba(56, 189, 248, 0.25);
   }
   .btn-brutal-ice:active {
     box-shadow: 0 2px 0 #a3ccd1;
@@ -449,11 +454,82 @@
     background: #fdfcf8;
     color: #0c3552;
     box-shadow: 0 4px 0 #a3ccd1;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
   .social-tile:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #a3ccd1;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Micro-interactions                                                  */
+  /*                                                                     */
+  /* Everything here moves only composited properties (transform,        */
+  /* box-shadow, filter, colour) so nothing reflows; motion is dropped   */
+  /* under prefers-reduced-motion at the end of this file.               */
+  /* ------------------------------------------------------------------ */
+
+  /* Ice-frame cards. Their silhouette is a clip-path, which clips any
+     box-shadow or border, so elevation is a drop-shadow stacked on the
+     frame's own slab (--ice-slab from the .ice-shadow* classes). */
+  .ice-hover-lift,
+  .ice-hover-glow {
+    transition: transform 0.3s ease-out, filter 0.3s ease-out;
+  }
+  .ice-hover-lift:hover {
+    transform: translateY(-2px);
+    filter: var(--ice-slab,) drop-shadow(0 8px 30px rgba(11, 25, 44, 0.08));
+  }
+  /* Large wrappers that hold form fields glow without moving, so the field
+     under the pointer stays put while someone types. */
+  .ice-hover-glow:hover,
+  .ice-hover-glow:focus-within {
+    filter: var(--ice-slab,) drop-shadow(0 8px 30px rgba(11, 25, 44, 0.08));
+  }
+
+  /* Standard filled buttons (sign-in, add admin, save…): lift, press and an
+     ice-cyan glow. Brutal buttons keep their own slab treatment above. */
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal) {
+    transition-property: color, background-color, border-color, box-shadow,
+      transform;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-out;
+  }
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal):not(
+      :disabled
+    ):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+  }
+  [data-slot="button"][data-variant="default"]:not(.btn-brutal):not(
+      :disabled
+    ):active {
+    transform: translateY(0);
+  }
+
+  /* Desktop nav: an underline that slides in from the left. Absolutely
+     positioned and scaled, so it never moves the link text or neighbours. */
+  .nav-underline {
+    position: relative;
+    transition: color 0.2s ease-out, background-color 0.2s ease-out;
+  }
+  .nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.55rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #38bdf8;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s ease-out;
+    pointer-events: none;
+  }
+  .nav-underline:hover::after,
+  .nav-underline:focus-visible::after {
+    transform: scaleX(1);
   }
 
   /* ------------------------------------------------------------------ */
@@ -759,5 +835,30 @@
   }
   .clip-tail-right {
     clip-path: polygon(0 14%, 100% 0, 74% 50%, 100% 100%, 0 86%);
+  }
+}
+
+/* Reduced motion: hover and press feedback stays as colour/shadow only. */
+@media (prefers-reduced-motion: reduce) {
+  .btn-brutal,
+  .social-tile,
+  .ice-hover-lift,
+  .ice-hover-glow,
+  .nav-underline::after,
+  [data-slot="button"],
+  [data-slot="switch"],
+  [data-slot="switch-thumb"] {
+    transition: none !important;
+  }
+  .btn-brutal:hover,
+  .btn-brutal:active,
+  .social-tile:hover,
+  .ice-hover-lift:hover,
+  [data-slot="button"]:hover,
+  [data-slot="button"]:active {
+    transform: none !important;
+  }
+  .nav-underline::after {
+    transform-origin: center;
   }
 }

@@ -81,7 +81,7 @@ export default function Navbar() {
               key={link.key}
               href={link.href}
               data-ocid={`navbar.link.${link.key}`}
-              className="flex min-h-12 items-center whitespace-nowrap rounded-full px-1.5 py-3 font-body text-sm font-bold uppercase tracking-normal text-lagoon transition-colors hover:bg-ice-mist hover:text-navy min-[1440px]:px-2 min-[1440px]:tracking-wide 2xl:px-2.5 2xl:text-base min-[1760px]:px-4 min-[1760px]:text-lg"
+              className="nav-underline flex min-h-12 items-center whitespace-nowrap rounded-full px-1.5 py-3 font-body text-sm font-bold uppercase tracking-normal text-lagoon hover:bg-ice-mist hover:text-navy min-[1440px]:px-2 min-[1440px]:tracking-wide 2xl:px-2.5 2xl:text-base min-[1760px]:px-4 min-[1760px]:text-lg"
             >
               {link.label}
             </a>

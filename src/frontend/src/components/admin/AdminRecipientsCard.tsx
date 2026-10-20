@@ -162,7 +162,7 @@ export default function AdminRecipientsCard({
                 <li
                   key={admin.email}
                   data-ocid="admin.recipient_pill"
-                  className="flex min-h-10 max-w-full items-center gap-2 rounded-full border border-primary/25 bg-secondary/60 py-1 pl-3.5 pr-1.5 text-sm"
+                  className="flex min-h-10 max-w-full items-center gap-2 rounded-full border border-slate-200/80 bg-secondary/60 py-1 pl-3.5 pr-1.5 text-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:border-sky-300/70 hover:shadow-[0_8px_30px_rgba(11,25,44,0.08)] motion-safe:hover:-translate-y-0.5"
                 >
                   <span className="min-w-0 break-all font-medium text-primary">
                     {admin.email}
@@ -182,7 +182,7 @@ export default function AdminRecipientsCard({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-primary"
+                      className="size-8 shrink-0 rounded-full text-muted-foreground transition-colors duration-200 ease-out hover:text-primary"
                       aria-label={`Send a new setup code to ${admin.email}`}
                       title="Send a new setup code"
                       disabled={addAdmin.isPending}
@@ -199,7 +199,7 @@ export default function AdminRecipientsCard({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-destructive"
+                      className="size-8 shrink-0 rounded-full text-muted-foreground transition-colors duration-200 ease-out hover:bg-destructive/10 hover:text-destructive"
                       aria-label={`Remove ${admin.email}`}
                       data-ocid="admin.recipient_remove"
                       onClick={() => setPendingRemoval(admin.email)}

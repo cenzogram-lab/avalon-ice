@@ -455,7 +455,7 @@ function ProductCard({
 
       {/* Deep coastal-navy card. `group` drives the hover glow and the ice
           reflection sweep below. */}
-      <div className="group relative z-10 flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-[#0C2B48] via-[#081B2E] to-[#0D3A63] p-6 pb-7 shadow-xl shadow-slate-950/20 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-sky-400/40 hover:shadow-2xl hover:shadow-sky-950/40">
+      <div className="group relative z-10 flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-[#0C2B48] via-[#081B2E] to-[#0D3A63] p-6 pb-7 shadow-xl shadow-slate-950/20 backdrop-blur-md transition-[transform,box-shadow,border-color] duration-300 ease-out hover:border-sky-400/40 hover:shadow-[0_0_25px_rgba(56,189,248,0.12)] motion-safe:hover:-translate-y-0.5">
         {/* Soft inner glow, revealed on hover */}
         <span
           aria-hidden="true"

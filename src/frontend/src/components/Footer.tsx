@@ -58,7 +58,7 @@ export default function Footer() {
                 <Link
                   to={link.to}
                   data-ocid={`footer.link.${link.key}`}
-                  className="inline-flex min-h-11 items-center font-body text-sm font-semibold text-lagoon underline-offset-4 transition-colors hover:text-navy hover:underline"
+                  className="inline-flex min-h-11 items-center font-body text-sm font-semibold text-lagoon underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 ease-out hover:text-navy hover:decoration-ice-deep"
                 >
                   {link.label}
                 </Link>
@@ -128,7 +128,7 @@ export default function Footer() {
             <Link
               to="/privacy"
               data-ocid="footer.privacy_link"
-              className="inline-flex min-h-11 items-center px-2 underline-offset-4 transition-colors hover:text-navy hover:underline"
+              className="inline-flex min-h-11 items-center px-2 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 ease-out hover:text-navy hover:decoration-ice-deep"
             >
               Privacy Policy
             </Link>
@@ -138,7 +138,7 @@ export default function Footer() {
             <Link
               to="/terms"
               data-ocid="footer.terms_link"
-              className="inline-flex min-h-11 items-center px-2 underline-offset-4 transition-colors hover:text-navy hover:underline"
+              className="inline-flex min-h-11 items-center px-2 underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 ease-out hover:text-navy hover:decoration-ice-deep"
             >
               Terms of Service
             </Link>

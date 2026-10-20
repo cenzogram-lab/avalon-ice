@@ -549,6 +549,7 @@ function OrderSection() {
             clip="b"
             fill="cream"
             shadow="ice"
+            hover="glow"
             innerClassName="p-6 sm:p-9"
           >
             {result ? (

@@ -4,6 +4,13 @@ import type { ReactNode } from "react";
 type ClipVariant = "a" | "b" | "c" | "d" | "banner";
 type FillVariant = "ice" | "cream" | "navy";
 type ShadowVariant = "ice" | "deep" | "navy" | "none";
+type HoverVariant = "lift" | "glow" | "none";
+
+const HOVER_CLASS: Record<HoverVariant, string> = {
+  lift: "ice-hover-lift",
+  glow: "ice-hover-glow",
+  none: "",
+};
 
 const FILL_CLASS: Record<FillVariant, string> = {
   ice: "",
@@ -28,6 +35,7 @@ export default function IceFrame({
   fill = "ice",
   shadow = "ice",
   cracks = false,
+  hover = "none",
   className,
   innerClassName,
   children,
@@ -36,13 +44,15 @@ export default function IceFrame({
   fill?: FillVariant;
   shadow?: ShadowVariant;
   cracks?: boolean;
+  /** Hover elevation: "lift" for compact cards, "glow" for form wrappers. */
+  hover?: HoverVariant;
   className?: string;
   innerClassName?: string;
   children: ReactNode;
 }) {
   const clipClass = `clip-ice-${clip}`;
   return (
-    <div className={cn(SHADOW_CLASS[shadow], className)}>
+    <div className={cn(SHADOW_CLASS[shadow], HOVER_CLASS[hover], className)}>
       <div className={cn("ice-frame-border", clipClass)}>
         <div className={cn("ice-frame-keyline", clipClass)}>
           <div
