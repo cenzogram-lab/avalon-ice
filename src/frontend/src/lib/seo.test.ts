@@ -27,7 +27,7 @@ describe("route metadata", () => {
     const byPath = Object.fromEntries(ROUTES.map((r) => [r.path, r.title]));
     expect(byPath).toMatchObject({
       "/": "Avalon Ice | Bulk & Packaged Ice Distribution · Cape May County, NJ",
-      "/shop": "Bulk Ice & Merchandisers | Pricing & Pallets · Avalon Ice",
+      "/shop": "Shop Avalon Ice | Bulk Ice, Pallets & Merchandisers",
       "/about":
         "About Avalon Ice | Shore Route Ice Distribution · Cape May County",
       "/privacy": "Privacy Policy | Avalon Ice",
@@ -59,6 +59,8 @@ describe("route metadata", () => {
       expect(all.toLowerCase()).toContain(term.toLowerCase());
     }
     expect(all).not.toMatch(/\b(16|40)\s?lb/i);
+    // /shop has no prices yet, so no title or description may promise them.
+    expect(all).not.toMatch(/pricing/i);
   });
 
   it("registers every route in the app router", () => {

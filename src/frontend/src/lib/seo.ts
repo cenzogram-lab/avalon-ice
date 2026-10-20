@@ -46,9 +46,9 @@ export const ROUTES: RouteSeo[] = [
   HOME,
   {
     path: "/shop",
-    title: "Bulk Ice & Merchandisers | Pricing & Pallets · Avalon Ice",
+    title: "Shop Avalon Ice | Bulk Ice, Pallets & Merchandisers",
     description:
-      "Shop Avalon Ice: 7 lb packaged ice, pallet-scale bulk orders and commercial ice merchandisers for Cape May County businesses. Online storefront coming soon.",
+      "Shop Avalon Ice for 7 lb bags of packaged ice, bulk ice pallets and commercial ice delivery with merchandisers across Cape May County. Storefront coming soon.",
     name: "Shop",
     priority: "0.8",
     changefreq: "weekly",
