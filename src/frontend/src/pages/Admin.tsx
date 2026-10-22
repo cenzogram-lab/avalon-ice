@@ -124,36 +124,54 @@ function download(filename: string, content: string, type: string) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * A spreadsheet runs a cell that starts with = + - @ (or a tab/CR) as a
+ * formula. These values come from the public forms, so such cells are
+ * prefixed with an apostrophe to keep them plain text when an admin opens
+ * the export.
+ */
+function csvCell(value: string): string {
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
 function toCsv(rows: Inquiry[]): string {
-  const headers = [
-    "ID",
-    "Type",
-    "Status",
-    "Name",
-    "Business",
-    "Email",
-    "Phone",
-    "Address",
-    "Date",
-    "Notes",
-  ];
-  const lines = rows.map((r) =>
+  const columns: [string, (r: Inquiry) => string][] = [
+    ["ID", (r) => r.id.toString()],
+    ["Type", (r) => INQUIRY_TYPE_LABELS[r.inquiryType]],
+    ["Status", (r) => INQUIRY_STATUS_LABELS[r.status]],
+    ["Date", (r) => formatDate(r.timestamp)],
+    ["Name", (r) => r.name],
+    ["Business", (r) => r.businessName ?? ""],
+    ["Email", (r) => r.email],
+    ["Phone", (r) => r.phone],
+    ["Address", (r) => r.address ?? ""],
+    ["Message", (r) => r.orderDetails.message ?? ""],
+    ["Weekly Usage", (r) => r.orderDetails.estimatedWeeklyUsage ?? ""],
+    ["Delivery Days", (r) => r.orderDetails.desiredDeliveryDays.join(" ")],
+    ["Delivery Frequency", (r) => r.orderDetails.deliveryFrequency ?? ""],
+    ["Event Date", (r) => r.orderDetails.eventDate ?? ""],
+    ["Delivery Window", (r) => r.orderDetails.deliveryTimeWindow ?? ""],
+    ["Venue", (r) => r.orderDetails.venueName ?? ""],
+    ["Total Bags", (r) => r.orderDetails.totalBags ?? ""],
+    ["Bag Type", (r) => r.orderDetails.iceType ?? ""],
     [
-      r.id.toString(),
-      INQUIRY_TYPE_LABELS[r.inquiryType],
-      INQUIRY_STATUS_LABELS[r.status],
-      r.name,
-      r.businessName ?? "",
-      r.email,
-      r.phone,
-      r.address ?? "",
-      formatDate(r.timestamp),
-      r.notes ?? "",
-    ]
-      .map((c) => `"${String(c).replace(/"/g, '""')}"`)
-      .join(","),
+      "On-site Freezer",
+      (r) =>
+        r.orderDetails.onSiteFreezer === undefined
+          ? ""
+          : r.orderDetails.onSiteFreezer
+            ? "Yes"
+            : "No",
+    ],
+    ["Notes", (r) => r.notes ?? ""],
+  ];
+  const header = columns.map(([name]) => csvCell(name)).join(",");
+  const lines = rows.map((r) =>
+    columns.map(([, get]) => csvCell(get(r))).join(","),
   );
-  return [headers.join(","), ...lines].join("\n");
+  // CRLF and a BOM so Excel reads the file as UTF-8 rows.
+  return `\uFEFF${[header, ...lines].join("\r\n")}`;
 }
 
 export default function Admin() {
@@ -585,16 +603,24 @@ function Dashboard({
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Inquiry | null>(null);
 
+  // Newest first, so a fresh lead is at the top rather than at the end of
+  // a growing list.
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return inquiries.filter((r) => {
-      if (filter !== "All" && r.inquiryType !== filter) return false;
-      if (!q) return true;
-      const business = (r.businessName ?? "").toLowerCase();
-      const phone = r.phone.toLowerCase();
-      const date = formatDateShort(r.timestamp).toLowerCase();
-      return business.includes(q) || phone.includes(q) || date.includes(q);
-    });
+    return inquiries
+      .filter((r) => {
+        if (filter !== "All" && r.inquiryType !== filter) return false;
+        if (!q) return true;
+        return [
+          r.name,
+          r.email,
+          r.businessName ?? "",
+          r.phone,
+          r.address ?? "",
+          formatDateShort(r.timestamp),
+        ].some((field) => field.toLowerCase().includes(q));
+      })
+      .sort((a, b) => (a.id === b.id ? 0 : a.id > b.id ? -1 : 1));
   }, [inquiries, filter, search]);
 
   const handleLogout = () => {
@@ -683,7 +709,8 @@ function Dashboard({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by business name, phone, or date…"
+            placeholder="Search by name, business, email, phone, or date…"
+            aria-label="Search inquiries"
             className="pl-9"
             data-ocid="admin.search_input"
           />
@@ -859,12 +886,15 @@ function InquiryModal({
   const [status, setStatus] = useState<InquiryStatus>(InquiryStatus.New);
   const [notes, setNotes] = useState("");
 
-  // Reset local state whenever a new inquiry is opened.
-  const [lastId, setLastId] = useState<string | null>(null);
-  if (inquiry && inquiry.id.toString() !== lastId) {
-    setLastId(inquiry.id.toString());
-    setStatus(inquiry.status);
-    setNotes(inquiry.notes ?? "");
+  // Start from the stored values every time the dialog opens, so edits
+  // abandoned with Cancel don't reappear on the next open.
+  const [openedFor, setOpenedFor] = useState<Inquiry | null>(null);
+  if (inquiry !== openedFor) {
+    setOpenedFor(inquiry);
+    if (inquiry) {
+      setStatus(inquiry.status);
+      setNotes(inquiry.notes ?? "");
+    }
   }
 
   const handleSave = () => {
@@ -904,8 +934,22 @@ function InquiryModal({
                 <Field label="Status">
                   <StatusBadge status={inquiry.status} />
                 </Field>
-                <Field label="Email">{inquiry.email}</Field>
-                <Field label="Phone">{inquiry.phone}</Field>
+                <Field label="Email">
+                  <a
+                    href={`mailto:${inquiry.email}`}
+                    className="break-all text-primary underline underline-offset-2"
+                  >
+                    {inquiry.email}
+                  </a>
+                </Field>
+                <Field label="Phone">
+                  <a
+                    href={`tel:${inquiry.phone.replace(/[^\d+]/g, "")}`}
+                    className="text-primary underline underline-offset-2"
+                  >
+                    {inquiry.phone}
+                  </a>
+                </Field>
                 {inquiry.businessName && (
                   <Field label="Business">{inquiry.businessName}</Field>
                 )}
@@ -974,6 +1018,7 @@ function InquiryModal({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Add internal notes…"
                   rows={3}
+                  maxLength={2000}
                   data-ocid="admin.notes_input"
                 />
               </div>

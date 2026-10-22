@@ -3,6 +3,7 @@ import About from "@/pages/About";
 import Admin from "@/pages/Admin";
 import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
+import NotFound from "@/pages/NotFound";
 import Shop from "@/pages/Shop";
 import {
   Outlet,
@@ -19,6 +20,7 @@ const rootRoute = createRootRoute({
       <Outlet />
     </Layout>
   ),
+  notFoundComponent: NotFound,
 });
 
 const indexRoute = createRoute({

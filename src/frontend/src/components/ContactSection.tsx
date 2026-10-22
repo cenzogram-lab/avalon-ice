@@ -42,7 +42,54 @@ function emailValid(email: string) {
 }
 
 function phoneValid(phone: string) {
-  return /^[+]?[\d\s().-]{7,}$/.test(phone);
+  return (
+    /^[+]?[\d\s().-]{7,}$/.test(phone) &&
+    /\d{7,}/.test(phone.replace(/\D/g, ""))
+  );
+}
+
+/** Today in the visitor's own time zone, as the date input's YYYY-MM-DD. */
+function todayIso() {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/**
+ * Lengths the form accepts, kept inside the backend's limits so a long
+ * paste is trimmed here instead of the whole submission being refused.
+ */
+const MAX = {
+  name: 120,
+  email: 254,
+  phone: 32,
+  short: 120,
+  text: 200,
+  zip: 10,
+  message: 5000,
+} as const;
+
+/** Ties a control to its label and, when invalid, to its error message. */
+function a11y(id: string, error?: string) {
+  return {
+    id,
+    "aria-invalid": error ? true : undefined,
+    "aria-describedby": error ? `${id}-error` : undefined,
+  } as const;
+}
+
+/**
+ * After a failed submit, bring the first problem into view and put the
+ * cursor in it, so the visitor isn't left at a button that did nothing.
+ */
+function focusFirstError(order: [string, string][], errors: object) {
+  const failed = order.find(([key]) => key in errors);
+  if (!failed) return;
+  requestAnimationFrame(() => {
+    const el = document.getElementById(failed[1]);
+    el?.scrollIntoView({ block: "center" });
+    el?.focus({ preventScroll: true });
+  });
 }
 
 function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
@@ -66,7 +113,18 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
     if (!emailValid(values.email)) next.email = "Enter a valid email address.";
     if (!values.message.trim()) next.message = "Please enter a message.";
     setErrors(next);
-    if (Object.keys(next).length > 0) return;
+    if (Object.keys(next).length > 0) {
+      focusFirstError(
+        [
+          ["name", "order-general-name"],
+          ["phone", "order-general-phone"],
+          ["email", "order-general-email"],
+          ["message", "order-general-message"],
+        ],
+        next,
+      );
+      return;
+    }
     submit.mutate(
       { type: InquiryType.General, values },
       { onSuccess: (res) => onSubmitted(res.referenceId) },
@@ -76,16 +134,27 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Full Name" error={errors.name}>
+        <Field id="order-general-name" label="Full Name" error={errors.name}>
           <Input
+            {...a11y("order-general-name", errors.name)}
+            autoComplete="name"
+            maxLength={MAX.name}
             data-ocid="order.general.name"
             value={values.name}
             onChange={(e) => set("name", e.target.value)}
             placeholder="Jane Doe"
           />
         </Field>
-        <Field label="Phone Number" error={errors.phone}>
+        <Field
+          id="order-general-phone"
+          label="Phone Number"
+          error={errors.phone}
+        >
           <Input
+            {...a11y("order-general-phone", errors.phone)}
+            type="tel"
+            autoComplete="tel"
+            maxLength={MAX.phone}
             data-ocid="order.general.phone"
             value={values.phone}
             onChange={(e) => set("phone", e.target.value)}
@@ -93,8 +162,15 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
           />
         </Field>
       </div>
-      <Field label="Email Address" error={errors.email}>
+      <Field
+        id="order-general-email"
+        label="Email Address"
+        error={errors.email}
+      >
         <Input
+          {...a11y("order-general-email", errors.email)}
+          autoComplete="email"
+          maxLength={MAX.email}
           data-ocid="order.general.email"
           type="email"
           value={values.email}
@@ -102,10 +178,11 @@ function GeneralForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
           placeholder="you@example.com"
         />
       </Field>
-      <Field label="Message" error={errors.message}>
+      <Field id="order-general-message" label="Message" error={errors.message}>
         <Textarea
+          {...a11y("order-general-message", errors.message)}
           data-ocid="order.general.message"
-          maxLength={5000}
+          maxLength={MAX.message}
           value={values.message}
           onChange={(e) => set("message", e.target.value)}
           placeholder="Tell us what you need…"
@@ -160,7 +237,23 @@ function WholesaleForm({
       next.desiredDeliveryDays = "Select at least one day.";
     if (!values.deliveryFrequency) next.deliveryFrequency = "Required.";
     setErrors(next);
-    if (Object.keys(next).length > 0) return;
+    if (Object.keys(next).length > 0) {
+      focusFirstError(
+        [
+          ["businessName", "order-wholesale-business"],
+          ["contactPerson", "order-wholesale-contact"],
+          ["phone", "order-wholesale-phone"],
+          ["email", "order-wholesale-email"],
+          ["street", "order-wholesale-street"],
+          ["city", "order-wholesale-city"],
+          ["zip", "order-wholesale-zip"],
+          ["desiredDeliveryDays", "wholesale-day-mon"],
+          ["deliveryFrequency", "order-wholesale-frequency"],
+        ],
+        next,
+      );
+      return;
+    }
     submit.mutate(
       { type: InquiryType.Wholesale, values },
       { onSuccess: (res) => onSubmitted(res.referenceId) },
@@ -170,16 +263,30 @@ function WholesaleForm({
   return (
     <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Business Name" error={errors.businessName}>
+        <Field
+          id="order-wholesale-business"
+          label="Business Name"
+          error={errors.businessName}
+        >
           <Input
+            {...a11y("order-wholesale-business", errors.businessName)}
+            autoComplete="organization"
+            maxLength={MAX.text}
             data-ocid="order.wholesale.business"
             value={values.businessName}
             onChange={(e) => set("businessName", e.target.value)}
             placeholder="Shoreline Restaurant Group"
           />
         </Field>
-        <Field label="Contact Person" error={errors.contactPerson}>
+        <Field
+          id="order-wholesale-contact"
+          label="Contact Person"
+          error={errors.contactPerson}
+        >
           <Input
+            {...a11y("order-wholesale-contact", errors.contactPerson)}
+            autoComplete="name"
+            maxLength={MAX.name}
             data-ocid="order.wholesale.contact"
             value={values.contactPerson}
             onChange={(e) => set("contactPerson", e.target.value)}
@@ -188,16 +295,23 @@ function WholesaleForm({
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Phone" error={errors.phone}>
+        <Field id="order-wholesale-phone" label="Phone" error={errors.phone}>
           <Input
+            {...a11y("order-wholesale-phone", errors.phone)}
+            type="tel"
+            autoComplete="tel"
+            maxLength={MAX.phone}
             data-ocid="order.wholesale.phone"
             value={values.phone}
             onChange={(e) => set("phone", e.target.value)}
             placeholder="(856) 555-0123"
           />
         </Field>
-        <Field label="Email" error={errors.email}>
+        <Field id="order-wholesale-email" label="Email" error={errors.email}>
           <Input
+            {...a11y("order-wholesale-email", errors.email)}
+            autoComplete="email"
+            maxLength={MAX.email}
             data-ocid="order.wholesale.email"
             type="email"
             value={values.email}
@@ -207,10 +321,13 @@ function WholesaleForm({
         </Field>
       </div>
       <Field
+        id="order-wholesale-usage"
         label="Estimated Weekly Ice Usage"
         error={errors.estimatedWeeklyUsage}
       >
         <Input
+          {...a11y("order-wholesale-usage", errors.estimatedWeeklyUsage)}
+          maxLength={MAX.short}
           data-ocid="order.wholesale.usage"
           value={values.estimatedWeeklyUsage}
           onChange={(e) => set("estimatedWeeklyUsage", e.target.value)}
@@ -218,24 +335,34 @@ function WholesaleForm({
         />
       </Field>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label="Street" error={errors.street}>
+        <Field id="order-wholesale-street" label="Street" error={errors.street}>
           <Input
+            {...a11y("order-wholesale-street", errors.street)}
+            autoComplete="street-address"
+            maxLength={MAX.text}
             data-ocid="order.wholesale.street"
             value={values.street}
             onChange={(e) => set("street", e.target.value)}
             placeholder="123 Ocean Ave"
           />
         </Field>
-        <Field label="City" error={errors.city}>
+        <Field id="order-wholesale-city" label="City" error={errors.city}>
           <Input
+            {...a11y("order-wholesale-city", errors.city)}
+            autoComplete="address-level2"
+            maxLength={MAX.short}
             data-ocid="order.wholesale.city"
             value={values.city}
             onChange={(e) => set("city", e.target.value)}
             placeholder="Avalon"
           />
         </Field>
-        <Field label="Zip" error={errors.zip}>
+        <Field id="order-wholesale-zip" label="Zip" error={errors.zip}>
           <Input
+            {...a11y("order-wholesale-zip", errors.zip)}
+            autoComplete="postal-code"
+            inputMode="numeric"
+            maxLength={MAX.zip}
             data-ocid="order.wholesale.zip"
             value={values.zip}
             onChange={(e) => set("zip", e.target.value)}
@@ -243,8 +370,21 @@ function WholesaleForm({
           />
         </Field>
       </div>
-      <Field label="Desired Delivery Days" error={errors.desiredDeliveryDays}>
-        <div className="flex flex-wrap gap-2">
+      <Field
+        id="order-wholesale-days"
+        group
+        label="Desired Delivery Days"
+        error={errors.desiredDeliveryDays}
+      >
+        <fieldset
+          aria-labelledby="order-wholesale-days-label"
+          aria-describedby={
+            errors.desiredDeliveryDays
+              ? "order-wholesale-days-error"
+              : undefined
+          }
+          className="m-0 flex min-w-0 flex-wrap gap-2 border-0 p-0"
+        >
           {DAYS.map((day) => (
             <label
               key={day}
@@ -260,14 +400,19 @@ function WholesaleForm({
               {day}
             </label>
           ))}
-        </div>
+        </fieldset>
       </Field>
-      <Field label="Delivery Frequency" error={errors.deliveryFrequency}>
+      <Field
+        id="order-wholesale-frequency"
+        label="Delivery Frequency"
+        error={errors.deliveryFrequency}
+      >
         <Select
           value={values.deliveryFrequency}
           onValueChange={(v) => set("deliveryFrequency", v)}
         >
           <SelectTrigger
+            {...a11y("order-wholesale-frequency", errors.deliveryFrequency)}
             data-ocid="order.wholesale.frequency"
             className="w-full"
           >
@@ -314,11 +459,28 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
     if (!phoneValid(values.phone)) next.phone = "Enter a valid phone number.";
     if (!emailValid(values.email)) next.email = "Enter a valid email address.";
     if (!values.eventDate) next.eventDate = "Required.";
+    else if (values.eventDate < todayIso())
+      next.eventDate = "Choose today or a later date.";
     if (!values.venueName.trim()) next.venueName = "Required.";
     if (!values.totalBags.trim()) next.totalBags = "Required.";
     if (!values.iceType) next.iceType = "Required.";
     setErrors(next);
-    if (Object.keys(next).length > 0) return;
+    if (Object.keys(next).length > 0) {
+      focusFirstError(
+        [
+          ["hostName", "order-event-host"],
+          ["contactPerson", "order-event-contact"],
+          ["phone", "order-event-phone"],
+          ["email", "order-event-email"],
+          ["eventDate", "order-event-date"],
+          ["venueName", "order-event-venue"],
+          ["totalBags", "order-event-bags"],
+          ["iceType", "order-event-ice-type"],
+        ],
+        next,
+      );
+      return;
+    }
     submit.mutate(
       { type: InquiryType.Event, values },
       { onSuccess: (res) => onSubmitted(res.referenceId) },
@@ -328,16 +490,30 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Host / Organization Name" error={errors.hostName}>
+        <Field
+          id="order-event-host"
+          label="Host / Organization Name"
+          error={errors.hostName}
+        >
           <Input
+            {...a11y("order-event-host", errors.hostName)}
+            autoComplete="organization"
+            maxLength={MAX.text}
             data-ocid="order.event.host"
             value={values.hostName}
             onChange={(e) => set("hostName", e.target.value)}
             placeholder="Avalon Beach Festival"
           />
         </Field>
-        <Field label="Contact Person" error={errors.contactPerson}>
+        <Field
+          id="order-event-contact"
+          label="Contact Person"
+          error={errors.contactPerson}
+        >
           <Input
+            {...a11y("order-event-contact", errors.contactPerson)}
+            autoComplete="name"
+            maxLength={MAX.name}
             data-ocid="order.event.contact"
             value={values.contactPerson}
             onChange={(e) => set("contactPerson", e.target.value)}
@@ -346,16 +522,23 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Phone" error={errors.phone}>
+        <Field id="order-event-phone" label="Phone" error={errors.phone}>
           <Input
+            {...a11y("order-event-phone", errors.phone)}
+            type="tel"
+            autoComplete="tel"
+            maxLength={MAX.phone}
             data-ocid="order.event.phone"
             value={values.phone}
             onChange={(e) => set("phone", e.target.value)}
             placeholder="(856) 555-0123"
           />
         </Field>
-        <Field label="Email" error={errors.email}>
+        <Field id="order-event-email" label="Email" error={errors.email}>
           <Input
+            {...a11y("order-event-email", errors.email)}
+            autoComplete="email"
+            maxLength={MAX.email}
             data-ocid="order.event.email"
             type="email"
             value={values.email}
@@ -365,16 +548,28 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Event Date" error={errors.eventDate}>
+        <Field
+          id="order-event-date"
+          label="Event Date"
+          error={errors.eventDate}
+        >
           <Input
+            {...a11y("order-event-date", errors.eventDate)}
             data-ocid="order.event.date"
             type="date"
+            min={todayIso()}
             value={values.eventDate}
             onChange={(e) => set("eventDate", e.target.value)}
           />
         </Field>
-        <Field label="Delivery Time Window" error={errors.deliveryTimeWindow}>
+        <Field
+          id="order-event-window"
+          label="Delivery Time Window"
+          error={errors.deliveryTimeWindow}
+        >
           <Input
+            {...a11y("order-event-window", errors.deliveryTimeWindow)}
+            maxLength={MAX.short}
             data-ocid="order.event.window"
             value={values.deliveryTimeWindow}
             onChange={(e) => set("deliveryTimeWindow", e.target.value)}
@@ -383,16 +578,29 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Venue Name" error={errors.venueName}>
+        <Field
+          id="order-event-venue"
+          label="Venue Name"
+          error={errors.venueName}
+        >
           <Input
+            {...a11y("order-event-venue", errors.venueName)}
+            maxLength={MAX.text}
             data-ocid="order.event.venue"
             value={values.venueName}
             onChange={(e) => set("venueName", e.target.value)}
             placeholder="Avalon Community Hall"
           />
         </Field>
-        <Field label="Venue Address" error={errors.venueAddress}>
+        <Field
+          id="order-event-venue-address"
+          label="Venue Address"
+          error={errors.venueAddress}
+        >
           <Input
+            {...a11y("order-event-venue-address", errors.venueAddress)}
+            autoComplete="street-address"
+            maxLength={MAX.text}
             data-ocid="order.event.venue_address"
             value={values.venueAddress}
             onChange={(e) => set("venueAddress", e.target.value)}
@@ -401,20 +609,34 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Total Bags" error={errors.totalBags}>
+        <Field
+          id="order-event-bags"
+          label="Total Bags"
+          error={errors.totalBags}
+        >
           <Input
+            {...a11y("order-event-bags", errors.totalBags)}
+            maxLength={MAX.short}
             data-ocid="order.event.bags"
             value={values.totalBags}
             onChange={(e) => set("totalBags", e.target.value)}
             placeholder="e.g. 60 bags"
           />
         </Field>
-        <Field label="Bag Type" error={errors.iceType}>
+        <Field
+          id="order-event-ice-type"
+          label="Bag Type"
+          error={errors.iceType}
+        >
           <Select
             value={values.iceType}
             onValueChange={(v) => set("iceType", v)}
           >
-            <SelectTrigger data-ocid="order.event.ice_type" className="w-full">
+            <SelectTrigger
+              {...a11y("order-event-ice-type", errors.iceType)}
+              data-ocid="order.event.ice_type"
+              className="w-full"
+            >
               <SelectValue placeholder="Select bag type" />
             </SelectTrigger>
             <SelectContent>
@@ -443,21 +665,41 @@ function EventForm({ onSubmitted }: { onSubmitted: (ref: string) => void }) {
   );
 }
 
+/**
+ * A labelled control. `id` is the control's id: the label points at it and
+ * the error message gets `${id}-error`, which the control's
+ * aria-describedby (see `a11y`) refers to. A `group` (the delivery-day
+ * checkboxes) is named by the label's id instead.
+ */
 function Field({
+  id,
   label,
   error,
+  group,
   children,
 }: {
+  id: string;
   label: string;
   error?: string;
+  group?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div className="grid gap-1.5">
-      <Label className="font-body font-semibold text-navy">{label}</Label>
+      <Label
+        id={`${id}-label`}
+        htmlFor={group ? undefined : id}
+        className="font-body font-semibold text-navy"
+      >
+        {label}
+      </Label>
       {children}
       {error && (
-        <p data-ocid="order.error" className="text-sm text-destructive">
+        <p
+          id={`${id}-error`}
+          data-ocid="order.error"
+          className="text-sm text-destructive"
+        >
           {error}
         </p>
       )}

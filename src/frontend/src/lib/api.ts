@@ -16,6 +16,11 @@ import { useEffect } from "react";
  * The backend assigns the real id/timestamp on submit; we seed id 0 and
  * the current time so the shape is complete for the wire call.
  */
+// Every typed value is trimmed; an optional field left blank is sent as
+// absent rather than as an empty string.
+const clean = (value: string) => value.trim();
+const optional = (value: string) => value.trim() || undefined;
+
 export function buildInquiry(form: InquiryFormValues): Inquiry {
   const timestamp = BigInt(Date.now());
   const base = {
@@ -29,30 +34,33 @@ export function buildInquiry(form: InquiryFormValues): Inquiry {
     return {
       ...base,
       inquiryType: InquiryType.General,
-      name: v.name,
-      email: v.email,
-      phone: v.phone,
-      orderDetails: { message: v.message, desiredDeliveryDays: [] },
+      name: clean(v.name),
+      email: clean(v.email),
+      phone: clean(v.phone),
+      orderDetails: { message: clean(v.message), desiredDeliveryDays: [] },
     };
   }
 
   if (form.type === InquiryType.Wholesale) {
     const v = form.values;
-    const address = [v.street, v.city, v.zip].filter(Boolean).join(", ");
+    const address = [v.street, v.city, v.zip]
+      .map(clean)
+      .filter(Boolean)
+      .join(", ");
     return {
       ...base,
       inquiryType: InquiryType.Wholesale,
-      name: v.contactPerson,
-      businessName: v.businessName,
-      email: v.email,
-      phone: v.phone,
-      address,
+      name: clean(v.contactPerson),
+      businessName: optional(v.businessName),
+      email: clean(v.email),
+      phone: clean(v.phone),
+      address: optional(address),
       orderDetails: {
-        businessName: v.businessName,
-        estimatedWeeklyUsage: v.estimatedWeeklyUsage,
-        deliveryAddress: address,
+        businessName: optional(v.businessName),
+        estimatedWeeklyUsage: optional(v.estimatedWeeklyUsage),
+        deliveryAddress: optional(address),
         desiredDeliveryDays: v.desiredDeliveryDays,
-        deliveryFrequency: v.deliveryFrequency,
+        deliveryFrequency: optional(v.deliveryFrequency),
       },
     };
   }
@@ -61,31 +69,33 @@ export function buildInquiry(form: InquiryFormValues): Inquiry {
   return {
     ...base,
     inquiryType: InquiryType.Event,
-    name: v.contactPerson,
-    businessName: v.hostName,
-    email: v.email,
-    phone: v.phone,
-    address: v.venueAddress,
+    name: clean(v.contactPerson),
+    businessName: optional(v.hostName),
+    email: clean(v.email),
+    phone: clean(v.phone),
+    address: optional(v.venueAddress),
     orderDetails: {
-      businessName: v.hostName,
-      eventDate: v.eventDate,
-      deliveryTimeWindow: v.deliveryTimeWindow,
-      venueName: v.venueName,
-      deliveryAddress: v.venueAddress,
-      totalBags: v.totalBags,
-      iceType: v.iceType,
+      businessName: optional(v.hostName),
+      eventDate: optional(v.eventDate),
+      deliveryTimeWindow: optional(v.deliveryTimeWindow),
+      venueName: optional(v.venueName),
+      deliveryAddress: optional(v.venueAddress),
+      totalBags: optional(v.totalBags),
+      iceType: optional(v.iceType),
       onSiteFreezer: v.onSiteFreezer,
       desiredDeliveryDays: [],
     },
   };
 }
 
+const BACKEND_LOADING = "Backend is still loading";
+
 /** Submit an inquiry and return a human-friendly reference id. */
 export function useSubmitInquiry() {
   const { actor, isFetching } = useActor(createActor);
   return useMutation({
     mutationFn: async (form: InquiryFormValues): Promise<SubmissionResult> => {
-      if (!actor || isFetching) throw new Error("Backend is still loading");
+      if (!actor || isFetching) throw new Error(BACKEND_LOADING);
       const inquiry = buildInquiry(form);
       const id = await actor.submitInquiry(inquiry);
       const stored = { ...inquiry, id };
@@ -93,9 +103,16 @@ export function useSubmitInquiry() {
       // stored, so there is nothing more to do here.
       return { referenceId: `AVL-${id.toString()}`, inquiry: stored };
     },
-    // One retry absorbs a transient blip without the visitor re-typing.
-    retry: 1,
-    retryDelay: 1200,
+    // Only a submit that never left the browser (the backend connection
+    // was still starting) is retried automatically. Once the call is sent,
+    // a lost reply doesn't mean nothing was saved, and a blind retry would
+    // file the inquiry (and email the team) twice; the visitor gets the
+    // error with call/email fallbacks and decides instead.
+    retry: (failures, error) =>
+      failures < 5 &&
+      error instanceof Error &&
+      error.message === BACKEND_LOADING,
+    retryDelay: 1000,
   });
 }
 

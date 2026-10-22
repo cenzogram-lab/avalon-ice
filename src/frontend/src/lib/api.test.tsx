@@ -1,11 +1,12 @@
 import { InquiryStatus, InquiryType } from "@/lib/types";
 import type { Inquiry } from "@/lib/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const actor = vi.hoisted(() => ({
+  submitInquiry: vi.fn(),
   listInquiriesPage: vi.fn(),
   getInquiryCount: vi.fn(),
   isAuthenticated: vi.fn(),
@@ -14,7 +15,12 @@ vi.mock("@caffeineai/core-infrastructure", () => ({
   useActor: () => ({ actor, isFetching: false }),
 }));
 
-import { useInquiries, useIsAuthenticated } from "@/lib/api";
+import {
+  buildInquiry,
+  useInquiries,
+  useIsAuthenticated,
+  useSubmitInquiry,
+} from "@/lib/api";
 
 const row = (id: number): Inquiry => ({
   id: BigInt(id),
@@ -108,5 +114,67 @@ describe("useIsAuthenticated", () => {
       timeout: 4000,
     });
     expect(actor.isAuthenticated).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("buildInquiry", () => {
+  it("trims values and leaves blank optional fields out", () => {
+    const inquiry = buildInquiry({
+      type: InquiryType.Event,
+      values: {
+        hostName: "  Beach Fest ",
+        contactPerson: " Jane ",
+        phone: " 856 555 0103 ",
+        email: " jane@fest.org ",
+        eventDate: "2030-07-04",
+        deliveryTimeWindow: "   ",
+        venueName: "Hall",
+        venueAddress: "",
+        totalBags: "60",
+        iceType: "7 lb",
+        onSiteFreezer: true,
+      },
+    });
+    expect(inquiry.name).toBe("Jane");
+    expect(inquiry.email).toBe("jane@fest.org");
+    expect(inquiry.businessName).toBe("Beach Fest");
+    expect(inquiry.address).toBeUndefined();
+    expect(inquiry.orderDetails.deliveryTimeWindow).toBeUndefined();
+    expect(inquiry.orderDetails.onSiteFreezer).toBe(true);
+  });
+});
+
+describe("useSubmitInquiry", () => {
+  const form = {
+    type: InquiryType.General,
+    values: {
+      name: "Jo",
+      phone: "8565550100",
+      email: "jo@x.com",
+      message: "Hi",
+    },
+  } as const;
+
+  it("never re-sends a submit that reached the backend", async () => {
+    const { wrapper } = setup();
+    actor.submitInquiry.mockRejectedValue(new Error("Request timed out"));
+    const { result } = renderHook(() => useSubmitInquiry(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync(form).catch(() => {});
+    });
+    // One call only: a lost reply may still mean the inquiry was saved.
+    expect(actor.submitInquiry).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+
+  it("returns an AVL reference on success", async () => {
+    const { wrapper } = setup();
+    actor.submitInquiry.mockResolvedValue(41n);
+    const { result } = renderHook(() => useSubmitInquiry(), { wrapper });
+    let ref = "";
+    await act(async () => {
+      ref = (await result.current.mutateAsync(form)).referenceId;
+    });
+    expect(ref).toBe("AVL-41");
   });
 });
