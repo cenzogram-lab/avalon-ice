@@ -123,6 +123,56 @@ function MoreMenu() {
 }
 
 /**
+ * The phone link row scrolls sideways. Fade whichever edge has more links
+ * past it, so the row reads as scrollable, and bring the current page's
+ * link into view (on /contact it would otherwise start off-screen).
+ */
+function useLinkStrip(pathname: string) {
+  const ref = useRef<HTMLElement>(null);
+  const [edges, setEdges] = useState({ start: false, end: false });
+
+  useEffect(() => {
+    const nav = ref.current;
+    if (!nav) return;
+    const measure = () => {
+      const max = nav.scrollWidth - nav.clientWidth;
+      setEdges({ start: nav.scrollLeft > 2, end: nav.scrollLeft < max - 2 });
+    };
+    measure();
+    nav.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      nav.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  // `pathname` re-runs this after navigation; the current link is read
+  // from the DOM, which has re-rendered by then.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname re-runs this on route changes
+  useEffect(() => {
+    const nav = ref.current;
+    const link = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!nav || !link || nav.scrollWidth <= nav.clientWidth) return;
+    const left = link.offsetLeft - nav.offsetLeft;
+    const right = left + link.offsetWidth;
+    if (left < nav.scrollLeft || right > nav.scrollLeft + nav.clientWidth) {
+      nav.scrollLeft = left - (nav.clientWidth - link.offsetWidth) / 2;
+    }
+  }, [pathname]);
+
+  const fade = 28;
+  const mask =
+    edges.start || edges.end
+      ? `linear-gradient(to right, ${edges.start ? "transparent" : "#000"} 0, #000 ${edges.start ? fade : 0}px, #000 calc(100% - ${edges.end ? fade : 0}px), ${edges.end ? "transparent" : "#000"} 100%)`
+      : undefined;
+  return {
+    ref,
+    style: mask ? { maskImage: mask, WebkitMaskImage: mask } : undefined,
+  };
+}
+
+/**
  * A flat bar of full-height cells split by hairline dividers: brand, call,
  * page links and "More", then socials and the quote action. Below xl the
  * page links drop to a second, side-scrolling row so every link stays one
@@ -130,6 +180,7 @@ function MoreMenu() {
  */
 export default function Navbar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const strip = useLinkStrip(pathname);
 
   return (
     <header
@@ -188,7 +239,9 @@ export default function Navbar() {
 
         <div className="flex h-12 w-full items-stretch border-t border-navy/15 xl:h-16 xl:w-auto xl:border-t-0">
           <nav
+            ref={strip.ref}
             aria-label="Primary"
+            style={strip.style}
             className="no-scrollbar flex min-w-0 flex-1 items-stretch overflow-x-auto xl:overflow-visible"
           >
             {NAV_LINKS.map((link) => {

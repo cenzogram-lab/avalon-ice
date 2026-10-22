@@ -101,7 +101,7 @@ export default function ComingSoonRibbon({
                 className={cn(
                   "eyebrow whitespace-nowrap",
                   compact
-                    ? "text-[0.55rem] tracking-[0.12em] sm:text-[0.65rem]"
+                    ? "text-[0.7rem] tracking-[0.08em] sm:text-xs sm:tracking-[0.12em]"
                     : "tracking-[0.14em] sm:tracking-[0.22em]",
                 )}
               >

@@ -179,7 +179,8 @@ export default function Admin() {
   // activation and dashboard alerts all report through it.
   return (
     <>
-      <Toaster position="top-right" />
+      {/* Bottom, so a toast never covers the sticky navbar on a phone. */}
+      <Toaster position="bottom-right" />
       <AdminContent />
     </>
   );
@@ -311,7 +312,7 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
               type="button"
               variant="link"
               size="sm"
-              className="mt-2 w-full"
+              className="mt-2 min-h-11 w-full"
               onClick={backToLogin}
               data-ocid="admin.back_to_login"
             >
@@ -321,7 +322,13 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
         </CardContent>
       </Card>
 
-      <Button asChild variant="ghost" size="sm" data-ocid="admin.back_link">
+      <Button
+        asChild
+        variant="ghost"
+        size="sm"
+        className="min-h-11"
+        data-ocid="admin.back_link"
+      >
         <Link to="/">← Back to site</Link>
       </Button>
     </div>
@@ -393,6 +400,7 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
       <Button
         type="submit"
         disabled={setupPassword.isPending}
+        className="h-11"
         data-ocid="admin.setup_submit"
       >
         {setupPassword.isPending ? (
@@ -467,7 +475,12 @@ function LoginForm({ onToken }: { onToken: (t: string) => void }) {
           data-ocid="admin.login_password"
         />
       </div>
-      <Button type="submit" disabled={busy} data-ocid="admin.login_submit">
+      <Button
+        type="submit"
+        disabled={busy}
+        className="h-11"
+        data-ocid="admin.login_submit"
+      >
         {busy ? (
           <Loader2 className="mr-2 size-4 animate-spin" />
         ) : (
@@ -573,6 +586,7 @@ function ActivateInviteForm({
       <Button
         type="submit"
         disabled={activate.isPending}
+        className="h-11"
         data-ocid="admin.activate_submit"
       >
         {activate.isPending ? (
@@ -664,9 +678,12 @@ function Dashboard({
             {inquiries.length} total submission
             {inquiries.length === 1 ? "" : "s"}
             {session && (
-              <span className="break-all" data-ocid="admin.signed_in_as">
-                {" "}
-                · Signed in as {session.email}
+              <span
+                className="block [overflow-wrap:anywhere] sm:inline"
+                data-ocid="admin.signed_in_as"
+              >
+                <span className="hidden sm:inline"> · </span>
+                Signed in as {session.email}
               </span>
             )}
           </p>
@@ -677,6 +694,7 @@ function Dashboard({
             size="sm"
             onClick={() => handleExport("csv")}
             data-ocid="admin.export_csv"
+            className="max-sm:min-h-11"
           >
             <FileSpreadsheet className="mr-2 size-4" />
             Export CSV
@@ -686,6 +704,7 @@ function Dashboard({
             size="sm"
             onClick={() => handleExport("json")}
             data-ocid="admin.export_json"
+            className="max-sm:min-h-11"
           >
             <FileJson className="mr-2 size-4" />
             Export JSON
@@ -696,6 +715,7 @@ function Dashboard({
             onClick={handleLogout}
             disabled={logout.isPending}
             data-ocid="admin.logout_button"
+            className="max-sm:min-h-11"
           >
             <LogOut className="mr-2 size-4" />
             Sign out
@@ -709,7 +729,7 @@ function Dashboard({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, business, email, phone, or date…"
+            placeholder="Search name, email, phone…"
             aria-label="Search inquiries"
             className="pl-9"
             data-ocid="admin.search_input"
@@ -730,6 +750,8 @@ function Dashboard({
               variant={filter === t ? "default" : "outline"}
               size="sm"
               onClick={() => setFilter(t)}
+              aria-pressed={filter === t}
+              className="max-sm:min-h-11 max-sm:min-w-11"
               data-ocid={`admin.filter.${t.toLowerCase()}`}
             >
               {t === "All" ? "All" : INQUIRY_TYPE_LABELS[t]}
@@ -774,61 +796,100 @@ function Dashboard({
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Business</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead className="text-right">View</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((r, i) => (
-                  <TableRow
-                    key={r.id.toString()}
-                    className="cursor-pointer"
-                    onClick={() => setSelected(r)}
-                    data-ocid={`admin.row.${i + 1}`}
-                  >
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {INQUIRY_TYPE_LABELS[r.inquiryType]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={r.status} />
-                    </TableCell>
-                    <TableCell className="font-medium">{r.name}</TableCell>
-                    <TableCell>{r.businessName ?? "—"}</TableCell>
-                    <TableCell>{r.phone}</TableCell>
-                    <TableCell className="whitespace-nowrap">
+        <>
+          {/* Phones get a card per inquiry: the table would need sideways
+            scrolling to show who each inquiry is from. */}
+          <ul className="flex flex-col gap-3 sm:hidden" data-ocid="admin.cards">
+            {filtered.map((r, i) => (
+              <li key={r.id.toString()}>
+                <button
+                  type="button"
+                  onClick={() => setSelected(r)}
+                  data-ocid={`admin.card.${i + 1}`}
+                  className="flex w-full flex-col gap-2 rounded-xl border border-border bg-card p-4 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="min-w-0 font-medium text-primary [overflow-wrap:anywhere]">
+                      {r.name}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">
                       {formatDateShort(r.timestamp)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelected(r);
-                        }}
-                        data-ocid={`admin.view_button.${i + 1}`}
-                      >
-                        View
-                      </Button>
-                    </TableCell>
+                    </span>
+                  </span>
+                  <span className="flex flex-wrap items-center gap-2">
+                    <Badge variant="secondary">
+                      {INQUIRY_TYPE_LABELS[r.inquiryType]}
+                    </Badge>
+                    <StatusBadge status={r.status} />
+                  </span>
+                  {r.businessName && (
+                    <span className="text-sm text-muted-foreground [overflow-wrap:anywhere]">
+                      {r.businessName}
+                    </span>
+                  )}
+                  <span className="text-sm text-muted-foreground">
+                    {r.phone}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden overflow-hidden rounded-xl border border-border bg-card sm:block">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Business</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">View</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((r, i) => (
+                    <TableRow
+                      key={r.id.toString()}
+                      className="cursor-pointer"
+                      onClick={() => setSelected(r)}
+                      data-ocid={`admin.row.${i + 1}`}
+                    >
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {INQUIRY_TYPE_LABELS[r.inquiryType]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={r.status} />
+                      </TableCell>
+                      <TableCell className="font-medium">{r.name}</TableCell>
+                      <TableCell>{r.businessName ?? "—"}</TableCell>
+                      <TableCell>{r.phone}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {formatDateShort(r.timestamp)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(r);
+                          }}
+                          data-ocid={`admin.view_button.${i + 1}`}
+                        >
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       <section

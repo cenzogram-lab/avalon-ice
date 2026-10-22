@@ -83,7 +83,9 @@ describe("Home", () => {
     const { container } = renderWithRouter(<Home />);
 
     // Wait for the lazy map to mount so its labels are part of the DOM.
-    await screen.findByText("Ocean View HQ");
+    // Its chunk loads on demand, which can take over the 1s default while
+    // the whole suite runs in parallel.
+    await screen.findByText("Ocean View HQ", undefined, { timeout: 8000 });
     expect(container.textContent ?? "").not.toMatch(/Woodbine/i);
   });
 });

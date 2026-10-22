@@ -59,7 +59,7 @@ export default function LegalPage({
             href={`#${s.id}`}
             className="flex min-h-11 items-baseline gap-3 rounded-md px-2 py-2 font-body text-sm text-lagoon transition-colors hover:bg-ice-light/60 hover:text-navy"
           >
-            <span className="w-6 shrink-0 font-bold tabular-nums text-navy/60">
+            <span className="w-6 shrink-0 font-bold tabular-nums text-navy/80">
               {String(i + 1).padStart(2, "0")}
             </span>
             <span>{s.title}</span>
@@ -127,7 +127,7 @@ export default function LegalPage({
             </nav>
           </aside>
 
-          <article className="min-w-0">
+          <article className="min-w-0 max-w-[44rem]">
             {sections.map((s, i) => (
               <section
                 key={s.id}

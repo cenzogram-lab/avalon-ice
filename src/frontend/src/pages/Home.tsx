@@ -150,8 +150,16 @@ function Hero() {
           >
             Sales@AvalonIce.co
           </a>
-          <span className="text-ice-deep">|</span>
-          <span>(856) 308-9986</span>
+          <span aria-hidden="true" className="hidden text-ice-deep sm:inline">
+            |
+          </span>
+          <a
+            href="tel:8563089986"
+            data-ocid="hero.phone"
+            className="inline-flex min-h-12 items-center hover:underline"
+          >
+            (856) 308-9986
+          </a>
         </div>
       </div>
     </section>
@@ -661,9 +669,9 @@ function ShopTeaser() {
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* Copy and CTA ride a cream card so they stay legible over video */}
         <div className="ice-shadow max-w-md border-[4px] border-navy bg-cream-bright/95 px-5 py-6 text-center backdrop-blur-[2px] sm:px-7">
-          <h3 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
+          <h2 className="text-block-navy text-2xl uppercase leading-tight sm:text-3xl">
             Shore Gear, Straight From the Ice House
-          </h3>
+          </h2>
           <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-relaxed text-lagoon sm:text-base">
             Tees, hoodies, hats, and cooler gear stamped with the egret —
             alongside packaged and bulk ice, ready to order the moment the doors

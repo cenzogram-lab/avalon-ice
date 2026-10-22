@@ -51,14 +51,14 @@ export default function Footer() {
 
         {/* Site navigation: the same primary pages as the navbar */}
         <nav aria-label="Footer" data-ocid="footer.nav">
-          <h3 className="eyebrow">Explore</h3>
+          <h2 className="eyebrow">Explore</h2>
           <ul className="mt-3 grid gap-0.5">
             {FOOTER_LINKS.map((link) => (
               <li key={link.to}>
                 <Link
                   to={link.to}
                   data-ocid={`footer.link.${link.key}`}
-                  className="inline-flex min-h-11 items-center font-body text-sm font-semibold text-lagoon underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 ease-out hover:text-navy hover:decoration-ice-deep"
+                  className="inline-flex min-h-11 min-w-11 items-center font-body text-sm font-semibold text-lagoon underline decoration-transparent decoration-2 underline-offset-4 transition-colors duration-200 ease-out hover:text-navy hover:decoration-ice-deep"
                 >
                   {link.label}
                 </Link>
@@ -69,7 +69,7 @@ export default function Footer() {
 
         {/* Wholesale & partnerships */}
         <div className="md:justify-self-end">
-          <h3 className="eyebrow">Wholesale &amp; Partnerships</h3>
+          <h2 className="eyebrow">Wholesale &amp; Partnerships</h2>
           <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-lagoon">
             Standing orders, event supply, and route partnerships — let's talk
             before the season starts.
@@ -149,7 +149,7 @@ export default function Footer() {
           <Link
             to="/admin"
             data-ocid="footer.admin_link"
-            className="font-body text-[0.65rem] text-lagoon-soft hover:text-navy"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 font-body text-xs text-lagoon-soft hover:text-navy"
           >
             Admin
           </Link>

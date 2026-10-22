@@ -831,8 +831,16 @@
     --sidebar-ring: 0.78 0.16 85;
   }
 
+  /* Keeps keyboard focus and in-page jumps from landing under the sticky
+     navbar (two rows below xl, one above). */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+  }
+  @media (min-width: 80rem) {
+    html {
+      scroll-padding-top: 5rem;
+    }
   }
 
   * {
@@ -1118,7 +1126,7 @@
     color: #0c3552;
     padding: 0.32rem 0.85rem;
     font-family: var(--font-body);
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;

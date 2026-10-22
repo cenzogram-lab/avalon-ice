@@ -53,6 +53,8 @@ export default function BrowserAlertsCard({
             checked={enabled}
             disabled={permission === "unsupported"}
             onCheckedChange={onChange}
+            // A 44px touch area around the small switch.
+            className="relative after:absolute after:-inset-x-1 after:-inset-y-2.5 after:content-['']"
             data-ocid="admin.browser_alerts_toggle"
           />
         </div>

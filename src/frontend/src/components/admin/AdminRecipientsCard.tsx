@@ -56,6 +56,24 @@ import { toast } from "sonner";
 export const RECIPIENTS_HELPER =
   "Authorized emails receive instant email notifications on new form submissions and have sign-in access to this dashboard.";
 
+/**
+ * Mail-gateway errors in plain words. The raw text names server settings
+ * an owner can't act on; the common cases get an explanation instead, and
+ * anything else is shown as received.
+ */
+export function friendlyEmailError(error: string): string {
+  if (/gateway is not configured|INTEGRATIONS_GATEWAY/i.test(error)) {
+    return "Email sending isn't switched on for this site yet (it needs a Caffeine Plus or Pro plan with email enabled). New inquiries are still saved here.";
+  }
+  if (/Hourly notification limit/i.test(error)) {
+    return "The hourly email limit was reached, so some alerts were skipped. Every inquiry is still saved here.";
+  }
+  if (/No active admin accounts/i.test(error)) {
+    return "There is no activated admin to email yet.";
+  }
+  return error;
+}
+
 function formatWhen(ns: bigint | undefined): string | null {
   if (ns === undefined || ns === 0n) return null;
   return new Date(Number(ns / 1_000_000n)).toLocaleString();
@@ -239,7 +257,7 @@ export default function AdminRecipientsCard({
           <Button
             type="submit"
             disabled={addAdmin.isPending}
-            className="min-h-10"
+            className="min-h-11"
             data-ocid="admin.recipient_add"
           >
             {addAdmin.isPending ? (
@@ -267,7 +285,8 @@ export default function AdminRecipientsCard({
                   <span className="font-semibold text-destructive">
                     Last email attempt failed
                   </span>
-                  {lastAttempt ? ` (${lastAttempt})` : ""}: {delivery.lastError}
+                  {lastAttempt ? ` (${lastAttempt})` : ""}:{" "}
+                  {friendlyEmailError(delivery.lastError)}
                 </>
               ) : lastSuccess ? (
                 <>Last notification email sent {lastSuccess}.</>
@@ -282,7 +301,7 @@ export default function AdminRecipientsCard({
             size="sm"
             onClick={handleTest}
             disabled={sendTest.isPending}
-            className="min-h-9 shrink-0"
+            className="min-h-9 shrink-0 max-sm:min-h-11"
             data-ocid="admin.recipient_test"
           >
             {sendTest.isPending ? (
@@ -354,7 +373,7 @@ export default function AdminRecipientsCard({
               </div>
               {!invite.emailed && invite.emailError && (
                 <p className="text-xs text-muted-foreground">
-                  Email error: {invite.emailError}
+                  Why: {friendlyEmailError(invite.emailError)}
                 </p>
               )}
               <DialogFooter>
