@@ -25,6 +25,7 @@ beforeEach(() => {
   for (const fn of Object.values(actor)) fn.mockReset();
   actor.needsInitialSetup.mockResolvedValue(false);
   window.sessionStorage.clear();
+  window.history.replaceState(null, "", "/");
 });
 
 async function signIn(email: string, password: string) {
@@ -71,21 +72,50 @@ describe("Admin login", () => {
     );
   });
 
-  it("only offers first-time setup while the primary password is unset", async () => {
+  it("shows only the login form before sign-in", async () => {
     renderWithRouter(<Admin />);
-    await screen.findByRole("tab", { name: "Activate invite" });
-    await waitFor(() => expect(actor.needsInitialSetup).toHaveBeenCalled());
     expect(
-      screen.queryByRole("tab", { name: "Set up" }),
-    ).not.toBeInTheDocument();
+      await screen.findByRole("button", { name: "Sign in" }),
+    ).toBeInTheDocument();
+    await waitFor(() => expect(actor.needsInitialSetup).toHaveBeenCalled());
+    expect(screen.queryByRole("tab")).not.toBeInTheDocument();
+    expect(screen.queryByText(/activate/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/set up/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/notification/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Setup code")).not.toBeInTheDocument();
+    expect(actor.getAdminEmails).not.toHaveBeenCalled();
+    expect(actor.getNotificationStatus).not.toHaveBeenCalled();
   });
 
-  it("shows the setup tab on a fresh deploy", async () => {
+  it("keeps the login form even on a fresh deploy", async () => {
+    actor.needsInitialSetup.mockResolvedValue(true);
+    renderWithRouter(<Admin />);
+    await waitFor(() => expect(actor.needsInitialSetup).toHaveBeenCalled());
+    expect(
+      await screen.findByRole("button", { name: "Sign in" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/set up/i)).not.toBeInTheDocument();
+  });
+
+  it("opens first-time setup only from the private link, and only while needed", async () => {
+    window.history.replaceState(null, "", "/admin#setup");
     actor.needsInitialSetup.mockResolvedValue(true);
     renderWithRouter(<Admin />);
     expect(
-      await screen.findByRole("tab", { name: "Set up" }),
+      await screen.findByRole("button", { name: "Set up password" }),
     ).toBeInTheDocument();
+  });
+
+  it("ignores the setup link once the primary password exists", async () => {
+    window.history.replaceState(null, "", "/admin#setup");
+    renderWithRouter(<Admin />);
+    await waitFor(() => expect(actor.needsInitialSetup).toHaveBeenCalled());
+    expect(
+      await screen.findByRole("button", { name: "Sign in" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Set up password" }),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps the session across a reload of the tab", async () => {
@@ -128,16 +158,16 @@ describe("Admin login", () => {
     );
   });
 
-  it("offers invite activation alongside login", async () => {
+  it("activates an invite from the emailed link, then returns to login", async () => {
+    window.history.replaceState(null, "", "/admin#invite=ABCDE-FGHJK");
     const user = userEvent.setup();
     actor.activateAdminAccount.mockResolvedValue({ __kind__: "ok", ok: null });
     renderWithRouter(<Admin />);
 
-    await user.click(
-      await screen.findByRole("tab", { name: "Activate invite" }),
+    expect(await screen.findByLabelText("Setup code")).toHaveValue(
+      "ABCDE-FGHJK",
     );
     await user.type(screen.getByLabelText("Your email"), "ops@avalonice.co");
-    await user.type(screen.getByLabelText("Setup code"), "abcde-fghjk");
     await user.type(screen.getByLabelText("Choose a password"), "OpsPass123");
     await user.type(screen.getByLabelText("Confirm password"), "OpsPass123");
     await user.click(screen.getByRole("button", { name: "Activate account" }));
@@ -145,9 +175,13 @@ describe("Admin login", () => {
     await waitFor(() =>
       expect(actor.activateAdminAccount).toHaveBeenCalledWith(
         "ops@avalonice.co",
-        "abcde-fghjk",
+        "ABCDE-FGHJK",
         "OpsPass123",
       ),
     );
+    expect(
+      await screen.findByRole("button", { name: "Sign in" }),
+    ).toBeInTheDocument();
+    expect(window.location.hash).toBe("");
   });
 });

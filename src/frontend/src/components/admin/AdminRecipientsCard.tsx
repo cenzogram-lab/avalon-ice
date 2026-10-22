@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { inviteLink } from "@/lib/admin-links";
 import {
   useAddAdminEmail,
   useAdminEmails,
@@ -39,6 +40,7 @@ import {
 import {
   CheckCircle2,
   Copy,
+  Link2,
   Loader2,
   MailCheck,
   RotateCw,
@@ -122,12 +124,14 @@ export default function AdminRecipientsCard({
     });
   };
 
-  const copyCode = async (code: string) => {
+  const copyText = async (text: string, label: string) => {
     try {
-      await navigator.clipboard.writeText(code);
-      toast.success("Setup code copied.");
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label} copied.`);
     } catch {
-      toast.error("Copy failed — select the code and copy it manually.");
+      toast.error(
+        `Copy failed — select the ${label.toLowerCase()} and copy it manually.`,
+      );
     }
   };
 
@@ -330,8 +334,8 @@ export default function AdminRecipientsCard({
                 </DialogTitle>
                 <DialogDescription>
                   {invite.emailed
-                    ? "We emailed them a one-time setup code. They open /admin, choose “Activate invite”, and set their own password."
-                    : "The invitation email couldn't be sent, so share this one-time setup code with them yourself. They open /admin, choose “Activate invite”, and set their own password."}
+                    ? "We emailed them a private activation link with a one-time setup code. They open it and choose their own password."
+                    : "The invitation email couldn't be sent, so share this activation link with them yourself. They open it and choose their own password."}
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col items-center gap-2 rounded-lg bg-secondary/60 p-4">
@@ -357,9 +361,22 @@ export default function AdminRecipientsCard({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => copyCode(invite.setupCode)}
+                  onClick={() => copyText(invite.setupCode, "Setup code")}
                 >
                   <Copy className="mr-2 size-4" /> Copy code
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    copyText(
+                      inviteLink(window.location.origin, invite.setupCode),
+                      "Activation link",
+                    )
+                  }
+                  data-ocid="admin.invite_copy_link"
+                >
+                  <Link2 className="mr-2 size-4" /> Copy link
                 </Button>
                 <Button type="button" onClick={() => setInvite(null)}>
                   Done

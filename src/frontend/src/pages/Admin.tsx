@@ -35,12 +35,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
   useBrowserAlertsSetting,
   useInquiryAlerts,
 } from "@/hooks/use-inquiry-alerts";
+import { type AdminLink, parseAdminLink } from "@/lib/admin-links";
 import {
   useActivateAdminAccount,
   useAdminSession,
@@ -79,8 +79,6 @@ import { toast } from "sonner";
 
 /** The primary (owner) admin account; additional admins are added in the dashboard. */
 const ADMIN_EMAIL = "Sales@AvalonIce.co";
-
-type AuthMode = "login" | "activate" | "setup";
 
 /**
  * The session token survives a reload of this tab (so an admin can leave
@@ -210,13 +208,42 @@ function AdminContent() {
   return <Dashboard token={token} onLogout={() => setToken(null)} />;
 }
 
+function readAdminLink(): AdminLink {
+  return typeof window === "undefined"
+    ? { kind: "login" }
+    : parseAdminLink(window.location.hash);
+}
+
 function AuthGate({ onToken }: { onToken: (t: string) => void }) {
-  // Login is the everyday case — setup runs once, on the first deploy —
-  // so a returning admin lands straight on the form they actually need.
-  const [mode, setMode] = useState<AuthMode>("login");
-  // First-time setup only works until the primary password exists, so the
-  // tab is only offered while it can succeed.
+  // Before sign-in the page is only the login form. Activating an invite
+  // and first-deploy setup are reached through private links (see
+  // lib/admin-links), and inviting admins or managing notifications is
+  // only possible from inside the dashboard.
+  const [link, setLink] = useState<AdminLink>(readAdminLink);
+  useEffect(() => {
+    const onHashChange = () => setLink(readAdminLink());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+  // Setup only works until the primary password exists; once it does, the
+  // setup link falls back to the login form.
   const { data: needsSetup = false } = useNeedsInitialSetup();
+
+  const backToLogin = useCallback(() => {
+    window.history.replaceState(
+      window.history.state,
+      "",
+      window.location.pathname + window.location.search,
+    );
+    setLink({ kind: "login" });
+  }, []);
+
+  const mode =
+    link.kind === "invite"
+      ? "activate"
+      : link.kind === "setup" && needsSetup
+        ? "setup"
+        : "login";
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-4 py-16">
@@ -244,39 +271,33 @@ function AuthGate({ onToken }: { onToken: (t: string) => void }) {
             {mode === "setup"
               ? `First deploy only — create the password for ${ADMIN_EMAIL}.`
               : mode === "activate"
-                ? "Added as an admin? Enter the setup code from your invitation and choose a password."
+                ? "Enter the email you were invited with, your setup code, and choose a password."
                 : "Sign in with your admin email and password."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={mode} onValueChange={(v) => setMode(v as AuthMode)}>
-            <TabsList
-              className={`grid w-full ${needsSetup ? "grid-cols-3" : "grid-cols-2"}`}
+          {mode === "setup" ? (
+            <SetupPasswordForm onDone={backToLogin} />
+          ) : mode === "activate" ? (
+            <ActivateInviteForm
+              initialCode={link.kind === "invite" ? link.code : ""}
+              onDone={backToLogin}
+            />
+          ) : (
+            <LoginForm onToken={onToken} />
+          )}
+          {mode !== "login" && (
+            <Button
+              type="button"
+              variant="link"
+              size="sm"
+              className="mt-2 w-full"
+              onClick={backToLogin}
+              data-ocid="admin.back_to_login"
             >
-              <TabsTrigger value="login" data-ocid="admin.login_tab">
-                Login
-              </TabsTrigger>
-              <TabsTrigger value="activate" data-ocid="admin.activate_tab">
-                Activate invite
-              </TabsTrigger>
-              {needsSetup && (
-                <TabsTrigger value="setup" data-ocid="admin.setup_tab">
-                  Set up
-                </TabsTrigger>
-              )}
-            </TabsList>
-            <TabsContent value="login">
-              <LoginForm onToken={onToken} />
-            </TabsContent>
-            <TabsContent value="activate">
-              <ActivateInviteForm onDone={() => setMode("login")} />
-            </TabsContent>
-            {needsSetup && (
-              <TabsContent value="setup">
-                <SetupPasswordForm onDone={() => setMode("login")} />
-              </TabsContent>
-            )}
-          </Tabs>
+              Already have a password? Sign in
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -305,7 +326,7 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
     setupPassword.mutate(password, {
       onSuccess: (ok) => {
         if (ok) {
-          toast.success("Primary password set. You can now log in.");
+          toast.success("Primary password set. Sign in to continue.");
           onDone();
         } else {
           toast.error("Password setup failed. It may already be configured.");
@@ -316,7 +337,7 @@ function SetupPasswordForm({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="setup-email">Admin email</Label>
         <Input
@@ -400,7 +421,7 @@ function LoginForm({ onToken }: { onToken: (t: string) => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="login-email">Admin email</Label>
         <Input
@@ -438,10 +459,16 @@ function LoginForm({ onToken }: { onToken: (t: string) => void }) {
   );
 }
 
-function ActivateInviteForm({ onDone }: { onDone: () => void }) {
+function ActivateInviteForm({
+  initialCode,
+  onDone,
+}: {
+  initialCode: string;
+  onDone: () => void;
+}) {
   const activate = useActivateAdminAccount();
   const [email, setEmail] = useState("");
-  const [setupCode, setSetupCode] = useState("");
+  const [setupCode, setSetupCode] = useState(initialCode);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
@@ -463,7 +490,7 @@ function ActivateInviteForm({ onDone }: { onDone: () => void }) {
       { email: email.trim(), setupCode: setupCode.trim(), password },
       {
         onSuccess: () => {
-          toast.success("Account activated. You can now log in.");
+          toast.success("Account activated. Sign in with your new password.");
           onDone();
         },
         onError: (err) =>
@@ -473,7 +500,7 @@ function ActivateInviteForm({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="activate-email">Your email</Label>
         <Input

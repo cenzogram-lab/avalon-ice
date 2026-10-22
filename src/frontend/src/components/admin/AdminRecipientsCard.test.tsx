@@ -145,8 +145,15 @@ describe("AdminRecipientsCard", () => {
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByText("ABCDE-FGHJK")).toBeInTheDocument();
     expect(
-      within(dialog).getByText(/share this one-time setup code/),
+      within(dialog).getByText(/share this activation link/),
     ).toBeInTheDocument();
+
+    await user.click(within(dialog).getByRole("button", { name: "Copy link" }));
+    await waitFor(async () =>
+      expect(await navigator.clipboard.readText()).toBe(
+        `${window.location.origin}/admin#invite=ABCDE-FGHJK`,
+      ),
+    );
   });
 
   it("re-sends a setup code to a pending admin", async () => {

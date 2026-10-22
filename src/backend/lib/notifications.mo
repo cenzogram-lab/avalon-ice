@@ -120,13 +120,20 @@ module {
     "You've been added as an Avalon Ice admin";
   };
 
+  // The admin sign-in page only shows the login form; invitees reach the
+  // activation form through this link. The code sits in the URL fragment,
+  // which browsers never send to a server.
+  public func inviteUrl(setupCode : Text) : Text {
+    ADMIN_URL # "#invite=" # setupCode;
+  };
+
   public func inviteBody(invitedBy : Text, setupCode : Text) : Text {
     "<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#0c3552\">"
     # "<p>" # escapeHtml(invitedBy) # " added you as an admin of the Avalon Ice website. Admins can sign in to the inquiry dashboard and receive an email for every new form submission.</p>"
     # "<p>Your one-time setup code:</p>"
     # "<p style=\"font-size:22px;font-weight:700;letter-spacing:2px\">" # escapeHtml(setupCode) # "</p>"
-    # "<p>Open <a href=\"" # ADMIN_URL # "\" style=\"color:#0c3552;font-weight:700\">" # ADMIN_URL
-    # "</a>, choose <b>Activate invite</b>, and enter this email address, the code, and a password of your choice. The code expires in 7 days.</p>"
+    # "<p><a href=\"" # inviteUrl(setupCode) # "\" style=\"color:#0c3552;font-weight:700\">Activate your admin account</a>"
+    # " and enter this email address and a password of your choice. The code is filled in for you and expires in 7 days.</p>"
     # "<p style=\"font-size:12px;color:#3a6e7b\">If you weren't expecting this, you can ignore this email.</p>"
     # "</div>";
   };
