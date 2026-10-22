@@ -78,6 +78,12 @@ type InquiryStatus =
    InReview;
    New;
  };
+type InquiryPage = 
+ record {
+   inquiries: vec Inquiry;
+   next: opt nat;
+   total: nat;
+ };
 type Inquiry = 
  record {
    address: opt text;
@@ -164,6 +170,7 @@ service : {
   isAuthenticated: (token: text) -> (bool) query;
   isCallerAdmin: () -> (bool) query;
   listInquiries: (token: text) -> (vec Inquiry) query;
+  listInquiriesPage: (token: text, start: nat) -> (InquiryPage) query;
   login: (email: text, password: text) -> (opt text);
   logout: (token: text) -> ();
   needsInitialSetup: () -> (bool) query;

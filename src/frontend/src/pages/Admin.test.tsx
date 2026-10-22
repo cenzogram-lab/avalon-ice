@@ -9,13 +9,17 @@ const actor = vi.hoisted(() => ({
   activateAdminAccount: vi.fn(),
   needsInitialSetup: vi.fn(),
   getAdminSession: vi.fn(),
-  listInquiries: vi.fn(),
+  listInquiriesPage: vi.fn(),
   getInquiryCount: vi.fn(),
   getAdminEmails: vi.fn(),
   getNotificationStatus: vi.fn(),
 }));
+const connection = vi.hoisted(() => ({ ready: true }));
 vi.mock("@caffeineai/core-infrastructure", () => ({
-  useActor: () => ({ actor, isFetching: false }),
+  useActor: () =>
+    connection.ready
+      ? { actor, isFetching: false }
+      : { actor: null, isFetching: true },
 }));
 
 import Admin from "@/pages/Admin";
@@ -26,6 +30,7 @@ beforeEach(() => {
   actor.needsInitialSetup.mockResolvedValue(false);
   window.sessionStorage.clear();
   window.history.replaceState(null, "", "/");
+  connection.ready = true;
 });
 
 async function signIn(email: string, password: string) {
@@ -126,7 +131,7 @@ describe("Admin login", () => {
       email: "Sales@AvalonIce.co",
       isPrimary: true,
     });
-    actor.listInquiries.mockResolvedValue([]);
+    actor.listInquiriesPage.mockResolvedValue({ inquiries: [], total: 0n });
     actor.getInquiryCount.mockResolvedValue(0n);
     actor.getAdminEmails.mockResolvedValue({ __kind__: "ok", ok: [] });
     actor.getNotificationStatus.mockResolvedValue({
@@ -138,6 +143,16 @@ describe("Admin login", () => {
     expect(window.sessionStorage.getItem("avalon-ice:admin-session")).toBe(
       "tok-keep",
     );
+  });
+
+  it("doesn't flash the login form while a stored session is being restored", async () => {
+    window.sessionStorage.setItem("avalon-ice:admin-session", "tok-live");
+    connection.ready = false;
+    renderWithRouter(<Admin />);
+    expect(await screen.findByText("Verifying session…")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Sign in" }),
+    ).not.toBeInTheDocument();
   });
 
   it("restores a stored session and forgets it once it is no longer valid", async () => {

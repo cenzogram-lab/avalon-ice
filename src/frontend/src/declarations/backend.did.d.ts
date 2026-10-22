@@ -56,6 +56,11 @@ export interface Inquiry {
   'timestamp' : bigint,
   'phone' : string,
 }
+export interface InquiryPage {
+  'total' : bigint,
+  'next' : [] | [bigint],
+  'inquiries' : Array<Inquiry>,
+}
 export type InquiryStatus = { 'New' : null } |
   { 'Contacted' : null } |
   { 'InReview' : null } |
@@ -121,6 +126,7 @@ export interface _SERVICE {
   'isAuthenticated' : ActorMethod<[string], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listInquiries' : ActorMethod<[string], Array<Inquiry>>,
+  'listInquiriesPage' : ActorMethod<[string, bigint], InquiryPage>,
   'login' : ActorMethod<[string, string], [] | [string]>,
   'logout' : ActorMethod<[string], undefined>,
   'needsInitialSetup' : ActorMethod<[], boolean>,

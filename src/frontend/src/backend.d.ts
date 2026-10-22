@@ -86,6 +86,11 @@ export interface Inquiry {
     timestamp: bigint;
     phone: string;
 }
+export interface InquiryPage {
+    total: bigint;
+    next?: bigint;
+    inquiries: Array<Inquiry>;
+}
 export interface NotificationStatus {
     lastSuccessAt?: bigint;
     lastAttemptAt?: bigint;
@@ -199,6 +204,7 @@ export interface backendInterface {
     isAuthenticated(token: string): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     listInquiries(token: string): Promise<Array<Inquiry>>;
+    listInquiriesPage(token: string, start: bigint): Promise<InquiryPage>;
     login(email: string, password: string): Promise<string | null>;
     logout(token: string): Promise<void>;
     needsInitialSetup(): Promise<boolean>;

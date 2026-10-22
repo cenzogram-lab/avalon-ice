@@ -33,4 +33,13 @@ module {
     status : InquiryStatus;
     notes : ?Text;
   };
+
+  // One slice of the inquiry list for the dashboard. Pages are cut by
+  // size, so the whole list never has to fit in a single response.
+  public type InquiryPage = {
+    inquiries : [Inquiry];
+    // Where the next page starts, or null on the last page.
+    next : ?Nat;
+    total : Nat;
+  };
 };

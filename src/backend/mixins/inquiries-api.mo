@@ -58,10 +58,20 @@ mixin (inquiries : List.List<Types.Inquiry>, admins : AdminTypes.AdminState) {
     InquiriesLib.count(inquiries);
   };
 
-  // All inquiries, for the dashboard and its CSV/JSON export.
+  // All inquiries in one response. Kept for already-open dashboards; it
+  // stops working once the list outgrows one response, which is why the
+  // dashboard now reads `listInquiriesPage` instead.
   public query func listInquiries(token : Text) : async [Types.Inquiry] {
     requireAdmin(token);
     InquiriesLib.export(inquiries);
+  };
+
+  // The inquiry list a size-limited page at a time, oldest first: start at
+  // 0 and follow `next` until it is null. Feeds the dashboard and its
+  // CSV/JSON export.
+  public query func listInquiriesPage(token : Text, start : Nat) : async Types.InquiryPage {
+    requireAdmin(token);
+    InquiriesLib.page(inquiries, start, InquiriesLib.PAGE_BYTE_BUDGET, InquiriesLib.PAGE_MAX_ROWS);
   };
 
   public shared func updateInquiry(token : Text, id : Nat, status : Types.InquiryStatus, notes : ?Text) : async ?Types.Inquiry {

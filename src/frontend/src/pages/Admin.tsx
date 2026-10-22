@@ -173,7 +173,9 @@ function AdminContent() {
     storeToken(next);
     setTokenState(next);
   }, []);
-  const { data: isAuthenticated, isLoading: authLoading } =
+  // Pending, not just loading: until the backend connection is ready the
+  // check can't run yet, and a stored session must not flash the login form.
+  const { data: isAuthenticated, isPending: authPending } =
     useIsAuthenticated(token);
 
   // A session that stopped being valid (expired, or this admin was removed)
@@ -189,7 +191,7 @@ function AdminContent() {
     return <AuthGate onToken={setToken} />;
   }
 
-  if (authLoading) {
+  if (authPending) {
     return (
       <div
         data-ocid="admin.loading_state"

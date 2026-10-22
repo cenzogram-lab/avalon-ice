@@ -259,7 +259,16 @@ export function useInquiries(token: string) {
     queryKey: ["inquiries", token],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.listInquiries(token);
+      // Read page by page: the backend cuts pages by size, so however long
+      // the history grows no single response can exceed the IC limit.
+      const rows: Inquiry[] = [];
+      let start: bigint | undefined = 0n;
+      while (start !== undefined) {
+        const page = await actor.listInquiriesPage(token, start);
+        rows.push(...page.inquiries);
+        start = page.next;
+      }
+      return rows;
     },
     enabled,
   });

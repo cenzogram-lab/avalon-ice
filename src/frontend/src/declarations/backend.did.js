@@ -127,6 +127,11 @@ export const Result_1 = IDL.Variant({
   'ok' : NotificationStatus,
   'err' : IDL.Text,
 });
+export const InquiryPage = IDL.Record({
+  'total' : IDL.Nat,
+  'next' : IDL.Opt(IDL.Nat),
+  'inquiries' : IDL.Vec(Inquiry),
+});
 
 export const idlService = IDL.Service({
   '_initialize_access_control' : IDL.Func([], [], []),
@@ -154,6 +159,7 @@ export const idlService = IDL.Service({
   'isAuthenticated' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'listInquiries' : IDL.Func([IDL.Text], [IDL.Vec(Inquiry)], ['query']),
+  'listInquiriesPage' : IDL.Func([IDL.Text, IDL.Nat], [InquiryPage], ['query']),
   'login' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
   'logout' : IDL.Func([IDL.Text], [], []),
   'needsInitialSetup' : IDL.Func([], [IDL.Bool], ['query']),
@@ -291,6 +297,11 @@ export const idlFactory = ({ IDL }) => {
     'lastError' : IDL.Opt(IDL.Text),
   });
   const Result_1 = IDL.Variant({ 'ok' : NotificationStatus, 'err' : IDL.Text });
+  const InquiryPage = IDL.Record({
+    'total' : IDL.Nat,
+    'next' : IDL.Opt(IDL.Nat),
+    'inquiries' : IDL.Vec(Inquiry),
+  });
   
   return IDL.Service({
     '_initialize_access_control' : IDL.Func([], [], []),
@@ -318,6 +329,11 @@ export const idlFactory = ({ IDL }) => {
     'isAuthenticated' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'listInquiries' : IDL.Func([IDL.Text], [IDL.Vec(Inquiry)], ['query']),
+    'listInquiriesPage' : IDL.Func(
+        [IDL.Text, IDL.Nat],
+        [InquiryPage],
+        ['query'],
+      ),
     'login' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(IDL.Text)], []),
     'logout' : IDL.Func([IDL.Text], [], []),
     'needsInitialSetup' : IDL.Func([], [IDL.Bool], ['query']),

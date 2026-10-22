@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const actor = vi.hoisted(() => ({
-  listInquiries: vi.fn(),
+  listInquiriesPage: vi.fn(),
   getInquiryCount: vi.fn(),
   isAuthenticated: vi.fn(),
 }));
@@ -46,24 +46,54 @@ describe("useInquiries", () => {
     const { client, wrapper } = setup();
     let rows = [row(0)];
     let count = 1n;
-    actor.listInquiries.mockImplementation(async () => rows);
+    actor.listInquiriesPage.mockImplementation(async () => ({
+      inquiries: rows,
+      total: BigInt(rows.length),
+    }));
     actor.getInquiryCount.mockImplementation(async () => count);
 
     const { result } = renderHook(() => useInquiries("tok"), { wrapper });
     await waitFor(() => expect(result.current.data).toHaveLength(1));
-    expect(actor.listInquiries).toHaveBeenCalledTimes(1);
+    expect(actor.listInquiriesPage).toHaveBeenCalledTimes(1);
 
     // A poll with no change does not re-read the list.
     await client.refetchQueries({ queryKey: ["inquiryCount"] });
-    expect(actor.listInquiries).toHaveBeenCalledTimes(1);
+    expect(actor.listInquiriesPage).toHaveBeenCalledTimes(1);
 
     // A new inquiry arrives: the count moves, so the list is re-read.
     rows = [row(0), row(1)];
     count = 2n;
     await client.refetchQueries({ queryKey: ["inquiryCount"] });
     await waitFor(() => expect(result.current.data).toHaveLength(2));
-    expect(actor.listInquiries).toHaveBeenCalledTimes(2);
+    expect(actor.listInquiriesPage).toHaveBeenCalledTimes(2);
     expect(actor.getInquiryCount).toHaveBeenCalledWith("tok");
+  });
+
+  it("follows the pages until the backend says there are no more", async () => {
+    const { wrapper } = setup();
+    const all = Array.from({ length: 5 }, (_, i) => row(i));
+    // Pages of two, as the backend cuts them by size.
+    actor.listInquiriesPage.mockImplementation(
+      async (_token: string, start: bigint) => {
+        const from = Number(start);
+        const next = from + 2 < all.length ? BigInt(from + 2) : undefined;
+        return {
+          inquiries: all.slice(from, from + 2),
+          total: BigInt(all.length),
+          next,
+        };
+      },
+    );
+    actor.getInquiryCount.mockResolvedValue(5n);
+
+    const { result } = renderHook(() => useInquiries("tok"), { wrapper });
+    await waitFor(() => expect(result.current.data).toHaveLength(5));
+    expect(result.current.data?.map((r) => r.id)).toEqual([0n, 1n, 2n, 3n, 4n]);
+    expect(actor.listInquiriesPage.mock.calls).toEqual([
+      ["tok", 0n],
+      ["tok", 2n],
+      ["tok", 4n],
+    ]);
   });
 });
 

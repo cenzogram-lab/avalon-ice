@@ -52,6 +52,55 @@ module {
     id;
   };
 
+  // A query response can't exceed ~3 MB. A page stops once its records
+  // reach this many bytes (or rows), leaving ample room for Candid framing,
+  // so a long or spammed history can't make the dashboard unloadable.
+  public let PAGE_BYTE_BUDGET : Nat = 1_500_000;
+  public let PAGE_MAX_ROWS : Nat = 500;
+
+  func textBytes(t : Text) : Nat { t.encodeUtf8().size() };
+
+  func optBytes(t : ?Text) : Nat {
+    switch (t) {
+      case (?v) textBytes(v);
+      case null 0;
+    };
+  };
+
+  // Upper-bound-ish encoded size of one record: its text plus a fixed
+  // allowance for numbers, variants and option tags.
+  public func approxBytes(i : Types.Inquiry) : Nat {
+    let d = i.orderDetails;
+    var bytes = 256 + textBytes(i.name) + textBytes(i.email) + textBytes(i.phone) + optBytes(i.businessName) + optBytes(i.address) + optBytes(i.notes);
+    for (field in [d.message, d.businessName, d.estimatedWeeklyUsage, d.deliveryAddress, d.deliveryFrequency, d.eventDate, d.deliveryTimeWindow, d.venueName, d.totalBags, d.iceType].values()) {
+      bytes += optBytes(field);
+    };
+    for (day in d.desiredDeliveryDays.values()) bytes += 8 + textBytes(day);
+    bytes;
+  };
+
+  // Records from `start` in id order, cut at the byte budget. A page always
+  // holds at least one record, so paging always makes progress.
+  public func page(inquiries : List.List<Types.Inquiry>, start : Nat, byteBudget : Nat, maxRows : Nat) : Types.InquiryPage {
+    let total = inquiries.size();
+    let rows = List.empty<Types.Inquiry>();
+    var bytes = 0;
+    var index = start;
+    label filling while (index < total) {
+      let ?inquiry = inquiries.get(index) else break filling;
+      let size = approxBytes(inquiry);
+      if (rows.size() > 0 and (bytes + size > byteBudget or rows.size() >= maxRows)) break filling;
+      rows.add(inquiry);
+      bytes += size;
+      index += 1;
+    };
+    {
+      inquiries = rows.toArray();
+      next = if (index < total) ?index else null;
+      total;
+    };
+  };
+
   public func count(inquiries : List.List<Types.Inquiry>) : Nat {
     inquiries.size();
   };
