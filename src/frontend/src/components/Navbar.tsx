@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { SOCIALS } from "@/lib/socials";
-import { Link } from "@tanstack/react-router";
-import { Mail, Menu, Phone, X } from "lucide-react";
-import { useState } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { ChevronDown, Mail, Phone, ShoppingBag } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 
 /**
  * Primary navigation. Short, specific anchor text helps visitors and search
@@ -17,13 +16,19 @@ export const NAV_LINKS = [
   { key: "contact", href: "/contact", label: "Contact Us" },
 ];
 
+const PHONE_HREF = "tel:8563089986";
+const PHONE_LABEL = "(856) 308-9986";
+
+/** One full-height bar cell; dividers come from the cell's left border. */
+const CELL = "flex h-full shrink-0 items-center border-l border-navy/15";
+
 /**
  * Social placeholders — the brand accounts aren't live yet, so these are
  * labelled but inert (no destination, not focusable as links).
  */
-function SocialTiles() {
+function SocialCells() {
   return (
-    <div className="flex items-center gap-1.5 sm:gap-2">
+    <div className="flex h-full items-center">
       {SOCIALS.map((s) => (
         <span
           key={s.label}
@@ -31,7 +36,7 @@ function SocialTiles() {
           aria-label={`${s.label} — coming soon`}
           title={`${s.label} — coming soon`}
           data-ocid={`navbar.social.${s.label.toLowerCase()}`}
-          className="social-tile !h-10 !w-10 cursor-default rounded-lg"
+          className={`${CELL} w-10 cursor-default justify-center text-navy sm:w-12`}
         >
           <s.icon className="size-4" />
         </span>
@@ -40,157 +45,170 @@ function SocialTiles() {
   );
 }
 
-export default function Navbar() {
+/** "More ▾": the call and quote actions plus the shop, in one small panel. */
+function MoreMenu() {
   const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        rootRef.current?.querySelector("button")?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const close = () => setOpen(false);
+  const item =
+    "flex min-h-12 items-center gap-3 border-t border-navy/15 px-4 font-body text-sm font-bold text-navy first:border-t-0 hover:bg-ice-mist";
+
+  return (
+    <div ref={rootRef} className={`${CELL} relative`}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+        data-ocid="navbar.menu_button"
+        className="nav-cell flex h-full items-center gap-6 px-3 font-body text-sm font-bold text-navy sm:px-4"
+      >
+        More
+        <ChevronDown
+          aria-hidden="true"
+          className={`size-4 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div
+          id={panelId}
+          data-ocid="navbar.more_panel"
+          className="absolute right-0 top-full z-50 mt-px w-64 border border-navy/15 bg-cream-bright shadow-lg xl:left-0 xl:right-auto"
+        >
+          {/* biome-ignore lint/a11y/useValidAnchor: real navigation to the order form; onClick only closes the panel */}
+          <a
+            href="/#order-form"
+            onClick={close}
+            data-ocid="navbar.mobile_contact"
+            className={item}
+          >
+            <Mail className="size-4" /> Get a Quote
+          </a>
+          <a href={PHONE_HREF} data-ocid="navbar.mobile_call" className={item}>
+            <Phone className="size-4" /> Call {PHONE_LABEL}
+          </a>
+          <Link
+            to="/shop"
+            onClick={close}
+            data-ocid="navbar.mobile_shop"
+            className={item}
+          >
+            <ShoppingBag className="size-4" /> Visit the Shop
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A flat bar of full-height cells split by hairline dividers: brand, call,
+ * page links and "More", then socials and the quote action. Below xl the
+ * page links drop to a second, side-scrolling row so every link stays one
+ * tap away on a phone.
+ */
+export default function Navbar() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <header
       data-ocid="navbar"
-      className="sticky top-0 z-40 border-b-[3px] border-navy bg-cream-bright/95 backdrop-blur-sm"
+      className="sticky top-0 z-40 border-b border-navy/20 bg-cream-bright shadow-[0_1px_0_rgb(12_53_82/0.04)]"
     >
-      <div className="mx-auto flex h-16 max-w-[88rem] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20">
-        <a
-          href="/#top"
-          aria-label="Avalon Ice home"
-          data-ocid="navbar.brand"
-          className="flex min-h-12 min-w-12 shrink-0 items-center gap-2.5"
-        >
-          <img
-            src="/assets/images/avalon-heron.webp"
-            alt=""
-            aria-hidden="true"
-            className="size-10 rounded-full border-2 border-navy bg-cream-bright lg:size-11"
-          />
-          <span className="hidden items-baseline gap-1.5 leading-none sm:flex">
-            <span className="font-script text-2xl text-navy lg:text-3xl">
-              Avalon
+      <div className="mx-auto flex max-w-[88rem] flex-wrap items-stretch xl:h-16 xl:flex-nowrap">
+        <div className="flex h-14 w-full items-stretch xl:contents">
+          <a
+            href="/#top"
+            aria-label="Avalon Ice home"
+            data-ocid="navbar.brand"
+            className="flex h-full shrink-0 items-center gap-2.5 px-3 sm:px-4 xl:h-16"
+          >
+            <img
+              src="/assets/images/avalon-heron.webp"
+              alt=""
+              aria-hidden="true"
+              className="size-10 rounded-full border-2 border-navy bg-cream-bright"
+            />
+            <span className="hidden items-baseline gap-1.5 leading-none sm:flex">
+              <span className="font-script text-2xl text-navy">Avalon</span>
+              <span className="text-block-ice text-lg leading-none">ICE</span>
             </span>
-            <span className="text-block-ice text-lg leading-none lg:text-xl">
-              ICE
-            </span>
-          </span>
-        </a>
+          </a>
 
-        {/* Large primary links, desktop */}
-        <nav
-          className="hidden items-center gap-0.5 xl:flex 2xl:gap-1 min-[1760px]:gap-2"
-          aria-label="Primary"
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.key}
-              href={link.href}
-              data-ocid={`navbar.link.${link.key}`}
-              className="nav-underline flex min-h-12 items-center whitespace-nowrap rounded-full px-1.5 py-3 font-body text-sm font-bold uppercase tracking-normal text-lagoon hover:bg-ice-mist hover:text-navy min-[1440px]:px-2 min-[1440px]:tracking-wide 2xl:px-2.5 2xl:text-base min-[1760px]:px-4 min-[1760px]:text-lg"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* Social icons live in the navbar on every breakpoint */}
-          <SocialTiles />
-
-          {/* Call CTA: icon-only on phones, full number from md up */}
-          <Button
-            asChild
-            size="sm"
+          {/* Call: a round icon like an account button, number when it fits */}
+          <a
+            href={PHONE_HREF}
+            aria-label={`Call Avalon Ice at ${PHONE_LABEL}`}
             data-ocid="navbar.call_button"
-            className="btn-brutal btn-brutal-ice hidden bg-cream-bright font-body text-xs font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-mist min-h-12 md:inline-flex lg:px-5 lg:text-sm"
+            className={`${CELL} nav-cell gap-2 px-3 font-body text-sm font-bold text-navy xl:h-16`}
           >
-            <a href="tel:8563089986">
-              <Phone className="size-4" />
-              (856) 308-9986
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="icon"
-            aria-label="Call Avalon Ice"
-            data-ocid="navbar.call_icon"
-            className="btn-brutal btn-brutal-ice size-12 bg-cream-bright text-navy hover:bg-ice-mist md:hidden"
-          >
-            <a href="tel:8563089986">
-              <Phone className="size-4" />
-            </a>
-          </Button>
+            <span className="flex size-8 items-center justify-center rounded-full bg-navy text-cream-bright">
+              <Phone aria-hidden="true" className="size-4" />
+            </span>
+            <span className="hidden whitespace-nowrap md:inline xl:hidden 2xl:inline">
+              {PHONE_LABEL}
+            </span>
+          </a>
 
-          {/* Quote CTA → inquiry forms */}
-          <Button
-            asChild
-            size="sm"
-            data-ocid="navbar.contact_button"
-            className="btn-brutal btn-brutal-ice hidden bg-navy font-body text-xs font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-lagoon min-h-12 md:inline-flex lg:px-6 lg:text-sm"
-          >
-            <a href="/#order-form">
-              <Mail className="size-4" />
-              Get a Quote
+          <div className="ml-auto flex h-full items-stretch xl:order-last xl:ml-auto xl:h-16">
+            <SocialCells />
+            {/* Quote CTA → inquiry forms */}
+            <a
+              href="/#order-form"
+              aria-label="Get a Quote"
+              data-ocid="navbar.contact_button"
+              className="flex h-full shrink-0 items-center gap-2 bg-navy px-4 font-body text-sm font-bold text-cream-bright transition-colors hover:bg-lagoon"
+            >
+              <Mail aria-hidden="true" className="size-4" />
+              <span className="hidden md:inline">Get a Quote</span>
             </a>
-          </Button>
+          </div>
+        </div>
 
-          <button
-            type="button"
-            data-ocid="navbar.menu_button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="btn-brutal btn-brutal-ice inline-flex size-12 items-center justify-center bg-cream-bright text-navy hover:bg-ice-mist xl:hidden"
+        <div className="flex h-12 w-full items-stretch border-t border-navy/15 xl:h-16 xl:w-auto xl:border-t-0">
+          <nav
+            aria-label="Primary"
+            className="no-scrollbar flex min-w-0 flex-1 items-stretch overflow-x-auto xl:overflow-visible"
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+            {NAV_LINKS.map((link) => {
+              const current = link.href === pathname;
+              return (
+                <a
+                  key={link.key}
+                  href={link.href}
+                  aria-current={current ? "page" : undefined}
+                  data-ocid={`navbar.link.${link.key}`}
+                  className="nav-cell flex shrink-0 items-center whitespace-nowrap border-l border-navy/15 px-3 font-body text-sm font-bold text-navy first:border-l-0 sm:px-4 xl:first:border-l 2xl:px-5"
+                >
+                  {link.label}
+                </a>
+              );
+            })}
+          </nav>
+          <MoreMenu />
         </div>
       </div>
-
-      {open && (
-        <div className="border-t-2 border-navy bg-cream-bright px-4 py-4 xl:hidden">
-          <nav className="flex flex-col gap-1" aria-label="Mobile">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.key}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                data-ocid={`navbar.mobile_link.${link.key}`}
-                className="flex min-h-12 items-center rounded-md px-3 py-3 font-body text-lg font-bold uppercase tracking-wide text-lagoon hover:bg-ice-mist hover:text-navy"
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="mt-3 flex flex-col gap-3">
-              <Button
-                asChild
-                data-ocid="navbar.mobile_contact"
-                className="btn-brutal btn-brutal-ice bg-navy py-5 font-body font-bold uppercase tracking-[0.1em] text-cream-bright hover:bg-navy"
-              >
-                {/* biome-ignore lint/a11y/useValidAnchor: real navigation to the order form; onClick only closes the menu */}
-                <a href="/#order-form" onClick={() => setOpen(false)}>
-                  <Mail className="size-4" />
-                  Contact Us / Get a Quote
-                </a>
-              </Button>
-              <Button
-                asChild
-                data-ocid="navbar.mobile_call"
-                className="btn-brutal btn-brutal-ice bg-cream-bright py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice-frost"
-              >
-                <a href="tel:8563089986">
-                  <Phone className="size-4" />
-                  Call (856) 308-9986
-                </a>
-              </Button>
-              <Button
-                asChild
-                data-ocid="navbar.mobile_shop"
-                className="btn-brutal btn-brutal-ice bg-ice-light py-5 font-body font-bold uppercase tracking-[0.1em] text-navy hover:bg-ice"
-              >
-                <Link to="/shop" onClick={() => setOpen(false)}>
-                  Visit the Shop
-                </Link>
-              </Button>
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
   );
 }

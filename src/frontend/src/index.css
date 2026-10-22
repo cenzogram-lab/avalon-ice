@@ -842,8 +842,14 @@
     @apply bg-background text-foreground font-body antialiased;
   }
 
+  /* Clears the sticky navbar: two rows (104px) below xl, one (64px) above. */
   section[id] {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 80rem) {
+    section[id] {
+      scroll-margin-top: 5rem;
+    }
   }
 
   /* Ambient brand videos must read as motion graphics, never as players.
@@ -1237,29 +1243,49 @@
     transform: translateY(0);
   }
 
-  /* Desktop nav: an underline that slides in from the left. Absolutely
-     positioned and scaled, so it never moves the link text or neighbours. */
-  .nav-underline {
+  /* Navbar cells: a bar along the bottom edge marks hover, focus and the
+     current page (BBC-style). It is drawn by a pseudo-element scaled on
+     the Y axis, so it never moves the label or the neighbouring cells. */
+  .nav-cell {
     position: relative;
-    transition: color 0.2s ease-out, background-color 0.2s ease-out;
+    transition: background-color 0.15s ease-out;
   }
-  .nav-underline::after {
+  .nav-cell:hover {
+    background-color: #eef7f8;
+  }
+  .nav-cell::after {
     content: "";
     position: absolute;
-    left: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.55rem;
-    height: 2px;
-    border-radius: 999px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
     background: #38bdf8;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.25s ease-out;
+    transform: scaleY(0);
+    transform-origin: bottom center;
+    transition: transform 0.15s ease-out;
     pointer-events: none;
   }
-  .nav-underline:hover::after,
-  .nav-underline:focus-visible::after {
-    transform: scaleX(1);
+  .nav-cell:hover::after,
+  .nav-cell:focus-visible::after,
+  .nav-cell[aria-current="page"]::after,
+  .nav-cell[aria-expanded="true"]::after {
+    transform: scaleY(1);
+  }
+  .nav-cell[aria-current="page"]::after {
+    background: #0c3552;
+  }
+  .nav-cell:focus-visible {
+    outline: 2px solid #0c3552;
+    outline-offset: -2px;
+  }
+
+  /* A side-scrolling strip (the phone link row) without a visible bar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   /* ------------------------------------------------------------------ */
@@ -1574,7 +1600,8 @@
   .social-tile,
   .ice-hover-lift,
   .ice-hover-glow,
-  .nav-underline::after,
+  .nav-cell,
+  .nav-cell::after,
   [data-slot="button"],
   [data-slot="switch"],
   [data-slot="switch-thumb"] {
@@ -1587,8 +1614,5 @@
   [data-slot="button"]:hover,
   [data-slot="button"]:active {
     transform: none !important;
-  }
-  .nav-underline::after {
-    transform-origin: center;
   }
 }
